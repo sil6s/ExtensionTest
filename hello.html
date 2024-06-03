@@ -5,13 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Popup</title>
 </head>
+<style>
+  .button-container {
+      display: block;
+      width: 100%;
+      text-align: center;
+      margin-bottom: 10px; 
+  }
+
+  button {
+      background-color: black;
+      color: #FFFFFF;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      text-transform: uppercase;
+      width: 80%; 
+  }
+</style>
+</head>
 <body style="width: 300px; height: 500px;">
-  <img src="ITSC_Logo.jpg" alt="ITSC Logo">
-  <div style="width: 95%; height: 80%; background-color: #D43B3A; display: flex; justify-content: center; align-items: center;  margin: 0 auto;  opacity: 0.9;">
-    <button style="background-color: black; color: #FFFFFF; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; text-transform: uppercase;" onclick="this.style.backgroundColor = (this.style.backgroundColor === 'black' ? '#D43B3A' : 'black')">Start Timer</button>
-    <span class="glyphicon">&#xe072;</span>
-
-
+<img src="ITSC_Logo.jpg" alt="ITSC Logo">
+<div style="width: 95%; height: 80%; background-color: #D43B3A; display: flex; justify-content: center; align-items: center; flex-direction: column; margin: 0 auto; opacity: 0.9;">
+<div class="button-container">
+<button id="start-timer-button">Start Timer</button>
+</div>
+<div class="button-container">
+<button id="another-button">End Timer</button>
+</div>
+</div>
   <script src="popup.js"></script>
 </body>
 </html>
