@@ -1,0 +1,61 @@
+.popup-content {
+    width: 300px;
+    height: 325px;
+}
+
+.popup-content .main-container {
+    background-color: #D43B3A;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 auto;
+    opacity: 0.9;
+}
+
+.popup-content .timer-container {
+    width: 80%;
+    height: 25%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    opacity: 0.9;
+    border-radius: 4px;
+    font-size: large;
+}
+
+.popup-content .button-container {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.popup-content button {
+    color: #FFFFFF;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    width: 80%;
+    margin-bottom: 5px;
+}
+
+.popup-content .start-button button {
+    background-color: green;
+}
+
+.popup-content .pause-button button {
+    background-color: orange;
+}
+
+.popup-content .stop-button button {
+    background-color: red;
+}

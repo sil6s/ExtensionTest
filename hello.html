@@ -4,67 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Popup</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<style>
-
-  .timer-container {
-    width:80%; height: 25%; background-color: white; display: flex; justify-content: center; align-items: center; flex-direction: column; margin-bottom: 5px; margin-top: 5px; opacity: 0.9; border-radius: 4px; font-size: large;
-
-  }
-  .button-container {
-      display: block;
-      width: 100%;
-      text-align: center;
-      margin-bottom: 10px; 
-  }
-
-  button 
-  {
-
-      color: #FFFFFF;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
-      text-transform: uppercase;
-      width: 80%; 
-      margin-bottom:5px;
-  }
-  .start-button button
-  {
-    background-color:green;
-  }
-  .pause-button button
-  {
-    background-color:orange;
-  }
-  .stop-button button
-  {
-    background-color:red;
-  }
-</style>
-</head>
-<body style="width: 300px; height: 325px;">
-<img src="ITSC_Logo.jpg" alt="ITSC Logo">
-<div style="width: 95%; height: 65%; background-color: #D43B3A; display: flex; justify-content: center; align-items: center; flex-direction: column; margin: 0 auto; opacity: 0.9;">
-
-<div class="timer-container">
-  <h1> 1:06 (EX)</h1>
-</div>
-
-<div class="button-container">
-    <div class="start-button">
-      <button>Start Timer</button>
+<body>
+    <div class="popup-content">
+        <img src="ITSC_Logo.jpg" alt="ITSC Logo">
+        <div class="main-container">
+            <div class="timer-container">
+                <h1>1:06 (EX)</h1>
+            </div>
+            <div class="button-container">
+                <div class="start-button">
+                    <button>Start Timer</button>
+                </div>
+                <div class="pause-button">
+                    <button>Pause Timer</button>
+                </div>
+                <div class="stop-button">
+                    <button>Stop Timer</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="pause-button">
-      <button>Pause Timer</button>
-    </div>
-    <div class="stop-button">
-      <button>Stop Timer</button>
-    </div>
-</div>
-<script src="popup.js"></script>
+    <script src="content.js"></script>
 </body>
 </html>
