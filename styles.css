@@ -59,3 +59,27 @@
 .popup-content .stop-button button {
     background-color: red;
 }
+
+.btn 
+{
+margin-left:0px !important;
+}
+.btn-pause {
+    color: orange !important;
+}
+
+.btn-pause:hover {
+    color: white !important;
+    background-color: orange !important;
+}
+
+/* Increase specificity to override existing styles */
+.BtnGroup.d-flex.width-full .mx-2 {
+    margin: 0px !important; /* Change the margin to 0.5rem */
+    border-radius: 0px;
+}
+.btn-primary.btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-left:-8px;
+}
