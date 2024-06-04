@@ -10,7 +10,8 @@
     {
       "matches": ["*://github.com/*"],
       "css": ["styles.css"],
-      "js": ["content.js"]
+      "js": ["content.js"],
+      "run_at": "document_end"
     }
   ],
   "permissions": [
@@ -18,6 +19,11 @@
     "scripting"
   ],
   "action": {
-    "default_popup": "hello.html"
+    "default_popup": "hello.html",
+    "default_title": "ITSC Project Management"
+  },
+  "background": {
+    "service_worker": "service_worker.js",
+    "persistent": true
   }
 }
