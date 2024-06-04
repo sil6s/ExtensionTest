@@ -1,5 +1,4 @@
-ITSC Github Timer extension
-
+# ITSC Github Timer extension
 
 This extension adds a timer to see how long you have been on github.
 
