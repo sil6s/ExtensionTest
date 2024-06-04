@@ -9,4 +9,4 @@ This extension includes a start button to start the timer, a pause button to pau
 Running this extension
 Clone this repository.
 Load this directory in Chrome as an unpacked extension.
-Add the files from your folder you have chosen.Í
+Add the files from your folder you have chosen.
