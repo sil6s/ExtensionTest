@@ -183,8 +183,8 @@ function submitComment(resetTimerCallback) {
       var currentTime = new Date().toLocaleTimeString();
 
       // Set the value of the comment field with the current time
-      commentField.value = `ITSC PMS: User stopped issue at ${currentTime}`;
-      document.getElementById("new_comment_field").value = `ITSC PMS: User stopped issue at ${currentTime}`;
+      commentField.value = `ITSC PMS: User started issue at ${currentTime}`;
+      document.getElementById("new_comment_field").value = `ITSC PMS: User started issue at ${currentTime}`;
       console.log("Comment field value set");
 
       // Submit the form programmatically
