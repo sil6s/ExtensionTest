@@ -29,7 +29,7 @@ function injectButtons() {
       resetTimer();
   });
 
-  // Create Start button .
+  // Create Start button
   var startBtn = document.createElement('button');
   startBtn.id = 'start';
   startBtn.textContent = 'Start';
@@ -39,6 +39,7 @@ function injectButtons() {
       e.preventDefault();
       e.stopPropagation();
       startTimer();
+      submitComment(); // Call submitComment function here
   });
 
   // Create Pause button
@@ -76,6 +77,8 @@ function injectButtons() {
 // Call the function to inject buttons
 injectButtons();
 
+// Rest of your code...
+
 let startBtn = document.getElementById('start');
 let stopBtn = document.getElementById('stop');
 let resetBtn = document.getElementById('reset');
@@ -89,32 +92,43 @@ let timer; // Declare timer variable
 let isPaused = false; // Flag to track if the timer is paused
 
 function startTimer() {
-  timer = setInterval(stopWatch, 10); // Start the timer
-  startBtn.style.display = 'none'; // Hide the start button
-  pauseBtn.style.display = 'inline-block'; // Show the pause button
-  console.log('Timer started');
+  if (!timer) {
+    timer = setInterval(stopWatch, 10); // Start the timer
+    startBtn.style.display = 'none'; // Hide the start button
+    pauseBtn.style.display = 'inline-block'; // Show the pause button
+    console.log('Timer started');
+  }
 }
 
 function pauseTimer() {
-  clearInterval(timer); // Stop the timer
-  isPaused = true; // Set the paused flag
-  pauseBtn.style.display = 'none'; // Hide the pause button
-  startBtn.textContent = 'Resume'; // Change the start button text to "Resume"
-  startBtn.style.display = 'inline-block'; // Show the start button
-  console.log('Timer paused');
+  if (timer) {
+    clearInterval(timer); // Stop the timer
+    timer = null; // Reset the timer variable
+    isPaused = true; // Set the paused flag
+    pauseBtn.style.display = 'none'; // Hide the pause button
+    startBtn.textContent = 'Resume'; // Change the start button text to "Resume"
+    startBtn.style.display = 'inline-block'; // Show the start button
+    console.log('Timer paused');
+  }
 }
 
 function stopTimer() {
-  clearInterval(timer); // Stop the timer
-  isPaused = false; // Reset the paused flag
-  startBtn.textContent = 'Start'; // Reset the start button text
-  startBtn.style.display = 'inline-block'; // Show the start button
-  pauseBtn.style.display = 'none'; // Hide the pause button
-  console.log('Timer stopped');
+  if (timer) {
+    clearInterval(timer); // Stop the timer
+    timer = null; // Reset the timer variable
+    isPaused = false; // Reset the paused flag
+    startBtn.textContent = 'Start'; // Reset the start button text
+    startBtn.style.display = 'inline-block'; // Show the start button
+    pauseBtn.style.display = 'none'; // Hide the pause button
+    console.log('Timer stopped');
+  }
 }
 
 function resetTimer() {
-  clearInterval(timer); // Stop the timer
+  if (timer) {
+    clearInterval(timer); // Stop the timer
+    timer = null; // Reset the timer variable
+  }
   isPaused = false; // Reset the paused flag
   hour = 0;
   minute = 0;
@@ -153,5 +167,44 @@ function stopWatch() {
       if (timerDisplay) {
           timerDisplay.innerHTML = `${hour < 10 ? "0" + hour : hour}:${minute < 10 ? "0" + minute : minute}:${second < 10 ? "0" + second : second}`;
       }
+  }
+}
+function submitComment(resetTimerCallback) {
+  var commentParent = document.getElementById("partial-new-comment-form-actions");
+  if (commentParent) {
+    var commentForm = commentParent.closest('form');
+    var textArea = document.getElementById("new_comment_field");
+    var commentField = document.getElementById("new_comment_field");
+
+    if (commentForm && commentField) {
+      console.log("Comment form and field found");
+
+      // Get the current time
+      var currentTime = new Date().toLocaleTimeString();
+
+      // Set the value of the comment field with the current time
+      commentField.value = `ITSC PMS: User started issue at ${currentTime}`;
+      document.getElementById("new_comment_field").value = `ITSC PMS: User started issue at ${currentTime}`;
+      console.log("Comment field value set");
+
+      // Submit the form programmatically
+      commentForm.addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevent the default form submission behavior
+        console.log("Form submitted!");
+        // Clear the comment field after submitting the form
+        commentField.value = "";
+
+        // Call the resetTimerCallback after the comment is submitted
+        if (typeof resetTimerCallback === 'function') {
+          resetTimerCallback();
+        }
+      }, { once: true });
+
+      commentForm.submit();
+    } else {
+      console.log("Comment form or comment field not found.");
+    }
+  } else {
+    console.log("Comment parent element not found.");
   }
 }
