@@ -9,3 +9,7 @@ Running this extension
 Clone this repository.
 Load this directory in Chrome as an unpacked extension.
 Add the files from your folder you have chosen.
+
+Team Members:
+Silas Curry
+Joseph Hankins
