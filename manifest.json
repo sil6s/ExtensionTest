@@ -25,5 +25,6 @@
   "background": {
     "service_worker": "service_worker.js",
     "persistent": true
-  }
+  } 
+  
 }

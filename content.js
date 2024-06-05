@@ -29,7 +29,7 @@ function injectButtons() {
       resetTimer();
   });
 
-  // Create Start button
+  // Create Start button .
   var startBtn = document.createElement('button');
   startBtn.id = 'start';
   startBtn.textContent = 'Start';
