@@ -54,6 +54,8 @@ function injectButtons() {
       e.preventDefault();
       e.stopPropagation();
       pauseTimer();
+      submitComment(); // Call submitComment function here
+
   });
 
   // Create Stop button
@@ -66,6 +68,8 @@ function injectButtons() {
       e.preventDefault();
       e.stopPropagation();
       stopTimer();
+      submitComment(); // Call submitComment function here
+
   });
 
   // Append buttons to the parent div
@@ -88,6 +92,8 @@ let minute = 0;
 let second = 0;
 let count = 0;
 let timer; // Declare timer variable
+let isStarted = true;
+let isStopped = false;
 let isPaused = false; // Flag to track if the timer is paused
 
 // Function to start the timer
@@ -96,10 +102,13 @@ function startTimer() {
     timer = setInterval(stopWatch, 10); // Start the timer
     startBtn.style.display = 'none'; // Hide the start button
     pauseBtn.style.display = 'inline-block'; // Show the pause button
+    isStarted = true; // Update the global flag
+    isStopped = false; // Update the global flag
     console.log('Timer started');
     saveState(); // Save state when timer starts
   }
 }
+
 
 // Function to pause the timer
 function pauseTimer() {
@@ -107,6 +116,7 @@ function pauseTimer() {
     clearInterval(timer); // Stop the timer
     timer = null; // Reset the timer variable
     isPaused = true; // Set the paused flag
+    isStarted = false;
     pauseBtn.style.display = 'none'; // Hide the pause button
     startBtn.textContent = 'Resume'; // Change the start button text to "Resume"
     startBtn.style.display = 'inline-block'; // Show the start button
@@ -121,6 +131,8 @@ function stopTimer() {
     clearInterval(timer); // Stop the timer
     timer = null; // Reset the timer variable
     isPaused = false; // Reset the paused flag
+    isStarted = false; // Reset the started flag
+    isStopped = true;
     startBtn.textContent = 'Start'; // Reset the start button text
     startBtn.style.display = 'inline-block'; // Show the start button
     pauseBtn.style.display = 'none'; // Hide the pause button
@@ -128,6 +140,7 @@ function stopTimer() {
     saveState(); // Save state when timer stops
   }
 }
+
 
 // Function to reset the timer
 function resetTimer() {
@@ -239,10 +252,24 @@ function submitComment(resetTimerCallback) {
       // Get the current time
       var currentTime = new Date().toLocaleTimeString();
 
-      // Set the value of the comment field with the current time
-      commentField.value = `ITSC PMS: User started working on issue at ${currentTime}`;
-      document.getElementById("new_comment_field").value = `ITSC PMS: User started working on issue at ${currentTime}`;
-      console.log("Comment field value set");
+      // Check if the timer is started or paused
+      var commentMessage = '';
+      if (isStarted === true) {
+        commentMessage = `ITSC PMS: User started work on issue at ${currentTime}`;
+      } 
+      else if (isPaused === true) {
+        commentMessage = `ITSC PMS: User paused work on issue at ${currentTime}`;
+      }
+      else if (isStopped === true) {
+        commentMessage = `ITSC PMS: User stopped work on issue at ${currentTime}`;
+      }
+      
+
+      // Set the value of the comment field with the appropriate message
+      if (commentMessage) {
+        commentField.value = commentMessage;
+        console.log("Comment field value set");
+      }
 
       // Submit the form programmatically
       commentForm.addEventListener('submit', function(e) {
@@ -265,4 +292,3 @@ function submitComment(resetTimerCallback) {
     console.log("Comment parent element not found.");
   }
 }
-
