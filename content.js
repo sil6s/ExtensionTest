@@ -1,7 +1,7 @@
 function injectButtons() {
   console.log("Script Injected");
 
-  // Find the parent div where buttons will be inserted
+  // Find the parent div where buttons will be inserted.
   var parentDiv = document.querySelector('.BtnGroup.d-flex.width-full');
 
   // Create Timer display element
