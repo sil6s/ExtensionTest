@@ -9,7 +9,7 @@ function injectButtons() {
   var timerDisplay = document.createElement('div');
   timerDisplay.id = 'timerDisplay';
   timerDisplay.style.float = 'left';
-  timerDisplay.classList.add('btn', 'mx-2');
+  timerDisplay.classList.add('btn','mx-2');
   timerDisplay.style.marginRight = '10px';
   timerDisplay.style.cursor = 'default';
   timerDisplay.style.pointerEvents = 'none';
@@ -20,9 +20,9 @@ function injectButtons() {
 
   // Create Restart/Timer button
   var timerButton = document.createElement('button');
-  timerButton.id = 'reset';
-  timerButton.innerHTML = '↺ ' + '&#9200;';
-  timerButton.classList.add('btn', 'mx-2');
+  timerButton.id ='reset';
+  timerButton.innerHTML = '↺'+ '&#9200;';
+  timerButton.classList.add('btn','mx-2');
   timerButton.style.float = 'left'; // Set float left
   timerButton.addEventListener('click', function(e) {
       e.preventDefault();
@@ -32,9 +32,9 @@ function injectButtons() {
 
   // Create Start button
   var startBtn = document.createElement('button');
-  startBtn.id = 'start';
+  startBtn.id ='start';
   startBtn.textContent = 'Start';
-  startBtn.classList.add('btn', 'btn-primary', 'mx-2');
+  startBtn.classList.add('btn', 'btn-primary','mx-2');
   startBtn.style.float = 'left'; // Set float left
   startBtn.addEventListener('click', function(e) {
       e.preventDefault();
@@ -47,7 +47,7 @@ function injectButtons() {
   var pauseBtn = document.createElement('button');
   pauseBtn.id = 'pause';
   pauseBtn.textContent = 'Pause';
-  pauseBtn.classList.add('btn', 'btn-warning', 'mx-2', 'btn-pause');
+  pauseBtn.classList.add('btn', 'btn-warning','mx-2', 'btn-pause');
   pauseBtn.style.float = 'left'; // Set float left
   pauseBtn.style.display = 'none'; // Initially hide the pause button
   pauseBtn.addEventListener('click', function(e) {
@@ -58,9 +58,9 @@ function injectButtons() {
 
   // Create Stop button
   var stopBtn = document.createElement('button');
-  stopBtn.id = 'stop';
+  stopBtn.id ='stop';
   stopBtn.textContent = 'Stop';
-  stopBtn.classList.add('btn', 'btn-danger', 'mx-2');
+  stopBtn.classList.add('btn', 'btn-danger','mx-2');
   stopBtn.style.float = 'left'; // Set float left
   stopBtn.addEventListener('click', function(e) {
       e.preventDefault();
@@ -155,7 +155,7 @@ function resetTimer() {
 function updateDisplay() {
   const timerDisplay = document.getElementById('timerDisplay');
   if (timerDisplay) {
-    timerDisplay.innerHTML = `${hour < 10 ? "0" + hour : hour}:${minute < 10 ? "0" + minute : minute}:${second < 10 ? "0" + second : second}`;
+    timerDisplay.innerHTML = `${hour < 10? "0" + hour : hour}:${minute < 10? "0" + minute : minute}:${second < 10? "0" + second : second}`;
   }
 }
 
@@ -167,11 +167,13 @@ function saveState() {
     second,
     count,
     isPaused,
-    isRunning: !!timer
+    isRunning:!!timer,
+    startTime: new Date().getTime() // Save the current time in milliseconds
   };
   localStorage.setItem('stopwatchState', JSON.stringify(state));
 }
 
+// Function to load the timer state from local storage
 // Function to load the timer state from local storage
 window.addEventListener('load', () => {
   const savedState = JSON.parse(localStorage.getItem('stopwatchState'));
@@ -181,9 +183,24 @@ window.addEventListener('load', () => {
     second = savedState.second;
     count = savedState.count;
     isPaused = savedState.isPaused;
+
+    // Calculate the difference between the saved time and the current time
+    const savedTime = savedState.startTime;
+    const currentTime = new Date().getTime();
+    const timeDifference = currentTime - savedTime;
+
+    // Update the timer values with the time difference
+    const elapsedSeconds = Math.floor(timeDifference / 1000);
+    second += elapsedSeconds % 60;
+    minute += Math.floor(elapsedSeconds / 60) % 60;
+    hour += Math.floor(elapsedSeconds / 3600);
+
     updateDisplay();
+
     if (savedState.isRunning) {
       startTimer();
+    } else if (isPaused) {
+      pauseTimer();
     }
   }
 });
