@@ -1,3 +1,4 @@
+// Function to inject buttons
 function injectButtons() {
   console.log("Script Injected");
 
@@ -77,13 +78,11 @@ function injectButtons() {
 // Call the function to inject buttons
 injectButtons();
 
-// Rest of your code...
-
+// Variable Declarations
 let startBtn = document.getElementById('start');
 let stopBtn = document.getElementById('stop');
 let resetBtn = document.getElementById('reset');
 let pauseBtn = document.getElementById('pause');
-
 let hour = 0;
 let minute = 0;
 let second = 0;
@@ -91,15 +90,18 @@ let count = 0;
 let timer; // Declare timer variable
 let isPaused = false; // Flag to track if the timer is paused
 
+// Function to start the timer
 function startTimer() {
   if (!timer) {
     timer = setInterval(stopWatch, 10); // Start the timer
     startBtn.style.display = 'none'; // Hide the start button
     pauseBtn.style.display = 'inline-block'; // Show the pause button
     console.log('Timer started');
+    saveState(); // Save state when timer starts
   }
 }
 
+// Function to pause the timer
 function pauseTimer() {
   if (timer) {
     clearInterval(timer); // Stop the timer
@@ -109,9 +111,11 @@ function pauseTimer() {
     startBtn.textContent = 'Resume'; // Change the start button text to "Resume"
     startBtn.style.display = 'inline-block'; // Show the start button
     console.log('Timer paused');
+    saveState(); // Save state when timer pauses
   }
 }
 
+// Function to stop the timer
 function stopTimer() {
   if (timer) {
     clearInterval(timer); // Stop the timer
@@ -121,9 +125,11 @@ function stopTimer() {
     startBtn.style.display = 'inline-block'; // Show the start button
     pauseBtn.style.display = 'none'; // Hide the pause button
     console.log('Timer stopped');
+    saveState(); // Save state when timer stops
   }
 }
 
+// Function to reset the timer
 function resetTimer() {
   if (timer) {
     clearInterval(timer); // Stop the timer
@@ -142,33 +148,67 @@ function resetTimer() {
   startBtn.style.display = 'inline-block'; // Show the start button
   pauseBtn.style.display = 'none'; // Hide the pause button
   console.log('Timer reset');
+  saveState(); // Save state when timer resets
 }
 
-function stopWatch() {
-  if (!isPaused) {
-      count++;
-
-      if (count === 100) {
-          second++;
-          count = 0;
-      }
-
-      if (second === 60) {
-          minute++;
-          second = 0;
-      }
-
-      if (minute === 60) {
-          hour++;
-          minute = 0;
-      }
-
-      const timerDisplay = document.getElementById('timerDisplay');
-      if (timerDisplay) {
-          timerDisplay.innerHTML = `${hour < 10 ? "0" + hour : hour}:${minute < 10 ? "0" + minute : minute}:${second < 10 ? "0" + second : second}`;
-      }
+// Function to update the timer display
+function updateDisplay() {
+  const timerDisplay = document.getElementById('timerDisplay');
+  if (timerDisplay) {
+    timerDisplay.innerHTML = `${hour < 10 ? "0" + hour : hour}:${minute < 10 ? "0" + minute : minute}:${second < 10 ? "0" + second : second}`;
   }
 }
+
+// Function to save the current state of the timer to local storage
+function saveState() {
+  const state = {
+    hour,
+    minute,
+    second,
+    count,
+    isPaused,
+    isRunning: !!timer
+  };
+  localStorage.setItem('stopwatchState', JSON.stringify(state));
+}
+
+// Function to load the timer state from local storage
+window.addEventListener('load', () => {
+  const savedState = JSON.parse(localStorage.getItem('stopwatchState'));
+  if (savedState) {
+    hour = savedState.hour;
+    minute = savedState.minute;
+    second = savedState.second;
+    count = savedState.count;
+    isPaused = savedState.isPaused;
+    updateDisplay();
+    if (savedState.isRunning) {
+      startTimer();
+    }
+  }
+});
+
+// Function to run the stopwatch
+function stopWatch() {
+  if (!isPaused) {
+    count++;
+    if (count === 100) {
+      second++;
+      count = 0;
+    }
+    if (second === 60) {
+      minute++;
+      second = 0;
+    }
+    if (minute === 60) {
+      hour++;
+      minute = 0;
+    }
+    updateDisplay();
+    saveState(); // Save state periodically
+  }
+}
+
 function submitComment(resetTimerCallback) {
   var commentParent = document.getElementById("partial-new-comment-form-actions");
   if (commentParent) {
