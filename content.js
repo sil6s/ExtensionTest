@@ -67,7 +67,6 @@ function injectButtons() {
       e.preventDefault();
       e.stopPropagation();
       startTimer();
-      submitComment(); // Call submitComment function here
   });
 
   // Create Pause button
@@ -81,7 +80,6 @@ function injectButtons() {
       e.preventDefault();
       e.stopPropagation();
       pauseTimer();
-      submitComment(); // Call submitComment function here
   });
 
   // Append buttons to the additional buttons container
@@ -132,16 +130,26 @@ function startTimer() {
   const startBtn = document.getElementById('start');
   const pauseBtn = document.getElementById('pause');
   // Add null check to ensure buttons are available in the DOM
-  if (startBtn && pauseBtn && !timer) {
-    localStorage.setItem('startTime', new Date().getTime()); // Save the start time in localStorage
+  if (startBtn && pauseBtn) {
+    if (!isPaused) {
+      localStorage.setItem('startTime', new Date().getTime()); // Save the start time in localStorage
+    } else {
+      const pausedTime = parseInt(localStorage.getItem('pausedTime'), 10);
+      const currentTime = new Date().getTime();
+      const timeDifference = currentTime - pausedTime;
+      const startTime = parseInt(localStorage.getItem('startTime'), 10);
+      localStorage.setItem('startTime', startTime + timeDifference);
+    }
     timer = setInterval(stopWatch, 10); // Start the timer
     startBtn.style.display = 'none'; // Hide the start button
     pauseBtn.style.display = 'inline-block'; // Show the pause button
     isStarted = true; // Update the global flag
+    isPaused = false;
     console.log('Timer started');
     saveState(); // Save state when timer starts
   }
 }
+
 
 
 // Function to pause the timer
@@ -154,6 +162,7 @@ function pauseTimer() {
     timer = null; // Reset the timer variable
     isPaused = true; // Set the paused flag
     isStarted = false;
+    localStorage.setItem('pausedTime', new Date().getTime());
     pauseBtn.style.display = 'none'; // Hide the pause button
     startBtn.textContent = 'Resume'; // Change the start button text to "Resume"
     startBtn.style.display = 'inline-block'; // Show the start button
@@ -162,7 +171,7 @@ function pauseTimer() {
   }
 }
 
-// Function to stop the timer
+
 function stopTimer() {
   const startBtn = document.getElementById('start');
   // Add null check to ensure buttons are available in the DOM
@@ -173,11 +182,13 @@ function stopTimer() {
     isStarted = false; // Reset the started flag
     startBtn.textContent = 'Start'; // Reset the start button text
     startBtn.style.display = 'inline-block'; // Show the start button
+    const pauseBtn = document.getElementById('pause');
     pauseBtn.style.display = 'none'; // Hide the pause button
     console.log('Timer stopped');
     saveState(); // Save state when timer stops
   }
 }
+
 
 // Function to reset the timer
 function resetTimer() {
@@ -289,11 +300,13 @@ function submitComment(resetTimerCallback) {
 
       // Get the current time
       var currentTime = new Date().toLocaleTimeString();
+      var currentDate = new Date().toLocaleDateString();
+
 
       // Check if the timer is started or paused
       var commentMessage = '';
       if (isStarted === true) {
-        commentMessage = `## ITSC Project Management System:\n\n### User started work on issue at ${currentTime} on ( date here)`;
+        commentMessage = `## ITSC Project Management System:\n\n### User started work on issue at ${currentTime} on ${currentDate}`;
       }
       
       // Set the value of the comment field with the appropriate message
