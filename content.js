@@ -1,4 +1,7 @@
 // Function to inject buttons
+
+var additionalButtonsContainer = document.createElement('div');
+
 function injectButtons() {
   console.log("Script Injected");
 
@@ -19,7 +22,6 @@ function injectButtons() {
   parentDiv.appendChild(timerDisplay);
 
   // Container for additional buttons (Initially hidden)
-  var additionalButtonsContainer = document.createElement('div');
   additionalButtonsContainer.id = 'additionalButtons';
   additionalButtonsContainer.style.display = 'none'; // Initially hidden
 
@@ -33,7 +35,7 @@ function injectButtons() {
       e.preventDefault();
       e.stopPropagation();
       // Show additional buttons when PMS launch is clicked
-      additionalButtonsContainer.style.display = 'block';
+      additionalButtonsContainer.style.display = 'inline-block';
       // Hide the PMS launch button
       pmsLaunch.style.display = 'none';
       // Leave a comment with the specified text
@@ -47,6 +49,9 @@ function injectButtons() {
   timerButton.classList.add('btn', 'mx-2', 'btn-warning'); // Add the 'btn-warning' class
   timerButton.style.float = 'left'; // Set float left
   timerButton.addEventListener('click', function(e) {
+    pmsLaunch.style.display = 'inline-block';
+    additionalButtonsContainer.style.display = 'none';
+
       e.preventDefault();
       e.stopPropagation();
       resetTimer();
@@ -62,7 +67,6 @@ function injectButtons() {
       e.preventDefault();
       e.stopPropagation();
       startTimer();
-      submitComment(); // Call submitComment function here
   });
 
   // Create Pause button
@@ -76,7 +80,6 @@ function injectButtons() {
       e.preventDefault();
       e.stopPropagation();
       pauseTimer();
-      submitComment(); // Call submitComment function here
   });
 
   // Append buttons to the additional buttons container
@@ -95,7 +98,7 @@ injectButtons();
 // Rest of your timer functions and comment submission function...
 
 
-
+window.addEventListener('load', hideLaunchPMS);
 
 // Variable Declarations
 let startBtn = document.getElementById('start');
@@ -109,20 +112,44 @@ let timer; // Declare timer variable
 let isStarted = true;
 let isPaused = false; // Flag to track if the timer is paused
 
+function hideLaunchPMS() {
+  const pmsLaunch = document.getElementById('PMSLaunch');
+  const pmsButtonClicked = localStorage.getItem('pmsButtonClicked');
+
+  if (pmsLaunch && pmsButtonClicked) {
+    pmsLaunch.style.display = 'none'; // Hide button
+    additionalButtonsContainer.style.display = 'inline-block'; // Initially hidden
+
+    console.log('PMS Launch Button Hidden');
+  }
+}
+
+
+
 function startTimer() {
   const startBtn = document.getElementById('start');
   const pauseBtn = document.getElementById('pause');
   // Add null check to ensure buttons are available in the DOM
-  if (startBtn && pauseBtn && !timer) {
-    localStorage.setItem('startTime', new Date().getTime()); // Save the start time in localStorage
+  if (startBtn && pauseBtn) {
+    if (!isPaused) {
+      localStorage.setItem('startTime', new Date().getTime()); // Save the start time in localStorage
+    } else {
+      const pausedTime = parseInt(localStorage.getItem('pausedTime'), 10);
+      const currentTime = new Date().getTime();
+      const timeDifference = currentTime - pausedTime;
+      const startTime = parseInt(localStorage.getItem('startTime'), 10);
+      localStorage.setItem('startTime', startTime + timeDifference);
+    }
     timer = setInterval(stopWatch, 10); // Start the timer
     startBtn.style.display = 'none'; // Hide the start button
     pauseBtn.style.display = 'inline-block'; // Show the pause button
     isStarted = true; // Update the global flag
+    isPaused = false;
     console.log('Timer started');
     saveState(); // Save state when timer starts
   }
 }
+
 
 
 // Function to pause the timer
@@ -135,6 +162,7 @@ function pauseTimer() {
     timer = null; // Reset the timer variable
     isPaused = true; // Set the paused flag
     isStarted = false;
+    localStorage.setItem('pausedTime', new Date().getTime());
     pauseBtn.style.display = 'none'; // Hide the pause button
     startBtn.textContent = 'Resume'; // Change the start button text to "Resume"
     startBtn.style.display = 'inline-block'; // Show the start button
@@ -143,7 +171,7 @@ function pauseTimer() {
   }
 }
 
-// Function to stop the timer
+
 function stopTimer() {
   const startBtn = document.getElementById('start');
   // Add null check to ensure buttons are available in the DOM
@@ -154,11 +182,13 @@ function stopTimer() {
     isStarted = false; // Reset the started flag
     startBtn.textContent = 'Start'; // Reset the start button text
     startBtn.style.display = 'inline-block'; // Show the start button
+    const pauseBtn = document.getElementById('pause');
     pauseBtn.style.display = 'none'; // Hide the pause button
     console.log('Timer stopped');
     saveState(); // Save state when timer stops
   }
 }
+
 
 // Function to reset the timer
 function resetTimer() {
@@ -184,6 +214,7 @@ function resetTimer() {
     saveState(); // Save state when timer resets
   }
 }
+
 
 
 // Function to update the timer display
@@ -212,6 +243,10 @@ function saveState() {
 // Function to load the timer state from local storage
 window.addEventListener('load', () => {
   const savedState = JSON.parse(localStorage.getItem('stopwatchState'));
+
+  document.getElementById("new_comment_field").value = "";
+
+
   if (savedState) {
     hour = savedState.hour;
     minute = savedState.minute;
@@ -269,20 +304,15 @@ function submitComment(resetTimerCallback) {
 
       // Get the current time
       var currentTime = new Date().toLocaleTimeString();
+      var currentDate = new Date().toLocaleDateString();
+
 
       // Check if the timer is started or paused
       var commentMessage = '';
       if (isStarted === true) {
-        commentMessage = `ITSC PMS: User started work on issue at ${currentTime}`;
-      } 
-      else if (isPaused === true) {
-        commentMessage = `ITSC PMS: User paused work on issue at ${currentTime}`;
-      }
-      else if (isStopped === true) {
-        commentMessage = `ITSC PMS: User stopped work on issue at ${currentTime}`;
+        commentMessage = `## ITSC Project Management System:\n\n### User started work on issue at ${currentTime} on ${currentDate}`;
       }
       
-
       // Set the value of the comment field with the appropriate message
       if (commentMessage) {
         commentField.value = commentMessage;
@@ -294,7 +324,8 @@ function submitComment(resetTimerCallback) {
         e.preventDefault(); // Prevent the default form submission behavior
         console.log("Form submitted!");
         // Clear the comment field after submitting the form
-        commentField.value = "";
+        clearit;
+
 
         // Call the resetTimerCallback after the comment is submitted
         if (typeof resetTimerCallback === 'function') {
@@ -308,5 +339,11 @@ function submitComment(resetTimerCallback) {
     }
   } else {
     console.log("Comment parent element not found.");
+  }
+}
+function clearit() {
+  var commentField = document.getElementById("new_comment_field");
+  if (commentField) {
+    commentField.value = '';
   }
 }
