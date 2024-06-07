@@ -52,17 +52,7 @@
     margin-bottom: 5px;
 }
 
-.popup-content .start-button button {
-    background-color: green;
-}
 
-.popup-content .pause-button button {
-    background-color: orange;
-}
-
-.popup-content .stop-button button {
-    background-color: red;
-}
 
 .btn 
 {
@@ -76,6 +66,15 @@ margin-left:0px !important;
     color: white !important;
     background-color: orange !important;
 }
+
+.btn-reset {
+    color: white !important;
+}
+
+.btn-reset:hover {
+    background-color: red !important;
+}
+
 
 /* Increase specificity to override existing styles */
 .BtnGroup.d-flex.width-full .mx-2 {

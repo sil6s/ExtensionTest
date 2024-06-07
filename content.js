@@ -22,7 +22,8 @@ function injectButtons() {
   var timerButton = document.createElement('button');
   timerButton.id ='reset';
   timerButton.innerHTML = '↺'+ '&#9200;';
-  timerButton.classList.add('btn','mx-2');
+  timerButton.classList.add('btn', 'mx-2', 'btn-warning'); // Add the 'btn-warning' class
+
   timerButton.style.float = 'left'; // Set float left
   timerButton.addEventListener('click', function(e) {
       e.preventDefault();
@@ -58,25 +59,11 @@ function injectButtons() {
 
   });
 
-  // Create Stop button
-  var stopBtn = document.createElement('button');
-  stopBtn.id ='stop';
-  stopBtn.textContent = 'Stop';
-  stopBtn.classList.add('btn', 'btn-danger','mx-2');
-  stopBtn.style.float = 'left'; // Set float left
-  stopBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      stopTimer();
-      submitComment(); // Call submitComment function here
-
-  });
 
   // Append buttons to the parent div
   parentDiv.appendChild(timerButton);
   parentDiv.appendChild(startBtn);
   parentDiv.appendChild(pauseBtn);
-  parentDiv.appendChild(stopBtn);
 }
 
 // Call the function to inject buttons
@@ -84,7 +71,6 @@ injectButtons();
 
 // Variable Declarations
 let startBtn = document.getElementById('start');
-let stopBtn = document.getElementById('stop');
 let resetBtn = document.getElementById('reset');
 let pauseBtn = document.getElementById('pause');
 let hour = 0;
@@ -93,26 +79,29 @@ let second = 0;
 let count = 0;
 let timer; // Declare timer variable
 let isStarted = true;
-let isStopped = false;
 let isPaused = false; // Flag to track if the timer is paused
 
 // Function to start the timer
 function startTimer() {
-  if (!timer) {
+  const startBtn = document.getElementById('start');
+  const pauseBtn = document.getElementById('pause');
+  // Add null check to ensure buttons are available in the DOM
+  if (startBtn && pauseBtn && !timer) {
     timer = setInterval(stopWatch, 10); // Start the timer
     startBtn.style.display = 'none'; // Hide the start button
     pauseBtn.style.display = 'inline-block'; // Show the pause button
     isStarted = true; // Update the global flag
-    isStopped = false; // Update the global flag
     console.log('Timer started');
     saveState(); // Save state when timer starts
   }
 }
 
-
 // Function to pause the timer
 function pauseTimer() {
-  if (timer) {
+  const startBtn = document.getElementById('start');
+  const pauseBtn = document.getElementById('pause');
+  // Add null check to ensure buttons are available in the DOM
+  if (startBtn && pauseBtn && timer) {
     clearInterval(timer); // Stop the timer
     timer = null; // Reset the timer variable
     isPaused = true; // Set the paused flag
@@ -127,12 +116,13 @@ function pauseTimer() {
 
 // Function to stop the timer
 function stopTimer() {
-  if (timer) {
+  const startBtn = document.getElementById('start');
+  // Add null check to ensure buttons are available in the DOM
+  if (startBtn && timer) {
     clearInterval(timer); // Stop the timer
     timer = null; // Reset the timer variable
     isPaused = false; // Reset the paused flag
     isStarted = false; // Reset the started flag
-    isStopped = true;
     startBtn.textContent = 'Start'; // Reset the start button text
     startBtn.style.display = 'inline-block'; // Show the start button
     pauseBtn.style.display = 'none'; // Hide the pause button
@@ -141,28 +131,31 @@ function stopTimer() {
   }
 }
 
-
 // Function to reset the timer
 function resetTimer() {
-  if (timer) {
+  const startBtn = document.getElementById('start');
+  const pauseBtn = document.getElementById('pause');
+  // Add null check to ensure buttons are available in the DOM
+  if (startBtn && pauseBtn) {
     clearInterval(timer); // Stop the timer
     timer = null; // Reset the timer variable
-  }
-  isPaused = false; // Reset the paused flag
-  hour = 0;
-  minute = 0;
-  second = 0;
-  count = 0;
-  const timerDisplay = document.getElementById('timerDisplay');
-  if (timerDisplay) {
+    isPaused = false; // Reset the paused flag
+    hour = 0;
+    minute = 0;
+    second = 0;
+    count = 0;
+    const timerDisplay = document.getElementById('timerDisplay');
+    if (timerDisplay) {
       timerDisplay.innerHTML = '00:00:00';
+    }
+    startBtn.textContent = 'Start'; // Reset the start button text
+    startBtn.style.display = 'inline-block'; // Show the start button
+    pauseBtn.style.display = 'none'; // Hide the pause button
+    console.log('Timer reset');
+    saveState(); // Save state when timer resets
   }
-  startBtn.textContent = 'Start'; // Reset the start button text
-  startBtn.style.display = 'inline-block'; // Show the start button
-  pauseBtn.style.display = 'none'; // Hide the pause button
-  console.log('Timer reset');
-  saveState(); // Save state when timer resets
 }
+
 
 // Function to update the timer display
 function updateDisplay() {
