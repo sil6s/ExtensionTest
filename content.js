@@ -1,4 +1,7 @@
 // Function to inject buttons
+
+var additionalButtonsContainer = document.createElement('div');
+
 function injectButtons() {
   console.log("Script Injected");
 
@@ -19,7 +22,6 @@ function injectButtons() {
   parentDiv.appendChild(timerDisplay);
 
   // Container for additional buttons (Initially hidden)
-  var additionalButtonsContainer = document.createElement('div');
   additionalButtonsContainer.id = 'additionalButtons';
   additionalButtonsContainer.style.display = 'none'; // Initially hidden
 
@@ -33,7 +35,7 @@ function injectButtons() {
       e.preventDefault();
       e.stopPropagation();
       // Show additional buttons when PMS launch is clicked
-      additionalButtonsContainer.style.display = 'block';
+      additionalButtonsContainer.style.display = 'inline-block';
       // Hide the PMS launch button
       pmsLaunch.style.display = 'none';
       // Leave a comment with the specified text
@@ -47,6 +49,9 @@ function injectButtons() {
   timerButton.classList.add('btn', 'mx-2', 'btn-warning'); // Add the 'btn-warning' class
   timerButton.style.float = 'left'; // Set float left
   timerButton.addEventListener('click', function(e) {
+    pmsLaunch.style.display = 'inline-block';
+    additionalButtonsContainer.style.display = 'none';
+
       e.preventDefault();
       e.stopPropagation();
       resetTimer();
@@ -95,7 +100,7 @@ injectButtons();
 // Rest of your timer functions and comment submission function...
 
 
-
+window.addEventListener('load', hideLaunchPMS);
 
 // Variable Declarations
 let startBtn = document.getElementById('start');
@@ -108,6 +113,20 @@ let count = 0;
 let timer; // Declare timer variable
 let isStarted = true;
 let isPaused = false; // Flag to track if the timer is paused
+
+function hideLaunchPMS() {
+  const pmsLaunch = document.getElementById('PMSLaunch');
+  const pmsButtonClicked = localStorage.getItem('pmsButtonClicked');
+
+  if (pmsLaunch && pmsButtonClicked) {
+    pmsLaunch.style.display = 'none'; // Hide button
+    additionalButtonsContainer.style.display = 'inline-block'; // Initially hidden
+
+    console.log('PMS Launch Button Hidden');
+  }
+}
+
+
 
 function startTimer() {
   const startBtn = document.getElementById('start');
@@ -184,6 +203,7 @@ function resetTimer() {
     saveState(); // Save state when timer resets
   }
 }
+
 
 
 // Function to update the timer display
@@ -273,16 +293,9 @@ function submitComment(resetTimerCallback) {
       // Check if the timer is started or paused
       var commentMessage = '';
       if (isStarted === true) {
-        commentMessage = `ITSC PMS: User started work on issue at ${currentTime}`;
-      } 
-      else if (isPaused === true) {
-        commentMessage = `ITSC PMS: User paused work on issue at ${currentTime}`;
-      }
-      else if (isStopped === true) {
-        commentMessage = `ITSC PMS: User stopped work on issue at ${currentTime}`;
+        commentMessage = `## ITSC Project Management System:\n\n### User started work on issue at ${currentTime} on ( date here)`;
       }
       
-
       // Set the value of the comment field with the appropriate message
       if (commentMessage) {
         commentField.value = commentMessage;
