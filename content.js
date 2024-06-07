@@ -243,6 +243,10 @@ function saveState() {
 // Function to load the timer state from local storage
 window.addEventListener('load', () => {
   const savedState = JSON.parse(localStorage.getItem('stopwatchState'));
+
+  document.getElementById("new_comment_field").value = "";
+
+
   if (savedState) {
     hour = savedState.hour;
     minute = savedState.minute;
@@ -320,7 +324,8 @@ function submitComment(resetTimerCallback) {
         e.preventDefault(); // Prevent the default form submission behavior
         console.log("Form submitted!");
         // Clear the comment field after submitting the form
-        commentField.value = "";
+        clearit;
+
 
         // Call the resetTimerCallback after the comment is submitted
         if (typeof resetTimerCallback === 'function') {
@@ -334,5 +339,11 @@ function submitComment(resetTimerCallback) {
     }
   } else {
     console.log("Comment parent element not found.");
+  }
+}
+function clearit() {
+  var commentField = document.getElementById("new_comment_field");
+  if (commentField) {
+    commentField.value = '';
   }
 }
