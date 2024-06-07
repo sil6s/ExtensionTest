@@ -18,12 +18,33 @@ function injectButtons() {
   // Append Timer display to the parent div
   parentDiv.appendChild(timerDisplay);
 
+  // Container for additional buttons (Initially hidden)
+  var additionalButtonsContainer = document.createElement('div');
+  additionalButtonsContainer.id = 'additionalButtons';
+  additionalButtonsContainer.style.display = 'none'; // Initially hidden
+
+  // ITSC PMS LAUNCH
+  var pmsLaunch = document.createElement('button');
+  pmsLaunch.id ='PMSLaunch';
+  pmsLaunch.innerHTML = 'Start ITSC Project Management';
+  pmsLaunch.classList.add('btn', 'mx-2'); // Add the 'btn-warning' class
+  pmsLaunch.style.float = 'left'; // Set float left
+  pmsLaunch.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      // Show additional buttons when PMS launch is clicked
+      additionalButtonsContainer.style.display = 'block';
+      // Hide the PMS launch button
+      pmsLaunch.style.display = 'none';
+      // Leave a comment with the specified text
+      submitComment("### ITSC Project Management Timecard");
+  });
+
   // Create Restart/Timer button
   var timerButton = document.createElement('button');
   timerButton.id ='reset';
   timerButton.innerHTML = '↺'+ '&#9200;';
   timerButton.classList.add('btn', 'mx-2', 'btn-warning'); // Add the 'btn-warning' class
-
   timerButton.style.float = 'left'; // Set float left
   timerButton.addEventListener('click', function(e) {
       e.preventDefault();
@@ -56,18 +77,25 @@ function injectButtons() {
       e.stopPropagation();
       pauseTimer();
       submitComment(); // Call submitComment function here
-
   });
 
+  // Append buttons to the additional buttons container
+  additionalButtonsContainer.appendChild(timerButton);
+  additionalButtonsContainer.appendChild(startBtn);
+  additionalButtonsContainer.appendChild(pauseBtn);
 
-  // Append buttons to the parent div
-  parentDiv.appendChild(timerButton);
-  parentDiv.appendChild(startBtn);
-  parentDiv.appendChild(pauseBtn);
+  // Append PMS launch button and additional buttons container to the parent div
+  parentDiv.appendChild(pmsLaunch);
+  parentDiv.appendChild(additionalButtonsContainer);
 }
 
 // Call the function to inject buttons
 injectButtons();
+
+// Rest of your timer functions and comment submission function...
+
+
+
 
 // Variable Declarations
 let startBtn = document.getElementById('start');
@@ -81,12 +109,12 @@ let timer; // Declare timer variable
 let isStarted = true;
 let isPaused = false; // Flag to track if the timer is paused
 
-// Function to start the timer
 function startTimer() {
   const startBtn = document.getElementById('start');
   const pauseBtn = document.getElementById('pause');
   // Add null check to ensure buttons are available in the DOM
   if (startBtn && pauseBtn && !timer) {
+    localStorage.setItem('startTime', new Date().getTime()); // Save the start time in localStorage
     timer = setInterval(stopWatch, 10); // Start the timer
     startBtn.style.display = 'none'; // Hide the start button
     pauseBtn.style.display = 'inline-block'; // Show the pause button
@@ -95,6 +123,7 @@ function startTimer() {
     saveState(); // Save state when timer starts
   }
 }
+
 
 // Function to pause the timer
 function pauseTimer() {
@@ -211,26 +240,22 @@ window.addEventListener('load', () => {
   }
 });
 
-// Function to run the stopwatch
 function stopWatch() {
   if (!isPaused) {
-    count++;
-    if (count === 100) {
-      second++;
-      count = 0;
-    }
-    if (second === 60) {
-      minute++;
-      second = 0;
-    }
-    if (minute === 60) {
-      hour++;
-      minute = 0;
-    }
+    const startTime = parseInt(localStorage.getItem('startTime'), 10); // Get the start time from localStorage
+    const now = new Date().getTime(); // Get the current time
+    const elapsedTime = now - startTime; // Calculate elapsed time
+    hour = Math.floor(elapsedTime / 3600000); // Convert milliseconds to hours
+    minute = Math.floor((elapsedTime % 3600000) / 60000); // Convert remaining milliseconds to minutes
+    second = Math.floor((elapsedTime % 60000) / 1000); // Convert remaining milliseconds to seconds
+    count = Math.floor((elapsedTime % 1000) / 10); // Convert remaining milliseconds to centiseconds
     updateDisplay();
     saveState(); // Save state periodically
   }
 }
+
+
+
 
 function submitComment(resetTimerCallback) {
   var commentParent = document.getElementById("partial-new-comment-form-actions");
