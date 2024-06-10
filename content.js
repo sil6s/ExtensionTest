@@ -427,7 +427,7 @@ function handleIssueAction(action) {
     }
   }
 
-  // Execute the function to cli ck the dropdown button in the specific comment
+  // Execute the function to click the dropdown button in the specific comment
   clickDropdownButtonInComment();
 }
 
