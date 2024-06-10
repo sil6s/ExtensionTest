@@ -405,7 +405,7 @@ function handleIssueAction(action) {
       console.log('Edit button clicked');
 
       // Target the textarea by its name attribute and append the text based on the action
-      var textarea = document.querySelector('textarea[name="issue_comment[body]"]');
+      var textarea = document.querySelector('textarea[name="issue[body]"]');
       if (textarea) {
         var message = '';
         if (action === 'start') {
@@ -420,7 +420,7 @@ function handleIssueAction(action) {
         textarea.value += `\n${message} at ${new Date().toLocaleString()}`;
       } else {
         console.log('Textarea element not found');
-      }
+      }      
 
       // Check if the submitEditButton is identified
       var commentBlock = document.getElementsByClassName("js-comment-update")[0];
