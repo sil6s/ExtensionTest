@@ -1,0 +1,71 @@
+// Function to handle issue actions
+function handleIssueAction(action) {
+  // Function to click the dropdown button within the specific comment
+  function clickDropdownButtonInComment() {
+    // Locate all comments
+    var comments = document.querySelectorAll('.comment-body');
+
+    // Iterate through each comment to find the one with the specific text
+    comments.forEach(function(comment) {
+      if (comment.textContent.includes('ITSC Project Management System:')) {
+        // Find the closest dropdown button within the specific comment
+        var dropdownButton = comment.closest('.timeline-comment').querySelector('summary.timeline-comment-action.Link--secondary.Button--link.Button--medium.Button');
+
+        if (dropdownButton) {
+          dropdownButton.click();
+          console.log('Dropdown button clicked');
+
+          // Wait a short time for the dropdown to become visible, then click the edit button
+          setTimeout(function() {
+            clickEditButton(comment.closest('.timeline-comment'));
+          }, 500); // Adjust timeout as necessary
+        } else {
+          console.log('Dropdown button not found');
+        }
+      }
+    });
+  }
+
+  // Function to click the edit button within the specific comment
+  function clickEditButton(commentElement) {
+    var editButton = commentElement.querySelector('.dropdown-item.btn-link.js-comment-edit-button');
+
+    if (editButton) {
+      editButton.click();
+      console.log('Edit button clicked');
+
+      // Target the textarea by its name attribute and append the text based on the action
+      var textarea = document.querySelector('textarea[name="issue_comment[body]"]');
+      if (textarea) {
+        var message = '';
+        if (action === 'start') {
+          message = 'User started issue';
+        } else if (action === 'pause') {
+          message = 'User paused issue';
+        } else if (action === 'reset') {
+          message = 'User reset issue';
+        }
+        textarea.value += `\n${message} at ${new Date().toLocaleString()}`;
+      } else {
+        console.log('Textarea element not found');
+      }
+
+    } else {
+      console.log('Edit button not found');
+    }
+  }
+
+  // Execute the function to click the dropdown button in the specific comment
+  clickDropdownButtonInComment();
+}
+
+// Event listener for the buttons with IDs start, pause, reset
+document.getElementById('start').addEventListener('click', function() {
+  handleIssueAction('start');
+});
+document.getElementById('pause').addEventListener('click', function() {
+  handleIssueAction('pause');
+});
+document.getElementById('reset').addEventListener('click', function() {
+  handleIssueAction('reset');
+});

@@ -1,5 +1,6 @@
 // Function to inject buttons
 
+
 var additionalButtonsContainer = document.createElement('div');
 
 function injectButtons() {
@@ -25,13 +26,13 @@ function injectButtons() {
   additionalButtonsContainer.id = 'additionalButtons';
   additionalButtonsContainer.style.display = 'none'; // Initially hidden
 
-  // ITSC PMS LAUNCH
-  var pmsLaunch = document.createElement('button');
-  pmsLaunch.id ='PMSLaunch';
-  pmsLaunch.innerHTML = 'Start ITSC Project Management';
-  pmsLaunch.classList.add('btn', 'mx-2'); // Add the 'btn-warning' class
-  pmsLaunch.style.float = 'left'; // Set float left
-  pmsLaunch.addEventListener('click', function(e) {
+    // ITSC PMS LAUNCH
+    var pmsLaunch = document.createElement('button');
+    pmsLaunch.id = 'PMSLaunch';
+    pmsLaunch.innerHTML = 'Start ITSC Project Management';
+    pmsLaunch.classList.add('btn', 'mx-2'); // Add the 'btn-warning' class
+    pmsLaunch.style.float = 'left'; // Set float left
+    pmsLaunch.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
       // Show additional buttons when PMS launch is clicked
@@ -40,7 +41,12 @@ function injectButtons() {
       pmsLaunch.style.display = 'none';
       // Leave a comment with the specified text
       submitComment("### ITSC Project Management Timecard");
-  });
+    });
+  
+    // Check if a comment containing "ITSC Project Management System" is found
+    if (!isITSCCommentFound()) {
+      parentDiv.appendChild(pmsLaunch);
+    }
 
   // Create Restart/Timer button
   var timerButton = document.createElement('button');
@@ -290,60 +296,150 @@ function stopWatch() {
 }
 
 
+// Function to check if a comment containing "ITSC Project Management System" is found
+function isITSCCommentFound() {
+  var comments = document.querySelectorAll('.comment-body');
+  for (var i = 0; i < comments.length; i++) {
+    if (comments[i].textContent.includes('ITSC Project Management System')) {
+      return true;
+    }
+  }
+  return false;
+}
 
-
+// Function to submit a comment
 function submitComment(resetTimerCallback) {
-  var commentParent = document.getElementById("partial-new-comment-form-actions");
-  if (commentParent) {
-    var commentForm = commentParent.closest('form');
-    var textArea = document.getElementById("new_comment_field");
-    var commentField = document.getElementById("new_comment_field");
+  // Check if a comment containing "ITSC Project Management System" is found
+  if (!isITSCCommentFound()) {
+    var commentParent = document.getElementById("partial-new-comment-form-actions");
+    if (commentParent) {
+      var commentForm = commentParent.closest('form');
+      var textArea = document.getElementById("new_comment_field");
+      var commentField = document.getElementById("new_comment_field");
 
-    if (commentForm && commentField) {
-      console.log("Comment form and field found");
+      if (commentForm && commentField) {
+        console.log("Comment form and field found");
 
-      // Get the current time
-      var currentTime = new Date().toLocaleTimeString();
-      var currentDate = new Date().toLocaleDateString();
+        // Get the current time
+        var currentTime = new Date().toLocaleTimeString();
+        var currentDate = new Date().toLocaleDateString();
 
-
-      // Check if the timer is started or paused
-      var commentMessage = '';
-      if (isStarted === true) {
-        commentMessage = `## ITSC Project Management System:\n\n### User started work on issue at ${currentTime} on ${currentDate}`;
-      }
-      
-      // Set the value of the comment field with the appropriate message
-      if (commentMessage) {
-        commentField.value = commentMessage;
-        console.log("Comment field value set");
-      }
-
-      // Submit the form programmatically
-      commentForm.addEventListener('submit', function(e) {
-        e.preventDefault(); // Prevent the default form submission behavior
-        console.log("Form submitted!");
-        // Clear the comment field after submitting the form
-        clearit;
-
-
-        // Call the resetTimerCallback after the comment is submitted
-        if (typeof resetTimerCallback === 'function') {
-          resetTimerCallback();
+        // Check if the timer is started or paused
+        var commentMessage = '';
+        if (isStarted === true) {
+          commentMessage = `## ITSC Project Management System:\n\n### Initiated PMS at ${currentTime} on ${currentDate}`;
         }
-      }, { once: true });
 
-      commentForm.submit();
+        // Set the value of the comment field with the appropriate message
+        if (commentMessage) {
+          commentField.value = commentMessage;
+          console.log("Comment field value set");
+        }
+
+        // Submit the form programmatically
+        commentForm.addEventListener('submit', function(e) {
+          e.preventDefault(); // Prevent the default form submission behavior
+          console.log("Form submitted!");
+          // Clear the comment field after submitting the form
+          clearit();
+
+          // Call the resetTimerCallback after the comment is submitted
+          if (typeof resetTimerCallback === 'function') {
+            resetTimerCallback();
+          }
+        }, { once: true });
+
+        commentForm.submit();
+      } else {
+        console.log("Comment form or comment field not found.");
+      }
     } else {
-      console.log("Comment form or comment field not found.");
+      console.log("Comment parent element not found.");
     }
   } else {
-    console.log("Comment parent element not found.");
+    console.log("ITSC Project Management System comment found. Not submitting new comment.");
   }
 }
+
+// Function to clear the comment field
 function clearit() {
   var commentField = document.getElementById("new_comment_field");
   if (commentField) {
     commentField.value = '';
   }
 }
+
+// Function to click the dropdown button
+// Function to handle issue actions
+function handleIssueAction(action) {
+  // Function to click the dropdown button within the specific comment
+  function clickDropdownButtonInComment() {
+    // Locate all comments
+    var comments = document.querySelectorAll('.comment-body');
+
+    // Iterate through each comment to find the one with the specific text
+    comments.forEach(function(comment) {
+      if (comment.textContent.includes('ITSC Project Management System:')) {
+        // Find the closest dropdown button within the specific comment
+        var dropdownButton = comment.closest('.timeline-comment').querySelector('summary.timeline-comment-action.Link--secondary.Button--link.Button--medium.Button');
+
+        if (dropdownButton) {
+          dropdownButton.click();
+          console.log('Dropdown button clicked');
+
+          // Wait a short time for the dropdown to become visible, then click the edit button
+          setTimeout(function() {
+            clickEditButton(comment.closest('.timeline-comment'));
+          }, 500); // Adjust timeout as necessary
+        } else {
+          console.log('Dropdown button not found');
+        }
+      }
+    });
+  }
+
+  // Function to click the edit button within the specific comment
+  function clickEditButton(commentElement) {
+    var editButton = commentElement.querySelector('.dropdown-item.btn-link.js-comment-edit-button');
+
+    if (editButton) {
+      editButton.click();
+      console.log('Edit button clicked');
+
+      // Target the textarea by its name attribute and append the text based on the action
+      var textarea = document.querySelector('textarea[name="issue_comment[body]"]');
+      if (textarea) {
+        var message = '';
+        if (action === 'start') {
+          message = 'User started issue';
+        } else if (action === 'pause') {
+          message = 'User paused issue';
+        } else if (action === 'reset') {
+          message = 'User reset issue';
+        }
+        textarea.value += `\n${message} at ${new Date().toLocaleString()}`;
+      } else {
+        console.log('Textarea element not found');
+      }
+
+    } else {
+      console.log('Edit button not found');
+    }
+  }
+
+  // Execute the function to cli ck the dropdown button in the specific comment
+  clickDropdownButtonInComment();
+}
+
+// Event listener for the buttons with IDs start, pause, reset
+document.getElementById('start').addEventListener('click', function() {
+  handleIssueAction('start');
+});
+document.getElementById('pause').addEventListener('click', function() {
+  handleIssueAction('pause');
+});
+document.getElementById('reset').addEventListener('click', function() {
+  handleIssueAction('reset');
+});
+
+
