@@ -368,9 +368,7 @@ function clearit() {
     commentField.value = '';
   }
 }
-
 // Function to click the dropdown button
-// Function to handle issue actions
 function handleIssueAction(action) {
   // Function to click the dropdown button within the specific comment
   function clickDropdownButtonInComment() {
@@ -416,10 +414,26 @@ function handleIssueAction(action) {
           message = 'User paused issue';
         } else if (action === 'reset') {
           message = 'User reset issue';
+        } else if (action === 'update') { // Add handling for 'update' action
+          message = 'User updated comment';
         }
         textarea.value += `\n${message} at ${new Date().toLocaleString()}`;
       } else {
         console.log('Textarea element not found');
+      }
+
+      // Check if the submitEditButton is identified
+      var commentBlock = document.getElementsByClassName("js-comment-update")[0];
+      console.log(commentBlock.id);
+      var submitEditButton = commentBlock.getElementsByClassName("Button--primary Button--medium Button")[0];
+      console.log(submitEditButton.textContent);
+
+      // Check if the submitEditButton is found and clicked
+      if (submitEditButton) {
+        submitEditButton.click();
+        console.log('Submit edit button clicked');
+      } else {
+        console.log('Submit edit button not found.');
       }
 
     } else {
@@ -427,7 +441,7 @@ function handleIssueAction(action) {
     }
   }
 
-  // Execute the function to cli ck the dropdown button in the specific comment
+  // Execute the function to click the dropdown button in the specific comment
   clickDropdownButtonInComment();
 }
 
@@ -441,5 +455,3 @@ document.getElementById('pause').addEventListener('click', function() {
 document.getElementById('reset').addEventListener('click', function() {
   handleIssueAction('reset');
 });
-
-
