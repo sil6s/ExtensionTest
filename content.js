@@ -304,6 +304,7 @@ function isITSCCommentFound() {
   }
   return false;
 }
+
 // Function to click the dropdown button, then edit, and submit
 function handleIssueAction(action) {
   // Find the dropdown button
@@ -323,9 +324,21 @@ function handleIssueAction(action) {
               editButton.click();
               console.log('Edit button clicked');
 
-              // Target the textarea by its name attribute and append the text based on the action
+              // Target the textarea by its name attribute
               var textarea = document.querySelector('textarea[name="issue[body]"]');
               if (textarea) {
+                  // Get the current time and date
+                  var currentTime = new Date().toLocaleTimeString();
+                  var currentDate = new Date().toLocaleDateString();
+                  
+                  // Check if the title "##ITSC Project Management:" exists
+                  var title = "##ITSC Project Management:";
+                  if (!textarea.value.includes(title)) {
+                      textarea.value = `${title}\n###User initiated issue at ${currentTime}, ${currentDate}:\n` + textarea.value;
+                      console.log('Title added');
+                  }
+
+                  // Define the message based on the action
                   var message = '';
                   if (action === 'start') {
                       message = 'User started issue';
