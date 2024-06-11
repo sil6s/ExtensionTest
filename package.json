@@ -1,0 +1,14 @@
+{
+    "name": "ITSC-PMS",
+    "version": "1.0.0",
+    "main": "content.js",
+    "license": "MIT",
+    "scripts": {
+        "start": "nodemon content.js"
+    },
+    "dependencies": {
+        "express":"^4.19.2",
+        "mysql2": "^3.10.0",
+        "nodemon": "^2.0.22"
+    }
+}
