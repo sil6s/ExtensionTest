@@ -1,4 +1,16 @@
-generator client {
-    provider = "prisma-client-js"
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
-datasource db {}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Timer {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      String
+  startTime DateTime
+  endTime   DateTime?
+  duration  Int
+}
