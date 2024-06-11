@@ -370,88 +370,108 @@ function clearit() {
 }
 // Function to click the dropdown button
 function handleIssueAction(action) {
-  // Function to click the dropdown button within the specific comment
-  function clickDropdownButtonInComment() {
-    // Locate all comments
-    var comments = document.querySelectorAll('.comment-body');
+    // Function to click the dropdown button in the issue description
+    function clickDropdownButtonInDescription() {
+        // Locate the element with the specified class
+        var commentHeader = document.querySelector('.timeline-comment-header.clearfix.d-flex');
 
-    // Iterate through each comment to find the one with the specific text
-    comments.forEach(function(comment) {
-      if (comment.textContent.includes('ITSC Project Management System:')) {
-        // Find the closest dropdown button within the specific comment
-        var dropdownButton = comment.closest('.timeline-comment').querySelector('summary.timeline-comment-action.Link--secondary.Button--link.Button--medium.Button');
+        if (commentHeader) {
+            // Find the first button within the comment header
+            var dropdownButton = commentHeader.querySelector('summary.timeline-comment-action.Button');
 
-        if (dropdownButton) {
-          dropdownButton.click();
-          console.log('Dropdown button clicked');
+            if (dropdownButton) {
+                dropdownButton.click();
+                console.log('Dropdown button clicked in issue description');
 
-          // Wait a short time for the dropdown to become visible, then click the edit button
-          setTimeout(function() {
-            clickEditButton(comment.closest('.timeline-comment'));
-          }, 500); // Adjust timeout as necessary
+                // Wait a short time for the dropdown to become visible, then click the edit button
+                setTimeout(function() {
+                    clickEditButton(commentHeader);
+                }, 500); // Adjust timeout as necessary
+            } else {
+                console.log('Dropdown button not found in issue description');
+            }
         } else {
-          console.log('Dropdown button not found');
+            console.log('Comment header not found');
         }
-      }
-    });
-  }
-
-  // Function to click the edit button within the specific comment
-  function clickEditButton(commentElement) {
-    var editButton = commentElement.querySelector('.dropdown-item.btn-link.js-comment-edit-button');
-
-    if (editButton) {
-      editButton.click();
-      console.log('Edit button clicked');
-
-      // Target the textarea by its name attribute and append the text based on the action
-      var textarea = document.querySelector('textarea[name="issue[body]"]');
-      if (textarea) {
-        var message = '';
-        if (action === 'start') {
-          message = 'User started issue';
-        } else if (action === 'pause') {
-          message = 'User paused issue';
-        } else if (action === 'reset') {
-          message = 'User reset issue';
-        } else if (action === 'update') { // Add handling for 'update' action
-          message = 'User updated comment';
-        }
-        textarea.value += `\n${message} at ${new Date().toLocaleString()}`;
-      } else {
-        console.log('Textarea element not found');
-      }      
-
-      // Check if the submitEditButton is identified
-      var commentBlock = document.getElementsByClassName("js-comment-update")[0];
-      console.log(commentBlock.id);
-      var submitEditButton = commentBlock.getElementsByClassName("Button--primary Button--medium Button")[0];
-      console.log(submitEditButton.textContent);
-
-      // Check if the submitEditButton is found and clicked
-      if (submitEditButton) {
-        submitEditButton.click();
-        console.log('Submit edit button clicked');
-      } else {
-        console.log('Submit edit button not found.');
-      }
-
-    } else {
-      console.log('Edit button not found');
     }
-  }
 
-  // Execute the function to click the dropdown button in the specific comment
-  clickDropdownButtonInComment();
+    // Function to click the edit button within the issue description
+    function clickEditButton(commentElement) {
+        var editButton = commentElement.querySelector('.dropdown-item.btn-link.js-comment-edit-button');
+
+        if (editButton) {
+            editButton.click();
+            console.log('Edit button clicked in issue description');
+
+            // Target the textarea by its name attribute and check/add the text based on the action
+            var textarea = document.querySelector('textarea[name="issue[body]"]');
+            if (textarea) {
+                var commentText = textarea.value;
+                var currentTime = new Date().toLocaleTimeString();
+                var currentDate = new Date().toLocaleDateString();
+
+                // Ensure there is a separator for the PMS title and actions
+                if (!commentText.includes("## ITSC Project Management System:")) {
+                    var initMessage = `## ITSC Project Management System:\n\nUser initialized issue at ${currentTime} on ${currentDate}\n-----------`;
+                    commentText += `\n\n${initMessage}`;
+                }
+
+                // Append the appropriate message
+                var message = '';
+                if (action === 'start') {
+                    message = `User started issue at ${currentTime} on ${currentDate}`;
+                } else if (action === 'pause') {
+                    message = `User paused issue at ${currentTime} on ${currentDate}`;
+                } else if (action === 'reset') {
+                    message = `User reset issue at ${currentTime} on ${currentDate}`;
+                } else if (action === 'init') {
+                    message = `User initialized issue at ${currentTime} on ${currentDate}`;
+                }
+
+                if (message) {
+                    commentText += `\n${message}`;
+                }
+
+                textarea.value = commentText;
+            } else {
+                console.log('Textarea element not found');
+            }
+
+            // Check if the submitEditButton is identified
+            var commentBlock = document.querySelector(".js-comment-update");
+            if (commentBlock) {
+                var submitEditButton = commentBlock.querySelector(".Button--primary.Button--medium.Button");
+                if (submitEditButton) {
+                    submitEditButton.click();
+                    console.log('Submit edit button clicked');
+                } else {
+                    console.log('Submit edit button not found.');
+                }
+            } else {
+                console.log('Comment block not found.');
+            }
+
+        } else {
+            console.log('Edit button not found in issue description');
+        }
+    }
+
+    // Execute the function to click the dropdown button in the issue description
+    clickDropdownButtonInDescription();
 }
 
 // Event listener for the buttons with IDs start, pause, reset
 document.getElementById('start').addEventListener('click', function() {
-  handleIssueAction('start');
+    handleIssueAction('start');
 });
 document.getElementById('pause').addEventListener('click', function() {
-  handleIssueAction('pause');
+    handleIssueAction('pause');
 });
 document.getElementById('reset').addEventListener('click', function() {
-  handleIssueAction('reset');
+    handleIssueAction('reset');
+});
+
+// Event listener for initialization
+document.addEventListener('DOMContentLoaded', function() {
+    handleIssueAction('init');
 });
