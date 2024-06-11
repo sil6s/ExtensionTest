@@ -25,26 +25,26 @@ function injectButtons() {
   additionalButtonsContainer.id = 'additionalButtons';
   additionalButtonsContainer.style.display = 'none'; // Initially hidden
 
-    // ITSC PMS LAUNCH
-    var pmsLaunch = document.createElement('button');
-    pmsLaunch.id = 'PMSLaunch';
-    pmsLaunch.innerHTML = 'Start ITSC Project Management';
-    pmsLaunch.classList.add('btn', 'mx-2'); // Add the 'btn-warning' class
-    pmsLaunch.style.float = 'left'; // Set float left
-    pmsLaunch.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      // Show additional buttons when PMS launch is clicked
-      additionalButtonsContainer.style.display = 'inline-block';
-      // Hide the PMS launch button
-      pmsLaunch.style.display = 'none';
-      // Leave a comment with the specified text
-    });
-  
-    // Check if a comment containing "ITSC Project Management System" is found
-    if (!isITSCCommentFound()) {
-      parentDiv.appendChild(pmsLaunch);
-    }
+  // ITSC PMS LAUNCH
+  var pmsLaunch = document.createElement('button');
+  pmsLaunch.id = 'PMSLaunch';
+  pmsLaunch.innerHTML = 'Start ITSC Project Management';
+  pmsLaunch.classList.add('btn', 'mx-2'); // Add the 'btn-warning' class
+  pmsLaunch.style.float = 'left'; // Set float left
+  pmsLaunch.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    // Show additional buttons when PMS launch is clicked
+    additionalButtonsContainer.style.display = 'inline-block';
+    // Hide the PMS launch button
+    pmsLaunch.style.display = 'none';
+    // Leave a comment with the specified text
+  });
+
+  // Check if a comment containing "ITSC Project Management System" is found
+  if (!isITSCCommentFound()) {
+    parentDiv.appendChild(pmsLaunch);
+  }
 
   // Create Restart/Timer button
   var timerButton = document.createElement('button');
@@ -56,9 +56,9 @@ function injectButtons() {
     pmsLaunch.style.display = 'inline-block';
     additionalButtonsContainer.style.display = 'none';
 
-      e.preventDefault();
-      e.stopPropagation();
-      resetTimer();
+    e.preventDefault();
+    e.stopPropagation();
+    resetTimer();
   });
 
   // Create Start button
@@ -68,9 +68,9 @@ function injectButtons() {
   startBtn.classList.add('btn', 'btn-primary','mx-2');
   startBtn.style.float = 'left'; // Set float left
   startBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      startTimer();
+    e.preventDefault();
+    e.stopPropagation();
+    startTimer();
   });
 
   // Create Pause button
@@ -81,9 +81,9 @@ function injectButtons() {
   pauseBtn.style.float = 'left'; // Set float left
   pauseBtn.style.display = 'none'; // Initially hide the pause button
   pauseBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      pauseTimer();
+    e.preventDefault();
+    e.stopPropagation();
+    pauseTimer();
   });
 
   // Append buttons to the additional buttons container
@@ -101,7 +101,6 @@ injectButtons();
 
 // Rest of your timer functions and comment submission function...
 
-
 window.addEventListener('load', hideLaunchPMS);
 
 // Variable Declarations
@@ -115,6 +114,7 @@ let count = 0;
 let timer; // Declare timer variable
 let isStarted = true;
 let isPaused = false; // Flag to track if the timer is paused
+let intervals = []; // Array to store each interval duration
 
 function hideLaunchPMS() {
   const pmsLaunch = document.getElementById('PMSLaunch');
@@ -127,8 +127,6 @@ function hideLaunchPMS() {
     console.log('PMS Launch Button Hidden');
   }
 }
-
-
 
 function startTimer() {
   const startBtn = document.getElementById('start');
@@ -154,9 +152,6 @@ function startTimer() {
   }
 }
 
-
-
-// Function to pause the timer
 function pauseTimer() {
   const startBtn = document.getElementById('start');
   const pauseBtn = document.getElementById('pause');
@@ -166,7 +161,11 @@ function pauseTimer() {
     timer = null; // Reset the timer variable
     isPaused = true; // Set the paused flag
     isStarted = false;
-    localStorage.setItem('pausedTime', new Date().getTime());
+    const pausedTime = new Date().getTime();
+    const startTime = parseInt(localStorage.getItem('startTime'), 10);
+    const sessionTime = pausedTime - startTime; // Calculate the session duration
+    intervals.push(sessionTime); // Store the session duration
+    localStorage.setItem('pausedTime', pausedTime);
     pauseBtn.style.display = 'none'; // Hide the pause button
     startBtn.textContent = 'Resume'; // Change the start button text to "Resume"
     startBtn.style.display = 'inline-block'; // Show the start button
@@ -188,6 +187,7 @@ function resetTimer() {
     minute = 0;
     second = 0;
     count = 0;
+    intervals = []; // Clear intervals array
     const timerDisplay = document.getElementById('timerDisplay');
     if (timerDisplay) {
       timerDisplay.innerHTML = '00:00:00';
@@ -199,8 +199,6 @@ function resetTimer() {
     saveState(); // Save state when timer resets
   }
 }
-
-
 
 // Function to update the timer display
 function updateDisplay() {
@@ -218,7 +216,7 @@ function saveState() {
     second,
     count,
     isPaused,
-    isRunning:!!timer,
+    isRunning: !!timer,
     startTime: new Date().getTime() // Save the current time in milliseconds
   };
   localStorage.setItem('stopwatchState', JSON.stringify(state));
@@ -229,7 +227,6 @@ window.addEventListener('load', () => {
   const savedState = JSON.parse(localStorage.getItem('stopwatchState'));
 
   document.getElementById("new_comment_field").value = "";
-
 
   if (savedState) {
     hour = savedState.hour;
@@ -273,15 +270,44 @@ function stopWatch() {
   }
 }
 
+
+
 // Function to check if a comment containing "ITSC Project Management System" is found
 function isITSCCommentFound() {
   var comments = document.querySelectorAll('.comment-body');
   for (var i = 0; i < comments.length; i++) {
-      if (comments[i].textContent.includes('ITSC Project Management System')) {
-          return true;
-      }
+    if (comments[i].textContent.includes('ITSC Project Management System')) {
+      return true;
+    }
   }
   return false;
+}
+
+// Function to get the total time worked
+function getTotalTimeWorked() {
+  const intervals = JSON.parse(localStorage.getItem('intervals')) || [];
+  return intervals.reduce((total, interval) => total + interval, 0);
+}
+// Function to calculate the total worked time
+function getTotalWorkedTime() {
+  const totalMilliseconds = intervals.reduce((acc, interval) => acc + interval, 0);
+  const totalSeconds = Math.floor(totalMilliseconds / 1000);
+  const totalMinutes = Math.floor(totalSeconds / 60);
+  const totalHours = Math.floor(totalMinutes / 60);
+  const remainingMinutes = totalMinutes % 60;
+  const remainingSeconds = totalSeconds % 60;
+  
+  return {
+    hours: totalHours,
+    minutes: remainingMinutes,
+    seconds: remainingSeconds
+  };
+}
+
+// Format the total worked time
+function formatTotalWorkedTime() {
+  const { hours, minutes, seconds } = getTotalWorkedTime();
+  return `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
 }
 
 // Function to click the dropdown button, then edit, and submit
@@ -290,79 +316,80 @@ function handleIssueAction(action) {
   var dropdownButton = document.querySelector('summary.timeline-comment-action.Link--secondary.Button--link.Button--medium.Button');
 
   if (dropdownButton) {
-      // Click the dropdown button
-      dropdownButton.click();
-      console.log('Dropdown button clicked');
+    // Click the dropdown button
+    dropdownButton.click();
+    console.log('Dropdown button clicked');
 
-      // Wait for the edit button to become visible
-      setTimeout(function () {
-          // Find the edit button
-          var editButton = document.querySelector('.dropdown-item.btn-link.js-comment-edit-button');
-          if (editButton) {
-              // Click the edit button
-              editButton.click();
-              console.log('Edit button clicked');
+    // Wait for the edit button to become visible
+    setTimeout(function () {
+      // Find the edit button
+      var editButton = document.querySelector('.dropdown-item.btn-link.js-comment-edit-button');
+      if (editButton) {
+        // Click the edit button
+        editButton.click();
+        console.log('Edit button clicked');
 
-              // Target the textarea by its name attribute
-              var textarea = document.querySelector('textarea[name="issue[body]"]');
-              if (textarea) {
-                  // Get the current time and date
-                  var currentTime = new Date().toLocaleTimeString();
-                  var currentDate = new Date().toLocaleDateString();
+        // Target the textarea by its name attribute
+        var textarea = document.querySelector('textarea[name="issue[body]"]');
+        if (textarea) {
+          // Get the current time and date
+          var currentTime = new Date().toLocaleTimeString();
+          var currentDate = new Date().toLocaleDateString();
 
-                  // Get the element containing the username
-                  var usernameElement = document.querySelector('.lh-condensed.overflow-hidden.d-flex.flex-column.flex-justify-center.ml-2.f5.mr-auto.width-full');
+          // Get the element containing the username
+          var usernameElement = document.querySelector('.lh-condensed.overflow-hidden.d-flex.flex-column.flex-justify-center.ml-2.f5.mr-auto.width-full');
 
-                  // Extract the username from the element
-                  var username = '';
-                  if (usernameElement) {
-                      var lines = usernameElement.innerText.trim().split('\n');
-                      if (lines.length > 0) {
-                          username = lines[0];
-                      }
-                  }
-
-                  console.log(username);
-
-                  // Check if the title "##ITSC Project Management:" exists
-                  var title = "## ITSC Project Management:";
-                  if (!textarea.value.includes(title)) {
-                      textarea.value = `${title}\n### ${username} initiated issue at ${currentTime}, ${currentDate}:\n` + textarea.value;
-                      console.log('Title added');
-                  }
-
-                  // Define the message based on the action
-                  var message = '';
-                  if (action === 'start') {
-                      message = `${username} started issue`;
-                  } else if (action === 'pause') {
-                      message = `${username} paused issue`;
-                  } else if (action === 'reset') {
-                      message = `${username} reset issue`;
-                  } else if (action === 'update') { // Add handling for 'update' action
-                      message = `${username} updated comment`;
-                  }
-                  textarea.value += `\n${message} at ${new Date().toLocaleString()}`;
-                  console.log(`Added message: ${message}`);
-
-                  // Find the submit edit button
-                  var submitEditButton = document.querySelector('.js-comment-update .Button--primary.Button--medium');
-                  if (submitEditButton) {
-                      // Click the submit edit button
-                      submitEditButton.click();
-                      console.log('Submit edit button clicked');
-                  } else {
-                      console.log('Submit edit button not found');
-                  }
-              } else {
-                  console.log('Textarea element not found');
-              }
-          } else {
-              console.log('Edit button not found');
+          // Extract the username from the element
+          var username = '';
+          if (usernameElement) {
+            var lines = usernameElement.innerText.trim().split('\n');
+            if (lines.length > 0) {
+              username = lines[0];
+            }
           }
-      }, 500); // Adjust timeout as necessary
+
+          console.log(username);
+
+          // Check if the title "##ITSC Project Management:" exists
+          var title = "## ITSC Project Management:";
+          if (!textarea.value.includes(title)) {
+            textarea.value = `${title}\n### ${username} initiated issue at ${currentTime}, ${currentDate}:\n` + textarea.value;
+            console.log('Title added');
+          }
+
+          // Define the message based on the action
+          var message = '';
+          if (action === 'start') {
+            message = `${username} started issue`;
+          } else if (action === 'pause') {
+            const formattedTotalTime = formatTotalWorkedTime();
+            message = `${username} paused issue (Total time: ${formattedTotalTime})`;
+          } else if (action === 'reset') {
+            message = `${username} reset issue`;
+          } else if (action === 'update') { // Add handling for 'update' action
+            message = `${username} updated comment`;
+          }
+          textarea.value += `\n${message} at ${new Date().toLocaleString()}`;
+          console.log(`Added message: ${message}`);
+
+          // Find the submit edit button
+          var submitEditButton = document.querySelector('.js-comment-update .Button--primary.Button--medium');
+          if (submitEditButton) {
+            // Click the submit edit button
+            submitEditButton.click();
+            console.log('Submit edit button clicked');
+          } else {
+            console.log('Submit edit button not found');
+          }
+        } else {
+          console.log('Textarea element not found');
+        }
+      } else {
+        console.log('Edit button not found');
+      }
+    }, 500); // Adjust timeout as necessary
   } else {
-      console.log('Dropdown button not found');
+    console.log('Dropdown button not found');
   }
 }
 

@@ -7,6 +7,19 @@
     color: #fff; 
 } 
 
+@media screen and (min-width: 435px) 
+{
+.btn-reset
+{
+width: 100%;
+}
+.BtnGroup.d-flex.width-full 
+{
+
+   display: flex !important;
+  }
+}
+  
 .popup-content .main-container {
     background-color: #D43B3A;
     display: flex;
