@@ -385,4 +385,4 @@ document.getElementById('pause').addEventListener('click', function() {
 document.getElementById('reset').addEventListener('click', function() {
   handleIssueAction('reset');
 });
-// end.
+// end..
