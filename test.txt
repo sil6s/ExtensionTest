@@ -1,4 +1,16 @@
-// Function to handle issue actions
+
+// Function to check if a comment containing "ITSC Project Management System" is found
+function isITSCCommentFound() {
+  var comments = document.querySelectorAll('.comment-body');
+  for (var i = 0; i < comments.length; i++) {
+    if (comments[i].textContent.includes('ITSC Project Management System')) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Function to click the dropdown button
 function handleIssueAction(action) {
   // Function to click the dropdown button within the specific comment
   function clickDropdownButtonInComment() {
@@ -35,7 +47,7 @@ function handleIssueAction(action) {
       console.log('Edit button clicked');
 
       // Target the textarea by its name attribute and append the text based on the action
-      var textarea = document.querySelector('textarea[name="issue_comment[body]"]');
+      var textarea = document.querySelector('textarea[name="issue[body]"]');
       if (textarea) {
         var message = '';
         if (action === 'start') {
@@ -44,10 +56,26 @@ function handleIssueAction(action) {
           message = 'User paused issue';
         } else if (action === 'reset') {
           message = 'User reset issue';
+        } else if (action === 'update') { // Add handling for 'update' action
+          message = 'User updated comment';
         }
         textarea.value += `\n${message} at ${new Date().toLocaleString()}`;
       } else {
         console.log('Textarea element not found');
+      }      
+
+      // Check if the submitEditButton is identified
+      var commentBlock = document.getElementsByClassName("js-comment-update")[0];
+      console.log(commentBlock.id);
+      var submitEditButton = commentBlock.getElementsByClassName("Button--primary Button--medium Button")[0];
+      console.log(submitEditButton.textContent);
+
+      // Check if the submitEditButton is found and clicked
+      if (submitEditButton) {
+        submitEditButton.click();
+        console.log('Submit edit button clicked');
+      } else {
+        console.log('Submit edit button not found.');
       }
 
     } else {
