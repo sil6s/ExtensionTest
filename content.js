@@ -309,14 +309,14 @@ function isITSCCommentFound() {
 function handleIssueAction(action) {
   // Find the dropdown button
   var dropdownButton = document.querySelector('summary.timeline-comment-action.Link--secondary.Button--link.Button--medium.Button');
-  
+
   if (dropdownButton) {
       // Click the dropdown button
       dropdownButton.click();
       console.log('Dropdown button clicked');
 
       // Wait for the edit button to become visible
-      setTimeout(function() {
+      setTimeout(function () {
           // Find the edit button
           var editButton = document.querySelector('.dropdown-item.btn-link.js-comment-edit-button');
           if (editButton) {
@@ -330,39 +330,53 @@ function handleIssueAction(action) {
                   // Get the current time and date
                   var currentTime = new Date().toLocaleTimeString();
                   var currentDate = new Date().toLocaleDateString();
-                  
+
+                  // Get the element containing the username
+                  var usernameElement = document.querySelector('.lh-condensed.overflow-hidden.d-flex.flex-column.flex-justify-center.ml-2.f5.mr-auto.width-full');
+
+                  // Extract the username from the element
+                  var username = '';
+                  if (usernameElement) {
+                      var lines = usernameElement.innerText.trim().split('\n');
+                      if (lines.length > 0) {
+                          username = lines[0];
+                      }
+                  }
+
+                  console.log(username);
+
                   // Check if the title "##ITSC Project Management:" exists
                   var title = "##ITSC Project Management:";
                   if (!textarea.value.includes(title)) {
-                      textarea.value = `${title}\n###User initiated issue at ${currentTime}, ${currentDate}:\n` + textarea.value;
+                      textarea.value = `${title}\n###${username} initiated issue at ${currentTime}, ${currentDate}:\n` + textarea.value;
                       console.log('Title added');
                   }
 
                   // Define the message based on the action
                   var message = '';
                   if (action === 'start') {
-                      message = 'User started issue';
+                      message = `${username} started issue`;
                   } else if (action === 'pause') {
-                      message = 'User paused issue';
+                      message = `${username} paused issue`;
                   } else if (action === 'reset') {
-                      message = 'User reset issue';
+                      message = `${username} reset issue`;
                   } else if (action === 'update') { // Add handling for 'update' action
-                      message = 'User updated comment';
+                      message = `${username} updated comment`;
                   }
                   textarea.value += `\n${message} at ${new Date().toLocaleString()}`;
                   console.log(`Added message: ${message}`);
+
+                  // Find the submit edit button
+                  var submitEditButton = document.querySelector('.js-comment-update .Button--primary.Button--medium');
+                  if (submitEditButton) {
+                      // Click the submit edit button
+                      submitEditButton.click();
+                      console.log('Submit edit button clicked');
+                  } else {
+                      console.log('Submit edit button not found');
+                  }
               } else {
                   console.log('Textarea element not found');
-              }
-
-              // Find the submit edit button
-              var submitEditButton = document.querySelector('.js-comment-update .Button--primary.Button--medium');
-              if (submitEditButton) {
-                  // Click the submit edit button
-                  submitEditButton.click();
-                  console.log('Submit edit button clicked');
-              } else {
-                  console.log('Submit edit button not found');
               }
           } else {
               console.log('Edit button not found');
@@ -374,15 +388,14 @@ function handleIssueAction(action) {
 }
 
 // Event listener for the buttons with IDs start, pause, reset
-document.getElementById('start').addEventListener('click', function() {
+document.getElementById('start').addEventListener('click', function () {
   handleIssueAction('start');
 });
 
-document.getElementById('pause').addEventListener('click', function() {
+document.getElementById('pause').addEventListener('click', function () {
   handleIssueAction('pause');
 });
 
-document.getElementById('reset').addEventListener('click', function() {
+document.getElementById('reset').addEventListener('click', function () {
   handleIssueAction('reset');
 });
-// end..
