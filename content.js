@@ -1,6 +1,5 @@
 // Function to inject buttons
 
-
 var additionalButtonsContainer = document.createElement('div');
 
 function injectButtons() {
@@ -176,25 +175,6 @@ function pauseTimer() {
   }
 }
 
-
-function stopTimer() {
-  const startBtn = document.getElementById('start');
-  // Add null check to ensure buttons are available in the DOM
-  if (startBtn && timer) {
-    clearInterval(timer); // Stop the timer
-    timer = null; // Reset the timer variable
-    isPaused = false; // Reset the paused flag
-    isStarted = false; // Reset the started flag
-    startBtn.textContent = 'Start'; // Reset the start button text
-    startBtn.style.display = 'inline-block'; // Show the start button
-    const pauseBtn = document.getElementById('pause');
-    pauseBtn.style.display = 'none'; // Hide the pause button
-    console.log('Timer stopped');
-    saveState(); // Save state when timer stops
-  }
-}
-
-
 // Function to reset the timer
 function resetTimer() {
   const startBtn = document.getElementById('start');
@@ -244,7 +224,6 @@ function saveState() {
   localStorage.setItem('stopwatchState', JSON.stringify(state));
 }
 
-// Function to load the timer state from local storage
 // Function to load the timer state from local storage
 window.addEventListener('load', () => {
   const savedState = JSON.parse(localStorage.getItem('stopwatchState'));
@@ -346,9 +325,9 @@ function handleIssueAction(action) {
                   console.log(username);
 
                   // Check if the title "##ITSC Project Management:" exists
-                  var title = "##ITSC Project Management:";
+                  var title = "## ITSC Project Management:";
                   if (!textarea.value.includes(title)) {
-                      textarea.value = `${title}\n###${username} initiated issue at ${currentTime}, ${currentDate}:\n` + textarea.value;
+                      textarea.value = `${title}\n### ${username} initiated issue at ${currentTime}, ${currentDate}:\n` + textarea.value;
                       console.log('Title added');
                   }
 
