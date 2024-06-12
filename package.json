@@ -4,12 +4,14 @@
     "description": "Your application description",
     "main": "server.js",
     "scripts": {
-      "start": "node server.js"
+        "start": "node server.js"
     },
     "dependencies": {
-      "express": "^4.17.1",
-      "@prisma/client": "^3.0.2",
-      "mongodb": "^4.0.0"
+        "@prisma/client": "^3.15.2",
+        "express": "^4.17.1",
+        "mongodb": "^4.17.2"
+    },
+    "devDependencies": {
+        "prisma": "^5.15.0"
     }
-  }
-  
+}

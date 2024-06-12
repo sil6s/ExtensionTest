@@ -1,89 +1,26 @@
-const express = require('express');
-const { PrismaClient } = require('@prisma/client');
 
-const app = express();
-const prisma = new PrismaClient();
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = "mongodb+srv://currysc:LA0uU0hUSuY5CNsN@itscpms.pm9pufe.mongodb.net/?retryWrites=true&w=majority&appName=ITSCPMS";
 
-app.use(express.json());
-
-app.listen(3001, () => {
-  console.log('Server running on port 3001');
-});
-
-// Create a new timer
-app.post('/timers', async (req, res) => {
-  const { user, startTime, endTime, duration } = req.body;
-  try {
-    const timer = await prisma.timer.create({
-      data: {
-        user,
-        startTime: new Date(startTime),
-        endTime: endTime ? new Date(endTime) : null,
-        duration,
-      },
-    });
-    res.status(201).json(timer);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
   }
 });
 
-// Get all timers
-app.get('/timers', async (req, res) => {
+async function run() {
   try {
-    const timers = await prisma.timer.findMany();
-    res.json(timers);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
   }
-});
-
-// Get a single timer by ID
-app.get('/timers/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const timer = await prisma.timer.findUnique({
-      where: { id },
-    });
-    if (timer) {
-      res.json(timer);
-    } else {
-      res.status(404).json({ error: 'Timer not found' });
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Update a timer by ID
-app.put('/timers/:id', async (req, res) => {
-  const { id } = req.params;
-  const { user, startTime, endTime, duration } = req.body;
-  try {
-    const timer = await prisma.timer.update({
-      where: { id },
-      data: {
-        user,
-        startTime: new Date(startTime),
-        endTime: endTime ? new Date(endTime) : null,
-        duration,
-      },
-    });
-    res.json(timer);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Delete a timer by ID
-app.delete('/timers/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    await prisma.timer.delete({
-      where: { id },
-    });
-    res.status(204).end();
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+}
+run().catch(console.dir);
