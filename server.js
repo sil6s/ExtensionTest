@@ -1,8 +1,7 @@
-
 const { MongoClient, ServerApiVersion } = require('mongodb');
+
 const uri = "mongodb+srv://currysc:LA0uU0hUSuY5CNsN@itscpms.pm9pufe.mongodb.net/?retryWrites=true&w=majority&appName=ITSCPMS";
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -13,14 +12,36 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+
+    const db = client.db("myDatabase"); // Replace "myDatabase" with your actual database name
+
+    // Define timer schema
+    const timerSchema = {
+      name: "string",
+      duration: "number",
+      startTime: "date",
+      endTime: "date"
+      // Add more fields as needed
+    };
+
+    // Insert fake timer data
+    const fakeTimerData = [
+      { name: "Timer 1", duration: 3600, startTime: new Date(), endTime: new Date() },
+      { name: "Timer 2", duration: 1800, startTime: new Date(), endTime: new Date() },
+      // Add more fake timer data as needed
+    ];
+
+    // Insert fake timer data into the collection
+    const timerCollection = db.collection("timers"); // Replace "timers" with your desired collection name
+    await timerCollection.insertMany(fakeTimerData);
+
+    console.log("Fake timer data inserted successfully.");
+
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
-    // Ensures that the client will close when you finish/error
     await client.close();
   }
 }
+
 run().catch(console.dir);
