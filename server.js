@@ -1,9 +1,11 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require(`cors`)
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors({ origin:  `*`}))
 
 const uri = "mongodb+srv://currysc:LA0uU0hUSuY5CNsN@itscpms.pm9pufe.mongodb.net/?retryWrites=true&w=majority&appName=ITSCPMS";
 const client = new MongoClient(uri, {

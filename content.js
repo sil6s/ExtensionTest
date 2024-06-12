@@ -340,27 +340,26 @@ function handleIssueAction(action) {
                           username = lines[0];
                       }
                   }
-                  // Send the username to the server
-                  fetch('/time', {
+                  fetch('http://localhost:3100/username', {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ username: username, time: 4352542345 })
+                    body: JSON.stringify({ username: 'exampleUser', time: 4352542345 })
                   })
-                    .then(response => {
-                      if (!response.ok) {
-                        throw new Error('Failed to send username to server');
-                      }
-                      return response.json();
-                    })
-                    .then(data => {
-                      console.log('Username sent to server successfully');
-                    })
-                    .catch(error => {
-                      console.error('Error sending username to server:', error);
-                    });
-
+                  .then(response => {
+                    if (!response.ok) {
+                      throw new Error('Failed to send username to server');
+                    }
+                    return response.json();
+                  })
+                  .then(data => {
+                    console.log('Username sent to server successfully');
+                  })
+                  .catch(error => {
+                    console.error('Error sending username to server:', error);
+                  });
+                  
 
                   console.log(username);
 
