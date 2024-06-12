@@ -1,7 +1,11 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const app = express();
+app.use(bodyParser.json());
 
 const uri = "mongodb+srv://currysc:LA0uU0hUSuY5CNsN@itscpms.pm9pufe.mongodb.net/?retryWrites=true&w=majority&appName=ITSCPMS";
-
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -34,7 +38,7 @@ async function run() {
     ];
 
     // Insert fake timer data into the collection
-    const timerCollection = db.collection("timers"); // Replace "timers" with your desired collection name
+    const timerCollection = db.collection("timers"); 
     await timerCollection.insertMany(fakeTimerData);
 
     console.log("Fake timer data inserted successfully.");
@@ -45,4 +49,38 @@ async function run() {
   }
 }
 
-run().catch(console.dir);
+app.get(`/`, (req, res) => {
+  res.send(`hello`);
+})
+
+app.post('/username', async (req, res) => {
+  try {
+    const { username } = req.body;
+    // Save the username to MongoDB using Prisma
+    const savedUsername = await client.db("myDatabase").collection("users").insertOne({ username });
+    res.json(savedUsername);
+  } catch (error) {
+    console.error('Error saving username:', error);
+    res.status(500).json({ error: 'Failed to save username' });
+  }
+});
+
+app.post('/time', async (req, res) => {
+  try {
+    const { username, time } = req.body;
+    // Save the username to MongoDB using Prisma
+    const dataToSave = { name: username, duration: 3600, startTime: time, endTime: null }
+    const savedUsername = await client.db("myDatabase").collection("timers").insertOne({ username });
+    res.json(savedUsername);
+  } catch (error) {
+    console.error('Error saving username:', error);
+    res.status(500).json({ error: 'Failed to save username' });
+  }
+});
+
+// Start the server
+const PORT = 3100;
+app.listen(PORT, () => {
+  // await run().catch(console.dir);
+  console.log(`Server is listening on port ${PORT}`);
+});
