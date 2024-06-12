@@ -345,7 +345,7 @@ function handleIssueAction(action) {
                     headers: {
                       'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ username: 'exampleUser', time: 4352542345 })
+                    body: JSON.stringify({ username: username, time: currentTime})
                   })
                   .then(response => {
                     if (!response.ok) {
