@@ -155,6 +155,27 @@ function startTimer() {
   }
 }
 
+function sendDataToDatabase(startTime) {
+  // Make a POST request to your server endpoint
+  fetch('http://localhost:3000/recordStartTime', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ startTime: startTime }),
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    console.log('Start time recorded successfully');
+  })
+  .catch(error => {
+    console.error('There was a problem recording the start time:', error);
+  });
+}
+
+
 
 
 // Function to pause the timer

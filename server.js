@@ -26,9 +26,10 @@ async function run() {
     };
 
     // Insert fake timer data
+    const startTime = new Date(); // Get the current start time
     const fakeTimerData = [
-      { name: "Timer 1", duration: 3600, startTime: new Date(), endTime: new Date() },
-      { name: "Timer 2", duration: 1800, startTime: new Date(), endTime: new Date() },
+      { name: "Timer 1 Test", duration: 3600, startTime: startTime, endTime: null },
+      { name: "Timer 2 Test", duration: 1800, startTime: startTime, endTime: null },
       // Add more fake timer data as needed
     ];
 
