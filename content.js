@@ -340,6 +340,7 @@ function handleIssueAction(action) {
                           username = lines[0];
                       }
                   }
+                  
                   fetch('http://localhost:3100/username', {
                     method: 'POST',
                     headers: {
