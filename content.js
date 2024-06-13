@@ -1,4 +1,5 @@
 // Inject buttons function
+var results;
 function injectButtons() {
   console.log("Script Injected");
 
@@ -65,118 +66,212 @@ function injectButtons() {
 injectButtons();
 
 // Variable Declarations
-let startTime = 0;
-let elapsedTime = 0;
-let timer;
-let isPaused = false;
+var startBtn = document.getElementById("start");
+var pauseBtn = document.getElementById("pause");
+var resetBtn = document.getElementById("reset");
+var timerDisplay = document.getElementById("timerDisplay");
+var sec = 0;
+var totalSeconds = 0; // Deprecated
+var startTime;
+var secondsString = "00";
+var minutesString = "00";
+var hoursString = "00";
+var daysString = "00";
+var totalTimeString = "00:00:00:00";
+var timer;
+var isTimerActive = 0;
+var isTimerPaused = 0;
+var lastDate;
+var currentDate;
+var commentNumber = 0;
+var commentIdentifier = "";
+var username;
+var timerCount = 0;
 
-function startTimer() {
-  const startBtn = document.getElementById('start');
-  const pauseBtn = document.getElementById('pause');
-  if (startBtn && pauseBtn) {
-    if (!isPaused) {
-      startTime = new Date().getTime() - elapsedTime; // Set the start time
-    } else {
-      startTime = new Date().getTime() - elapsedTime; // Adjust the start time
-      isPaused = false;
-    }
-    timer = setInterval(updateTimer, 10); // Start the timer
-    startBtn.style.display = 'none'; // Hide the start button
-    pauseBtn.style.display = 'inline-block'; // Show the pause button
-    saveState(); // Save state
-  }
-}
-
-function pauseTimer() {
-  const startBtn = document.getElementById('start');
-  const pauseBtn = document.getElementById('pause');
-  if (startBtn && pauseBtn && timer) {
-    clearInterval(timer); // Stop the timer
-    elapsedTime = new Date().getTime() - startTime; // Calculate elapsed time
-    isPaused = true; // Set the paused flag
-    pauseBtn.style.display = 'none'; // Hide the pause button
-    startBtn.textContent = 'Resume'; // Change the start button text to "Resume"
-    startBtn.style.display = 'inline-block'; // Show the start button
-    saveState(); // Save state
-  }
-}
-
-function resetTimer() {
-  const startBtn = document.getElementById('start');
-  const pauseBtn = document.getElementById('pause');
-  if (startBtn && pauseBtn) {
-    clearInterval(timer); // Stop the timer
-    startTime = 0;
-    elapsedTime = 0;
-    isPaused = false;
-    updateDisplay(0);
-    startBtn.textContent = 'Start'; // Reset the start button text
-    startBtn.style.display = 'inline-block'; // Show the start button
-    pauseBtn.style.display = 'none'; // Hide the pause button
-    localStorage.removeItem('timerState'); // Remove stored state
-  }
-}
-
-function updateTimer() {
-  elapsedTime = new Date().getTime() - startTime;
-  updateDisplay(elapsedTime);
-}
-
-function updateDisplay(time) {
-  const timerDisplay = document.getElementById('timerDisplay');
-  if (timerDisplay) {
-    const hours = Math.floor(time / 3600000);
-    const minutes = Math.floor((time % 3600000) / 60000);
-    const seconds = Math.floor((time % 60000) / 1000);
-    const centiseconds = Math.floor((time % 1000) / 10);
-    timerDisplay.innerHTML = `${hours < 10 ? "0" + hours : hours}:${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-  }
-}
-
-function saveState() {
-  const state = {
-    startTime,
-    elapsedTime,
-    isPaused,
-    isRunning: !!timer
-  };
-  localStorage.setItem('timerState', JSON.stringify(state));
-}
-
-window.addEventListener('load', () => {
-  const savedState = JSON.parse(localStorage.getItem('timerState'));
-
-  if (savedState) {
-    startTime = savedState.startTime;
-    elapsedTime = savedState.elapsedTime;
-    isPaused = savedState.isPaused;
-
-    if (savedState.isRunning) {
-      // Calculate the elapsed time
-      const currentTime = new Date().getTime();
-      elapsedTime = currentTime - startTime;
-
-      startTimer(); // Resume the timer if it was running
-    } else if (isPaused) {
-      updateDisplay(elapsedTime); // Update display with paused time
-    }
-  }
+// Initialize Timer
+InitializeTimer();
+timerCount++;
+navigation.addEventListener("navigate", function () {
+    console.log("Location changed");
+    InitializeTimer();
+    timerCount++;
 });
 
-
-function stopWatch() {
-  if (!isPaused) {
-    const startTime = parseInt(localStorage.getItem('startTime'), 10); // Get the start time from localStorage
-    const now = new Date().getTime(); // Get the current time
-    const elapsedTime = now - startTime; // Calculate elapsed time
-    hour = Math.floor(elapsedTime / 3600000); // Convert milliseconds to hours
-    minute = Math.floor((elapsedTime % 3600000) / 60000); // Convert remaining milliseconds to minutes
-    second = Math.floor((elapsedTime % 60000) / 1000); // Convert remaining milliseconds to seconds
-    count = Math.floor((elapsedTime % 1000) / 10); // Convert remaining milliseconds to centiseconds
-    updateDisplay();
-    saveState(); // Save state periodically
-  }
+// On initialization
+function InitializeTimer() {
+    username = document.getElementsByName("user-login")[0].content;
+    console.log("Username: " + username);
+    if (localStorage.getItem(username + window.location.href) == null) {
+        SaveData();
+    }
+    LoadData();
+    if (results == 0) {
+        console.log("Initialization failed");
+        CreateUserTimerLog(username);
+    }
+    if (results == 1) {
+        console.log("Initialization successful");
+    }
+    startBtn.scrollIntoView({ behavior: 'instant' });
+    console.log("Timer initialized");
+    if (sec == null) {
+        sec = 0;
+    }
+    totalTimeString = ConvertTimeToFormat(Number(sec));
+    timerDisplay.textContent = totalTimeString;
+    if (isTimerActive == 1) {
+        if (timerCount == 0) {
+            console.log("Timer was active before reset");
+            if (lastDate != null) {
+                currentDate = Date();
+                var difference = new Date(currentDate).getTime() - new Date(lastDate).getTime();
+                console.log("Time difference: " + (Number(difference) / 1000));
+                sec = Number(sec) + Number(Math.round(difference / 1000));
+                console.log("Updated seconds: " + sec)
+                if (Number(sec) < 0 || Number(sec) == null) {
+                    sec = 0;
+                }
+            }
+            else {
+                console.log("Last logged time for continuing timer is null")
+            }
+            startTimer();
+        }
+    }
 }
+
+// Function to start the timer
+function startTimer() {
+  isTimerActive = 1;
+  isTimerPaused = 0;
+  startTime = Date();
+  timer = setInterval(function () {
+      sec = Number(sec) + 1;
+      totalSeconds += parseInt(1);
+      lastDate = Date();
+      SaveData();
+      totalTimeString = ConvertTimeToFormat(Number(sec));
+      timerDisplay.textContent = totalTimeString;
+
+      // Show pause button and hide start button
+      startBtn.style.display = 'none';
+      pauseBtn.style.display = 'inline-block';
+  }, 1000);
+}
+
+// Function to convert time to the desired format
+function ConvertTimeToFormat(seconds) {
+    var minutes = 0;
+    var hours = 0;
+    var days = 0;
+    if (seconds == NaN) {
+        console.log("Seconds is null, resetting");
+        seconds = 0;
+    }
+    Number(seconds);
+    days = Math.floor(Number(seconds) / (3600 * 24));
+    hours = Math.floor(Number(seconds) % (3600 * 24) / 3600);
+    minutes = Math.floor(Number(seconds) % 3600 / 60);
+    seconds = Math.floor(Number(seconds) % 60);
+    secondsString = seconds;
+    if (Number(seconds) < 10) {
+        secondsString = "0" + String(seconds);
+    }
+    minutesString = minutes
+    if (Number(minutes) < 10) {
+        minutesString = "0" + minutes;
+    }
+    hoursString = hours;
+    if (Number(hours) < 10) {
+        hoursString = "0" + hours;
+    }
+    if (Number(days) >= 99) {
+        StopTimer();
+        timerDisplay.textContent = "Max Value Reached";
+    }
+    daysString = days;
+    if (Number(days) < 10) {
+        daysString = "0" + days;
+    }
+    return daysString + ":" + hoursString + ':' + minutesString + ':' + secondsString;
+}
+
+// Function to stop the timer
+function StopTimer() {
+    isTimerActive = 0;
+    clearInterval(timer);
+    SaveData();
+    timerCount = 0;
+}
+
+// Function to save the timer state to local storage
+function SaveData() {
+    const state = {
+        sec,
+        isTimerActive,
+        isTimerPaused,
+        lastDate,
+        commentNumber,
+        commentIdentifier
+    };
+    localStorage.setItem(username + window.location.href, JSON.stringify(state));
+}
+
+// Function to load the timer state from local storage
+function LoadData() {
+    console.log("Loading data from: " + username + window.location.href);
+    const state = JSON.parse(localStorage.getItem(username + window.location.href));
+    sec = state.sec;
+    if (sec == null) {
+        sec = 0;
+    }
+    console.log("Starting Seconds" + sec);
+    isTimerActive = state.isTimerActive;
+    if (isTimerActive == null) {
+        isTimerActive = 0;
+    }
+    console.log("isTimerActive: " + isTimerActive);
+    isTimerPaused = state.isTimerPaused;
+    if (isTimerPaused == null) {
+        isTimerPaused = 0;
+    }
+    console.log("isTimerPaused: " + isTimerPaused);
+    lastDate = state.lastDate;
+    console.log("Last saved Date: " + lastDate);
+    commentNumber = state.commentNumber;
+    commentIdentifier = state.commentIdentifier;
+    console.log("Comment Number: " + commentNumber);
+    console.log("Comment Identifier: " + commentIdentifier);
+}
+
+// Event Listeners
+startBtn.addEventListener('click', function () {
+    console.log("Start Button Clicked");
+    if (isTimerActive == 0) {
+        isTimerActive = 1;
+        SaveData();
+        startTimer();
+        LogTime();
+    }
+});
+
+pauseBtn.addEventListener('click', function () {
+    console.log("Pause Button Clicked");
+    if (isTimerActive == 1 && isTimerPaused == 0) {
+        isTimerPaused = 1;
+        StopTimer();
+        SaveData();
+        LogEndOfTimer();
+    }
+});
+
+resetBtn.addEventListener('click', function () {
+    console.log("Stop Button Clicked");
+    LogEndOfTimer();
+    StopTimer();
+    ResetTimerValues();
+});
+
 
 // Function to check if a comment containing "ITSC Project Management System" is found
 function isITSCCommentFound() {
