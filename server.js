@@ -32,8 +32,8 @@ app.get('/', (req, res) => {
 
 app.post('/data', async (req, res) => {
   try {
-    const { username, startTime } = req.body;
-    const dataToSave = { username, startTime: new Date(startTime) };
+    const { username, startTime, issueName } = req.body; // Extract username, startTime, and issueName from request body
+    const dataToSave = { username, startTime: new Date(startTime), issueName }; // Include issueName in data to be saved
     const savedData = await client.db("timerData").collection("timerData").insertOne(dataToSave);
     res.json(savedData);
   } catch (error) {

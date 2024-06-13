@@ -142,22 +142,24 @@ function InitializeTimer() {
 
 // Function to start the timer
 function startTimer() {
-  isTimerActive = 1;
-  isTimerPaused = 0;
-  startTime = Date();
-  timer = setInterval(function () {
-      sec = Number(sec) + 1;
-      totalSeconds += parseInt(1);
-      lastDate = Date();
-      SaveData();
-      totalTimeString = ConvertTimeToFormat(Number(sec));
-      timerDisplay.textContent = totalTimeString;
-
-      // Show pause button and hide start button
-      startBtn.style.display = 'none';
-      pauseBtn.style.display = 'inline-block';
-  }, 1000);
-}
+    isTimerActive = 1;
+    isTimerPaused = 0;
+    startTime = Date(); // Capture the start time
+    sendDataToDatabase(startTime); // Call sendDataToDatabase function
+    timer = setInterval(function () {
+        sec = Number(sec) + 1;
+        totalSeconds += parseInt(1);
+        lastDate = Date();
+        SaveData();
+        totalTimeString = ConvertTimeToFormat(Number(sec));
+        timerDisplay.textContent = totalTimeString;
+  
+        // Show pause button and hide start button
+        startBtn.style.display = 'none';
+        pauseBtn.style.display = 'inline-block';
+    }, 1000);
+  }
+  
 
 // Function to convert time to the desired format
 function ConvertTimeToFormat(seconds) {
@@ -383,28 +385,34 @@ document.getElementById('reset').addEventListener('click', function () {
 });
 
 function sendDataToDatabase(startTime) {
-  console.log(startTime);
-
-  // Extract the username from the element
-const usernameElement = document.querySelector('.lh-condensed.overflow-hidden.d-flex.flex-column.flex-justify-center.ml-2.f5.mr-auto.width-full');
-
-// Extract username from element, or default to an empty string if element is not found
-const username = usernameElement?.innerText.trim().split('\n')[0] ?? '';
-
-  fetch('http://localhost:3100/data', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ username, startTime }), // Sending both username and startTime
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    console.log('Start time recorded successfully');
-  })
-  .catch(error => {
-    console.error('There was a problem recording the start time:', error);
-  });
-}
+    console.log(startTime);
+  
+    // Extract the username from the element
+    const usernameElement = document.querySelector('.lh-condensed.overflow-hidden.d-flex.flex-column.flex-justify-center.ml-2.f5.mr-auto.width-full');
+  
+    // Extract username from element, or default to an empty string if element is not found
+    const username = usernameElement?.innerText.trim().split('\n')[0] ?? '';
+  
+    // Grab the issue title
+    const issueTitleElement = document.querySelector('.js-issue-title.markdown-title');
+    const issueName = issueTitleElement ? issueTitleElement.textContent.trim() : '';
+    console.log('Issue Name:', issueName);
+  
+    fetch('http://localhost:3100/data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, startTime, issueName }), // Sending username, startTime, and issueName
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      console.log('Start time recorded successfully');
+    })
+    .catch(error => {
+      console.error('There was a problem recording the start time:', error);
+    });
+  }
+  
