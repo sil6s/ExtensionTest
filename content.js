@@ -129,8 +129,6 @@ function hideLaunchPMS() {
   }
 }
 
-
-
 function startTimer() {
   const startBtn = document.getElementById('start');
   const pauseBtn = document.getElementById('pause');
@@ -152,27 +150,8 @@ function startTimer() {
     isPaused = false;
     console.log('Timer started');
     saveState(); // Save state when timer starts
+    sendDataToDatabase(localStorage.getItem('startTime'));
   }
-}
-
-function sendDataToDatabase(startTime) {
-  // Make a POST request to your server endpoint
-  fetch('http://localhost:3000/recordStartTime', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ startTime: startTime }),
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    console.log('Start time recorded successfully');
-  })
-  .catch(error => {
-    console.error('There was a problem recording the start time:', error);
-  });
 }
 
 // Function to pause the timer
@@ -184,8 +163,7 @@ function pauseTimer() {
     clearInterval(timer); // Stop the timer
     timer = null; // Reset the timer variable
     isPaused = true; // Set the paused flag
-    isStarted = false;
-    localStorage.setItem('pausedTime', new Date().getTime());
+    localStorage.setItem('pausedTime', new Date().getTime()); // Save the paused time in localStorage
     pauseBtn.style.display = 'none'; // Hide the pause button
     startBtn.textContent = 'Resume'; // Change the start button text to "Resume"
     startBtn.style.display = 'inline-block'; // Show the start button
@@ -193,6 +171,7 @@ function pauseTimer() {
     saveState(); // Save state when timer pauses
   }
 }
+
 
 // Function to reset the timer
 function resetTimer() {
@@ -340,26 +319,7 @@ function handleIssueAction(action) {
                           username = lines[0];
                       }
                   }
-                  
-                  fetch('http://localhost:3100/username', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ username: username, time: currentTime})
-                  })
-                  .then(response => {
-                    if (!response.ok) {
-                      throw new Error('Failed to send username to server');
-                    }
-                    return response.json();
-                  })
-                  .then(data => {
-                    console.log('Username sent to server successfully');
-                  })
-                  .catch(error => {
-                    console.error('Error sending username to server:', error);
-                  });
+        
                   
 
                   console.log(username);
@@ -418,3 +378,29 @@ document.getElementById('pause').addEventListener('click', function () {
 document.getElementById('reset').addEventListener('click', function () {
   handleIssueAction('reset');
 });
+
+function sendDataToDatabase(startTime) {
+
+  // Extract the username from the element
+const usernameElement = document.querySelector('.lh-condensed.overflow-hidden.d-flex.flex-column.flex-justify-center.ml-2.f5.mr-auto.width-full');
+
+// Extract username from element, or default to an empty string if element is not found
+const username = usernameElement?.innerText.trim().split('\n')[0] ?? '';
+
+  fetch('http://localhost:3100/data', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ username, startTime }), // Sending both username and startTime
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    console.log('Start time recorded successfully');
+  })
+  .catch(error => {
+    console.error('There was a problem recording the start time:', error);
+  });
+}
