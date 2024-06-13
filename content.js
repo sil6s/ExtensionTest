@@ -18,30 +18,6 @@ function injectButtons() {
   // Append Timer display to the parent div
   parentDiv.appendChild(timerDisplay);
 
-  // Container for additional buttons (Initially hidden)
-  var additionalButtonsContainer = document.createElement('div');
-  additionalButtonsContainer.id = 'additionalButtons';
-  additionalButtonsContainer.style.display = 'none'; // Initially hidden
-
-  // ITSC PMS LAUNCH
-  var pmsLaunch = document.createElement('button');
-  pmsLaunch.id = 'PMSLaunch';
-  pmsLaunch.innerHTML = 'Start ITSC Project Management';
-  pmsLaunch.classList.add('btn', 'mx-2'); // Add the 'btn-warning' class
-  pmsLaunch.style.float = 'left'; // Set float left
-  pmsLaunch.addEventListener('click', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    // Show additional buttons when PMS launch is clicked
-    additionalButtonsContainer.style.display = 'inline-block';
-    // Hide the PMS launch button
-    pmsLaunch.style.display = 'none';
-  });
-
-  // Check if a comment containing "ITSC Project Management System" is found
-  if (!isITSCCommentFound()) {
-    parentDiv.appendChild(pmsLaunch);
-  }
 
   // Create Restart/Timer button
   var timerButton = document.createElement('button');
@@ -50,8 +26,7 @@ function injectButtons() {
   timerButton.classList.add('btn', 'mx-2', 'btn-warning'); // Add the 'btn-warning' class
   timerButton.style.float = 'left'; // Set float left
   timerButton.addEventListener('click', function(e) {
-    pmsLaunch.style.display = 'inline-block';
-    additionalButtonsContainer.style.display = 'none';
+
     e.preventDefault();
     e.stopPropagation();
     resetTimer();
@@ -82,14 +57,10 @@ function injectButtons() {
     pauseTimer();
   });
 
-  // Append buttons to the additional buttons container
-  additionalButtonsContainer.appendChild(timerButton);
-  additionalButtonsContainer.appendChild(startBtn);
-  additionalButtonsContainer.appendChild(pauseBtn);
-
-  // Append PMS launch button and additional buttons container to the parent div
-  parentDiv.appendChild(pmsLaunch);
-  parentDiv.appendChild(additionalButtonsContainer);
+  // Append buttons to the parent div
+  parentDiv.appendChild(timerButton);
+  parentDiv.appendChild(startBtn);
+  parentDiv.appendChild(pauseBtn);
 }
 
 // Call the function to inject buttons
