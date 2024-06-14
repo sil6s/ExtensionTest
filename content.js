@@ -142,24 +142,22 @@ function InitializeTimer() {
 
 // Function to start the timer
 function startTimer() {
-    isTimerActive = 1;
-    isTimerPaused = 0;
-    startTime = Date(); // Capture the start time
-    sendDataToDatabase(startTime); // Call sendDataToDatabase function
-    timer = setInterval(function () {
-        sec = Number(sec) + 1;
-        totalSeconds += parseInt(1);
-        lastDate = Date();
-        SaveData();
-        totalTimeString = ConvertTimeToFormat(Number(sec));
-        timerDisplay.textContent = totalTimeString;
-  
-        // Show pause button and hide start button
-        startBtn.style.display = 'none';
-        pauseBtn.style.display = 'inline-block';
-    }, 1000);
-  }
-  
+  isTimerActive = 1;
+  isTimerPaused = 0;
+  startTime = Date();
+  timer = setInterval(function () {
+      sec = Number(sec) + 1;
+      totalSeconds += parseInt(1);
+      lastDate = Date();
+      SaveData();
+      totalTimeString = ConvertTimeToFormat(Number(sec));
+      timerDisplay.textContent = totalTimeString;
+
+      // Show pause button and hide start button
+      startBtn.style.display = 'none';
+      pauseBtn.style.display = 'inline-block';
+  }, 1000);
+}
 
 // Function to convert time to the desired format
 function ConvertTimeToFormat(seconds) {
@@ -277,142 +275,153 @@ resetBtn.addEventListener('click', function () {
 
 // Function to check if a comment containing "ITSC Project Management System" is found
 function isITSCCommentFound() {
-  var comments = document.querySelectorAll('.comment-body');
-  for (var i = 0; i < comments.length; i++) {
-    if (comments[i].textContent.includes('ITSC Project Management System')) {
-      return true;
-    }
-  }
-  return false;
+ var comments = document.querySelectorAll('.comment-body');
+ for (var i = 0; i < comments.length; i++) {
+   if (comments[i].textContent.includes('ITSC Project Management System')) {
+     return true;
+   }
+ }
+ return false;
 }
+
+
 
 
 // Function to click the dropdown button, then edit, and submit
 function handleIssueAction(action) {
-  // Find the dropdown button
-  var dropdownButton = document.querySelector('summary.timeline-comment-action.Link--secondary.Button--link.Button--medium.Button');
+ // Find the dropdown button
+ var dropdownButton = document.querySelector('summary.timeline-comment-action.Link--secondary.Button--link.Button--medium.Button');
 
-  if (dropdownButton) {
-      // Click the dropdown button
-      dropdownButton.click();
-      console.log('Dropdown button clicked');
 
-      // Wait for the edit button to become visible
-      setTimeout(function () {
-          // Find the edit button
-          var editButton = document.querySelector('.dropdown-item.btn-link.js-comment-edit-button');
-          if (editButton) {
-              // Click the edit button
-              editButton.click();
-              console.log('Edit button clicked');
+ if (dropdownButton) {
+     // Click the dropdown button
+     dropdownButton.click();
+     console.log('Dropdown button clicked');
 
-              // Target the textarea by its name attribute
-              var textarea = document.querySelector('textarea[name="issue[body]"]');
-              if (textarea) {
-                  // Get the current time and date
-                  var currentTime = new Date().toLocaleTimeString();
-                  var currentDate = new Date().toLocaleDateString();
 
-                  // Get the element containing the username
-                  var usernameElement = document.querySelector('.lh-condensed.overflow-hidden.d-flex.flex-column.flex-justify-center.ml-2.f5.mr-auto.width-full');
+     // Wait for the edit button to become visible
+     setTimeout(function () {
+         // Find the edit button
+         var editButton = document.querySelector('.dropdown-item.btn-link.js-comment-edit-button');
+         if (editButton) {
+             // Click the edit button
+             editButton.click();
+             console.log('Edit button clicked');
 
-                  // Extract the username from the element
-                  var username = '';
-                  if (usernameElement) {
-                      var lines = usernameElement.innerText.trim().split('\n');
-                      if (lines.length > 0) {
-                          username = lines[0];
-                      }
-                  }
-        
-                  
 
-                  console.log(username);
+             // Target the textarea by its name attribute
+             var textarea = document.querySelector('textarea[name="issue[body]"]');
+             if (textarea) {
+                 // Get the current time and date
+                 var currentTime = new Date().toLocaleTimeString();
+                 var currentDate = new Date().toLocaleDateString();
 
-                  // Check if the title "##ITSC Project Management:" exists
-                  var title = "## ITSC Project Management:";
-                  if (!textarea.value.includes(title)) {
-                      textarea.value = `${title}\n### ${username} initiated issue at ${currentTime}, ${currentDate}:\n` + textarea.value;
-                      console.log('Title added');
-                  }
 
-                  // Define the message based on the action
-                  var message = '';
-                  if (action === 'start') {
-                      message = `${username} started issue`;
-                  } else if (action === 'pause') {
-                      message = `${username} paused issue`;
-                  } else if (action === 'reset') {
-                      message = `${username} reset issue`;
-                  } else if (action === 'update') { // Add handling for 'update' action
-                      message = `${username} updated comment`;
-                  }
-                  textarea.value += `\n${message} at ${new Date().toLocaleString()}`;
-                  console.log(`Added message: ${message}`);
+                 // Get the element containing the username
+                 var usernameElement = document.querySelector('.lh-condensed.overflow-hidden.d-flex.flex-column.flex-justify-center.ml-2.f5.mr-auto.width-full');
 
-                  // Find the submit edit button
-                  var submitEditButton = document.querySelector('.js-comment-update .Button--primary.Button--medium');
-                  if (submitEditButton) {
-                      // Click the submit edit button
-                      submitEditButton.click();
-                      console.log('Submit edit button clicked');
-                  } else {
-                      console.log('Submit edit button not found');
-                  }
-              } else {
-                  console.log('Textarea element not found');
-              }
-          } else {
-              console.log('Edit button not found');
-          }
-      }, 500); // Adjust timeout as necessary
-  } else {
-      console.log('Dropdown button not found');
-  }
+
+                 // Extract the username from the element
+                 var username = '';
+                 if (usernameElement) {
+                     var lines = usernameElement.innerText.trim().split('\n');
+                     if (lines.length > 0) {
+                         username = lines[0];
+                     }
+                 }
+      
+                
+
+
+                 console.log(username);
+
+
+                 // Check if the title "##ITSC Project Management:" exists
+                 var title = "## ITSC Project Management:";
+                 if (!textarea.value.includes(title)) {
+                     textarea.value = `${title}\n### ${username} initiated issue at ${currentTime}, ${currentDate}:\n` + textarea.value;
+                     console.log('Title added');
+                 }
+
+
+                 // Define the message based on the action
+                 var message = '';
+                 if (action === 'start') {
+                     message = `${username} started issue`;
+                 } else if (action === 'pause') {
+                     message = `${username} paused issue`;
+                 } else if (action === 'reset') {
+                     message = `${username} reset issue`;
+                 } else if (action === 'update') { // Add handling for 'update' action
+                     message = `${username} updated comment`;
+                 }
+                 textarea.value += `\n${message} at ${new Date().toLocaleString()}`;
+                 console.log(`Added message: ${message}`);
+
+
+                 // Find the submit edit button
+                 var submitEditButton = document.querySelector('.js-comment-update .Button--primary.Button--medium');
+                 if (submitEditButton) {
+                     // Click the submit edit button
+                     submitEditButton.click();
+                     console.log('Submit edit button clicked');
+                 } else {
+                     console.log('Submit edit button not found');
+                 }
+             } else {
+                 console.log('Textarea element not found');
+             }
+         } else {
+             console.log('Edit button not found');
+         }
+     }, 500); // Adjust timeout as necessary
+ } else {
+     console.log('Dropdown button not found');
+ }
 }
+
 
 // Event listener for the buttons with IDs start, pause, reset
 document.getElementById('start').addEventListener('click', function () {
-  handleIssueAction('start');
+ handleIssueAction('start');
 });
+
 
 document.getElementById('pause').addEventListener('click', function () {
-  handleIssueAction('pause');
+ handleIssueAction('pause');
 });
+
 
 document.getElementById('reset').addEventListener('click', function () {
-  handleIssueAction('reset');
+ handleIssueAction('reset');
 });
 
+
 function sendDataToDatabase(startTime) {
-    console.log(startTime);
-  
+   console.log(startTime);
     // Extract the username from the element
-    const usernameElement = document.querySelector('.lh-condensed.overflow-hidden.d-flex.flex-column.flex-justify-center.ml-2.f5.mr-auto.width-full');
-  
+   const usernameElement = document.querySelector('.lh-condensed.overflow-hidden.d-flex.flex-column.flex-justify-center.ml-2.f5.mr-auto.width-full');
     // Extract username from element, or default to an empty string if element is not found
-    const username = usernameElement?.innerText.trim().split('\n')[0] ?? '';
-  
+   const username = usernameElement?.innerText.trim().split('\n')[0] ?? '';
     // Grab the issue title
-    const issueTitleElement = document.querySelector('.js-issue-title.markdown-title');
-    const issueName = issueTitleElement ? issueTitleElement.textContent.trim() : '';
-    console.log('Issue Name:', issueName);
-  
+   const issueTitleElement = document.querySelector('.js-issue-title.markdown-title');
+   const issueName = issueTitleElement ? issueTitleElement.textContent.trim() : '';
+   console.log('Issue Name:', issueName);
     fetch('http://localhost:3100/data', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, startTime, issueName }), // Sending username, startTime, and issueName
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      console.log('Start time recorded successfully');
-    })
-    .catch(error => {
-      console.error('There was a problem recording the start time:', error);
-    });
-  }
-  
+     method: 'POST',
+     headers: {
+       'Content-Type': 'application/json',
+     },
+     body: JSON.stringify({ username, startTime, issueName }), // Sending username, startTime, and issueName
+   })
+   .then(response => {
+     if (!response.ok) {
+       throw new Error('Network response was not ok');
+     }
+     console.log('Start time recorded successfully');
+   })
+   .catch(error => {
+     console.error('There was a problem recording the start time:', error);
+   });
+ }
+ 
