@@ -423,5 +423,5 @@ function sendDataToDatabase(startTime) {
    .catch(error => {
      console.error('There was a problem recording the start time:', error);
    });
- }
+ } //
  
