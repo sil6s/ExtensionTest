@@ -1,19 +1,15 @@
-// Define the MongoDB datasource
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
-// Define the generator for Prisma client
 generator client {
   provider = "prisma-client-js"
 }
 
-// Define the Timer model with the correct id field
-model Timer {
+model TimerData {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  user      String
+  username  String
   startTime DateTime
-  endTime   DateTime?
-  duration  Int
+  issueName String
 }

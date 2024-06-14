@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { PrismaClient } = require('@prisma/client');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -7,24 +7,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors({ origin: '*' }));
 
-const uri = "mongodb+srv://currysc:LA0uU0hUSuY5CNsN@itscpms.pm9pufe.mongodb.net/timerData?retryWrites=true&w=majority&appName=ITSCPMS";
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-
-async function run() {
-  try {
-    await client.connect();
-
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } catch (err) {
-    console.error("Error connecting to MongoDB:", err);
-  }
-}
+const prisma = new PrismaClient();
 
 app.get('/', (req, res) => {
   res.send('hello');
@@ -32,10 +15,15 @@ app.get('/', (req, res) => {
 
 app.post('/data', async (req, res) => {
   try {
-    const { username, startTime, issueName } = req.body; // Extract username, startTime, and issueName from request body
-    const dataToSave = { username, startTime: new Date(startTime), issueName }; // Include issueName in data to be saved
-    const savedData = await client.db("timerData").collection("timerData").insertOne(dataToSave);
-    res.json(savedData);
+    const { username, startTime, issueName } = req.body;
+    const data = await prisma.timerData.create({
+      data: {
+        username,
+        startTime: new Date(startTime),
+        issueName,
+      },
+    });
+    res.json(data);
   } catch (error) {
     console.error('Error saving data:', error);
     res.status(500).json({ error: 'Failed to save data' });
@@ -44,7 +32,18 @@ app.post('/data', async (req, res) => {
 
 // Start the server
 const PORT = 3100;
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+  try {
+    await prisma.$connect({
+      datasources: {
+        db: {
+          url: "mongodb+srv://currysc:LA0uU0hUSuY5CNsN@itscpms.pm9pufe.mongodb.net",
+        },
+      },
+    });
+    console.log('Connected to MongoDB successfully');
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error);
+  }
   console.log(`Server is listening on port ${PORT}`);
-  run().catch(console.error);
 });
