@@ -186,7 +186,7 @@ function ConvertTimeToFormat(seconds) {
         hoursString = "0" + hours;
     }
     if (Number(days) >= 99) {
-        pauseTimer();
+        StopTimer();
         timerDisplay.textContent = "Max Value Reached";
     }
     daysString = days;
@@ -197,7 +197,7 @@ function ConvertTimeToFormat(seconds) {
 }
 
 // Function to stop the timer
-function pauseTimer() {
+function StopTimer() {
     isTimerActive = 0;
     clearInterval(timer);
     SaveData();
@@ -259,7 +259,7 @@ pauseBtn.addEventListener('click', function () {
     console.log("Pause Button Clicked");
     if (isTimerActive == 1 && isTimerPaused == 0) {
         isTimerPaused = 1;
-        pauseTimer();
+        StopTimer();
         SaveData();
         LogEndOfTimer();
     }
@@ -268,7 +268,7 @@ pauseBtn.addEventListener('click', function () {
 resetBtn.addEventListener('click', function () {
     console.log("Stop Button Clicked");
     LogEndOfTimer();
-    pauseTimer();
+    StopTimer();
     ResetTimerValues();
 });
 
