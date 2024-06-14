@@ -204,6 +204,22 @@ function StopTimer() {
     timerCount = 0;
 }
 
+function resetTimer() {
+    clearInterval(timer); // Clear the interval
+    sec = 0;
+    totalSeconds = 0;
+    timerDisplay.textContent = '00:00:00';
+    isTimerActive = 0;
+    isTimerPaused = 0;
+    lastDate = null;
+    SaveData();
+
+    // Show start button and hide pause button
+    startBtn.style.display = 'inline-block';
+    pauseBtn.style.display = 'none';
+}
+
+
 // Function to save the timer state to local storage
 function SaveData() {
     const state = {
@@ -269,7 +285,7 @@ resetBtn.addEventListener('click', function () {
     console.log("Stop Button Clicked");
     LogEndOfTimer();
     StopTimer();
-    ResetTimerValues();
+    resetTimer();
 });
 
 
