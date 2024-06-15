@@ -87,6 +87,8 @@ var commentNumber = 0;
 var commentIdentifier = "";
 var username;
 var timerCount = 0;
+var sessionStartTime = null;
+var sessionDuration = 0;
 
 // Initialize Timer
 InitializeTimer();
@@ -145,6 +147,8 @@ function startTimer() {
     isTimerActive = 1;
     isTimerPaused = 0;
     startTime = Date(); // Capture the start time
+    sessionStartTime = new Date(); // Record session start time
+
     sendDataToDatabase(startTime); // Call sendDataToDatabase function
     timer = setInterval(function () {
         sec = Number(sec) + 1;
@@ -199,12 +203,28 @@ function ConvertTimeToFormat(seconds) {
 }
 
 // Function to stop the timer
+// Function to stop the timer
 function pauseTimer() {
     isTimerActive = 0;
     clearInterval(timer);
+    sessionDuration = Math.round((new Date() - sessionStartTime) / 1000); // Calculate session duration in seconds
+    console.log('Session duration:', sessionDuration);
     SaveData();
-    timerCount = 0;
+
+    // Example log data (you need to replace this with your actual log)
+    const log = `
+        start date: ${startTime}
+        stop date: ${new Date().toISOString()}
+    `;
+    calculateDuration(log);
+
+    sessionStartTime = null; // Reset session start time
+    sessionDuration = 0; // Reset session duration
+
+    startBtn.style.display = 'inline-block'; // Show start button
+    pauseBtn.style.display = 'none'; // Hide pause button
 }
+
 
 function resetTimer() {
     clearInterval(timer); // Clear the interval
@@ -398,6 +418,48 @@ document.getElementById('pause').addEventListener('click', function () {
 document.getElementById('reset').addEventListener('click', function () {
   handleIssueAction('reset');
 });
+
+function calculateDuration(log) {
+    const records = log.split("\n");
+    const startRecords = [];
+    const stopRecords = [];
+
+    // Extract start and stop records
+    for (const record of records) {
+        if (record.includes("start date:")) {
+            startRecords.push(record.replace("start date: ", "").trim());
+        }
+        if (record.includes("stop date:")) {
+            stopRecords.push(record.replace("stop date: ", "").trim());
+        }
+    }
+
+    // Ensure equal number of start and stop records
+    if (startRecords.length !== stopRecords.length) {
+        console.error("Mismatched start and stop records.");
+        return 0;
+    }
+
+    let totalTimeSpent = 0;
+
+    // Calculate total time spent
+    for (let i = 0; i < startRecords.length; i++) {
+        const startDate = new Date(startRecords[i]);
+        const stopDate = new Date(stopRecords[i]);
+
+        if (isNaN(startDate.getTime()) || isNaN(stopDate.getTime())) {
+            console.error("Invalid date format in records.");
+            continue;
+        }
+
+        const difference = (stopDate - startDate) / 1000; // Difference in seconds
+        totalTimeSpent += difference;
+    }
+
+    console.log(`Total Duration: ${totalTimeSpent} seconds`);
+    return totalTimeSpent;
+}
+
 
 function sendDataToDatabase(startTime) {
     console.log(startTime);
