@@ -1,5 +1,6 @@
 // Inject buttons function
 var results;
+
 function injectButtons() {
   console.log("Script Injected");
 
@@ -202,14 +203,16 @@ function ConvertTimeToFormat(seconds) {
     return daysString + ":" + hoursString + ':' + minutesString + ':' + secondsString;
 }
 
-// Function to stop the timer
-// Function to stop the timer
+// Inside pauseTimer function
 function pauseTimer() {
     isTimerActive = 0;
     clearInterval(timer);
     sessionDuration = Math.round((new Date() - sessionStartTime) / 1000); // Calculate session duration in seconds
-    console.log('Session duration:', sessionDuration);
+    console.log('Session duration:', sessionDuration); // Check sessionDuration in console
     SaveData();
+
+    var sessionDurationMessage = `${username}'s session duration: ${sessionDuration}`;
+    console.log('Session duration message:', sessionDurationMessage); // Check formatted message
 
     // Example log data (you need to replace this with your actual log)
     const log = `
@@ -218,9 +221,8 @@ function pauseTimer() {
     `;
     calculateDuration(log);
 
-    sessionStartTime = null; // Reset session start time
-    sessionDuration = 0; // Reset session duration
-
+    timerCount = 0;
+    startTime = null; // Reset startTime after logging
     startBtn.style.display = 'inline-block'; // Show start button
     pauseBtn.style.display = 'none'; // Hide pause button
 }
@@ -370,20 +372,32 @@ function handleIssueAction(action) {
                       textarea.value = `${title}\n### ${username} initiated issue at ${currentTime}, ${currentDate}:\n` + textarea.value;
                       console.log('Title added');
                   }
+                // Define the message based on the action
+                var message = '';
+                var sessionDurationMessage = `${username}'s session duration: ${ConvertTimeToFormat(sessionDuration)}`;
+                var divider = '........................................';
 
-                  // Define the message based on the action
-                  var message = '';
-                  if (action === 'start') {
-                      message = `${username} started issue`;
-                  } else if (action === 'pause') {
-                      message = `${username} paused issue`;
-                  } else if (action === 'reset') {
-                      message = `${username} reset issue`;
-                  } else if (action === 'update') { // Add handling for 'update' action
-                      message = `${username} updated comment`;
-                  }
-                  textarea.value += `\n${message} at ${new Date().toLocaleString()}`;
-                  console.log(`Added message: ${message}`);
+                if (action === 'start') {
+                    message = `${username} started issue`;
+                } else if (action === 'pause') {
+                    message = `${username} paused issue`;
+                    if (!textarea.value.includes(sessionDurationMessage)) {
+                        textarea.value += `\n${sessionDurationMessage}\n${divider}`;
+                    }
+                } else if (action === 'reset') {
+                    message = `${username} reset issue`;
+                    // Resetting session duration message when reset is clicked
+                    sessionDurationMessage = '';
+                } else if (action === 'update') {
+                    message = `${username} updated comment`;
+                }
+
+                // Append the action message to textarea only when not pausing
+                if (action !== 'pause') {
+                    textarea.value += `\n${message} at ${new Date().toLocaleString()}`;
+                }
+
+console.log(`Added message: ${message}`);
 
                   // Find the submit edit button
                   var submitEditButton = document.querySelector('.js-comment-update .Button--primary.Button--medium');
