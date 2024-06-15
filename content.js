@@ -323,6 +323,48 @@ function isITSCCommentFound() {
   return false;
 }
 
+function calculateDuration(log) {
+    const records = log.split("\n");
+    const startRecords = [];
+    const stopRecords = [];
+
+    // Extract start and stop records
+    for (const record of records) {
+        if (record.includes("start date:")) {
+            startRecords.push(record.replace("start date: ", "").trim());
+        }
+        if (record.includes("stop date:")) {
+            stopRecords.push(record.replace("stop date: ", "").trim());
+        }
+    }
+
+    // Ensure equal number of start and stop records
+    if (startRecords.length !== stopRecords.length) {
+        console.error("Mismatched start and stop records.");
+        return 0;
+    }
+
+    let totalTimeSpent = 0;
+
+    // Calculate total time spent
+    for (let i = 0; i < startRecords.length; i++) {
+        const startDate = new Date(startRecords[i]);
+        const stopDate = new Date(stopRecords[i]);
+
+        if (isNaN(startDate.getTime()) || isNaN(stopDate.getTime())) {
+            console.error("Invalid date format in records.");
+            continue;
+        }
+
+        const difference = (stopDate - startDate) / 1000; // Difference in seconds
+        totalTimeSpent += difference;
+    }
+
+    console.log(`Total Duration: ${totalTimeSpent} seconds`);
+    return totalTimeSpent;
+}
+
+
 
 // Function to click the dropdown button, then edit, and submit
 function handleIssueAction(action) {
@@ -372,21 +414,27 @@ function handleIssueAction(action) {
                       textarea.value = `${title}\n### ${username} initiated issue at ${currentTime}, ${currentDate}:\n` + textarea.value;
                       console.log('Title added');
                   }
-                // Define the message based on the action
+                // Initialize variables
                 var message = '';
                 var sessionDurationMessage = `${username}'s session duration: ${ConvertTimeToFormat(sessionDuration)}`;
                 var divider = '........................................';
 
+                // Determine the action and update textarea accordingly
                 if (action === 'start') {
                     message = `${username} started issue`;
                 } else if (action === 'pause') {
-                    message = `${username} paused issue`;
-                    if (!textarea.value.includes(sessionDurationMessage)) {
-                        textarea.value += `\n${sessionDurationMessage}\n${divider}`;
-                    }
+                    // Log "user paused issue at" with a line break before it
+                    textarea.value += `\n${username} paused issue at ${new Date().toLocaleString()}\n`;
+
+                    // Append session duration message and divider
+                    textarea.value += `${sessionDurationMessage}\n${divider}`;
+                    
+                    // Clear session duration message after appending if needed
+                    sessionDurationMessage = '';
                 } else if (action === 'reset') {
                     message = `${username} reset issue`;
-                    // Resetting session duration message when reset is clicked
+
+                    // Reset session duration message when reset is clicked
                     sessionDurationMessage = '';
                 } else if (action === 'update') {
                     message = `${username} updated comment`;
@@ -398,6 +446,7 @@ function handleIssueAction(action) {
                 }
 
 console.log(`Added message: ${message}`);
+
 
                   // Find the submit edit button
                   var submitEditButton = document.querySelector('.js-comment-update .Button--primary.Button--medium');
@@ -433,46 +482,6 @@ document.getElementById('reset').addEventListener('click', function () {
   handleIssueAction('reset');
 });
 
-function calculateDuration(log) {
-    const records = log.split("\n");
-    const startRecords = [];
-    const stopRecords = [];
-
-    // Extract start and stop records
-    for (const record of records) {
-        if (record.includes("start date:")) {
-            startRecords.push(record.replace("start date: ", "").trim());
-        }
-        if (record.includes("stop date:")) {
-            stopRecords.push(record.replace("stop date: ", "").trim());
-        }
-    }
-
-    // Ensure equal number of start and stop records
-    if (startRecords.length !== stopRecords.length) {
-        console.error("Mismatched start and stop records.");
-        return 0;
-    }
-
-    let totalTimeSpent = 0;
-
-    // Calculate total time spent
-    for (let i = 0; i < startRecords.length; i++) {
-        const startDate = new Date(startRecords[i]);
-        const stopDate = new Date(stopRecords[i]);
-
-        if (isNaN(startDate.getTime()) || isNaN(stopDate.getTime())) {
-            console.error("Invalid date format in records.");
-            continue;
-        }
-
-        const difference = (stopDate - startDate) / 1000; // Difference in seconds
-        totalTimeSpent += difference;
-    }
-
-    console.log(`Total Duration: ${totalTimeSpent} seconds`);
-    return totalTimeSpent;
-}
 
 
 function sendDataToDatabase(startTime) {
