@@ -1,15 +1,30 @@
-datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+// schema.prisma
+
+model User {
+  id        String   @id @default(dbgenerated("ObjectId()")) @map("_id")
+  username  String   @unique
+  timerData TimerData[]
 }
 
-generator client {
-  provider = "prisma-client-js"
+model Issue {
+  id        String   @id @default(dbgenerated("ObjectId()")) @map("_id")
+  issueName String   @unique
+  timerData TimerData[]
+}
+
+model Session {
+  id          String   @id @default(dbgenerated("ObjectId()")) @map("_id")
+  sessionName String   @unique
+  timerData   TimerData[]
 }
 
 model TimerData {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  username  String
-  startTime DateTime
-  issueName String
+  id         String   @id @default(dbgenerated("ObjectId()")) @map("_id")
+  userId     String
+  issueId    String
+  sessionId  String
+  startTime  DateTime
+  user       User     @relation(fields: [userId], references: [id])
+  issue      Issue    @relation(fields: [issueId], references: [id])
+  session    Session  @relation(fields: [sessionId], references: [id])
 }

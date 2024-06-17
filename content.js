@@ -485,12 +485,10 @@ document.getElementById('reset').addEventListener('click', function () {
 
 
 function sendDataToDatabase(startTime) {
-    console.log(startTime);
+    console.log('Start Time:', startTime);
   
     // Extract the username from the element
     const usernameElement = document.querySelector('.lh-condensed.overflow-hidden.d-flex.flex-column.flex-justify-center.ml-2.f5.mr-auto.width-full');
-  
-    // Extract username from element, or default to an empty string if element is not found
     const username = usernameElement?.innerText.trim().split('\n')[0] ?? '';
   
     // Grab the issue title
@@ -498,12 +496,20 @@ function sendDataToDatabase(startTime) {
     const issueName = issueTitleElement ? issueTitleElement.textContent.trim() : '';
     console.log('Issue Name:', issueName);
   
+    // Construct payload for POST request
+    const data = {
+      username,
+      startTime,
+      issueName,
+    };
+  
+    // Send data to backend
     fetch('http://localhost:3100/data', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ username, startTime, issueName }), // Sending username, startTime, and issueName
+      body: JSON.stringify(data),
     })
     .then(response => {
       if (!response.ok) {
