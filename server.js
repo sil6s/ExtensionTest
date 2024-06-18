@@ -50,6 +50,7 @@ app.post('/record-time', async (req, res) => {
           issueId: issue.id,
           sessionId: session.id,
           startTime: new Date(time),
+          stopTime: null, // Initially set stopTime as null for active session
         },
       });
 
@@ -65,16 +66,13 @@ app.post('/record-time', async (req, res) => {
         orderBy: {
           startTime: 'desc', // Order by startTime in descending order
         },
-        select: {
-          sessionId: true, // Select only the sessionId field
-        },
       });
 
       if (lastSession) {
         // Update TimerData for stop time in the last session
         await prisma.timerData.update({
           where: {
-            sessionId: lastSession.sessionId,
+            id: lastSession.id,
           },
           data: {
             stopTime: new Date(time),
@@ -93,6 +91,7 @@ app.post('/record-time', async (req, res) => {
     res.status(500).json({ error: 'Failed to record time' });
   }
 });
+
 
 // Start the server
 const PORT = 3100;
