@@ -39,6 +39,7 @@ function injectButtons() {
   startBtn.classList.add('btn', 'btn-primary', 'mx-2');
   startBtn.style.float = 'left';
   startBtn.addEventListener('click', function (e) {
+    const startTime = new Date();
     e.preventDefault();
     e.stopPropagation();
     startTimer();
@@ -52,6 +53,7 @@ function injectButtons() {
   pauseBtn.style.float = 'left';
   pauseBtn.style.display = 'none';
   pauseBtn.addEventListener('click', function (e) {
+    const pauseTime = new Date();
     e.preventDefault();
     e.stopPropagation();
     pauseTimer();
@@ -143,14 +145,15 @@ function InitializeTimer() {
     }
 }
 
-// Function to start the timer
 function startTimer() {
     isTimerActive = 1;
     isTimerPaused = 0;
-    startTime = Date(); // Capture the start time
+    startTime = new Date(); // Capture the start time
     sessionStartTime = new Date(); // Record session start time
 
-    sendDataToDatabase(startTime); // Call sendDataToDatabase function
+    // Call sendTimeToDatabase with type 'start' and startTime
+    sendTimeToDatabase('start', startTime);
+
     timer = setInterval(function () {
         sec = Number(sec) + 1;
         totalSeconds += parseInt(1);
@@ -158,13 +161,13 @@ function startTimer() {
         SaveData();
         totalTimeString = ConvertTimeToFormat(Number(sec));
         timerDisplay.textContent = totalTimeString;
-  
+
         // Show pause button and hide start button
         startBtn.style.display = 'none';
         pauseBtn.style.display = 'inline-block';
     }, 1000);
-  }
-  
+}
+
 
 // Function to convert time to the desired format
 function ConvertTimeToFormat(seconds) {
@@ -203,13 +206,15 @@ function ConvertTimeToFormat(seconds) {
     return daysString + ":" + hoursString + ':' + minutesString + ':' + secondsString;
 }
 
-// Inside pauseTimer function
 function pauseTimer() {
     isTimerActive = 0;
     clearInterval(timer);
     sessionDuration = Math.round((new Date() - sessionStartTime) / 1000); // Calculate session duration in seconds
     console.log('Session duration:', sessionDuration); // Check sessionDuration in console
     SaveData();
+
+    // Call sendTimeToDatabase with type 'pause' and pauseTime
+    sendTimeToDatabase('pause', new Date());
 
     var sessionDurationMessage = `${username}'s session duration: ${sessionDuration}`;
     console.log('Session duration message:', sessionDurationMessage); // Check formatted message
@@ -483,10 +488,7 @@ document.getElementById('reset').addEventListener('click', function () {
 });
 
 
-
-function sendDataToDatabase(startTime) {
-    console.log('Start Time:', startTime);
-  
+function sendTimeToDatabase(type, time) {
     // Extract the username from the element
     const usernameElement = document.querySelector('.lh-condensed.overflow-hidden.d-flex.flex-column.flex-justify-center.ml-2.f5.mr-auto.width-full');
     const username = usernameElement?.innerText.trim().split('\n')[0] ?? '';
@@ -494,17 +496,17 @@ function sendDataToDatabase(startTime) {
     // Grab the issue title
     const issueTitleElement = document.querySelector('.js-issue-title.markdown-title');
     const issueName = issueTitleElement ? issueTitleElement.textContent.trim() : '';
-    console.log('Issue Name:', issueName);
   
     // Construct payload for POST request
     const data = {
       username,
-      startTime,
       issueName,
+      type, // 'start' or 'stop'
+      time, // Date object or string representing time
     };
   
     // Send data to backend
-    fetch('http://localhost:3100/data', {
+    fetch('http://localhost:3100/record-time', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -515,10 +517,10 @@ function sendDataToDatabase(startTime) {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      console.log('Start time recorded successfully');
+      console.log(`${type} time recorded successfully`);
     })
     .catch(error => {
-      console.error('There was a problem recording the start time:', error);
+      console.error(`There was a problem recording the ${type} time:`, error);
     });
   }
   

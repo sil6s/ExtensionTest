@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { PrismaClient } = require('@prisma/client');
-const { v4: uuidv4 } = require('uuid'); // Import uuidv4 from uuid package
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 app.use(bodyParser.json());
@@ -14,10 +14,9 @@ app.get('/', (req, res) => {
   res.send('Hello');
 });
 
-app.post('/data', async (req, res) => {
+app.post('/record-time', async (req, res) => {
   try {
-    const { username, issueName, startTime } = req.body;
-    const sessionName = uuidv4(); // Generate a random UUID for sessionName
+    const { username, issueName, type, time } = req.body;
 
     // Find or create the User
     let user = await prisma.user.upsert({
@@ -33,6 +32,9 @@ app.post('/data', async (req, res) => {
       create: { issueName },
     });
 
+    // Generate a sessionName (assuming session is per user-issue combination)
+    const sessionName = `${user.id}_${issue.id}`;
+
     // Find or create the Session
     let session = await prisma.session.upsert({
       where: { sessionName },
@@ -40,20 +42,55 @@ app.post('/data', async (req, res) => {
       create: { sessionName },
     });
 
-    // Create the TimerData
-    const timerData = await prisma.timerData.create({
-      data: {
-        userId: user.id,
-        issueId: issue.id,
-        sessionId: session.id,
-        startTime: new Date(startTime),
-      },
-    });
+    if (type === 'start') {
+      // Create TimerData for start time
+      await prisma.timerData.create({
+        data: {
+          userId: user.id,
+          issueId: issue.id,
+          sessionId: session.id,
+          startTime: new Date(time),
+        },
+      });
 
-    res.json(timerData);
+      res.status(201).json({ message: 'Start time recorded successfully' });
+    } else if (type === 'pause') {
+      // Find the last active session for the user-issue combination
+      const lastSession = await prisma.timerData.findFirst({
+        where: {
+          userId: user.id,
+          issueId: issue.id,
+          stopTime: null, // Find the session with no stop time (active session)
+        },
+        orderBy: {
+          startTime: 'desc', // Order by startTime in descending order
+        },
+        select: {
+          sessionId: true, // Select only the sessionId field
+        },
+      });
+
+      if (lastSession) {
+        // Update TimerData for stop time in the last session
+        await prisma.timerData.update({
+          where: {
+            sessionId: lastSession.sessionId,
+          },
+          data: {
+            stopTime: new Date(time),
+          },
+        });
+
+        res.status(200).json({ message: 'Pause time recorded successfully' });
+      } else {
+        res.status(404).json({ error: 'No active session found to record pause time' });
+      }
+    } else {
+      res.status(400).json({ error: 'Invalid request: unknown type' });
+    }
   } catch (error) {
-    console.error('Error saving data:', error);
-    res.status(500).json({ error: 'Failed to save data' });
+    console.error('Error recording time:', error);
+    res.status(500).json({ error: 'Failed to record time' });
   }
 });
 
