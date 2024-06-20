@@ -71,6 +71,12 @@ margin-left:0px !important;
     color: white !important;
 }
 
+.btn-endPMS {
+    background-color: red !important;
+    color: white !important;
+
+}
+
 .btn-reset:hover {
     background-color: red !important;
 }

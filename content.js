@@ -20,17 +20,43 @@ function injectButtons() {
   // Append Timer display to the parent div
   parentDiv.appendChild(timerDisplay);
 
-  // Create Restart/Timer button
-  var timerButton = document.createElement('button');
-  timerButton.id = 'reset';
-  timerButton.innerHTML = '↺' + '&#9200;';
-  timerButton.classList.add('btn', 'mx-2', 'btn-warning');
-  timerButton.style.float = 'left';
-  timerButton.addEventListener('click', function (e) {
+// Create Restart/Timer button
+var timerButton = document.createElement('button');
+timerButton.id = 'reset';
+timerButton.innerHTML = '↺' + '&#9200;';
+timerButton.classList.add('btn', 'mx-2', 'btn-warning');
+timerButton.style.float = 'right';
+timerButton.addEventListener('click', function (e) {
+e.preventDefault();
+e.stopPropagation();
+resetTimer();
+});
+
+// Create End PMS Timer button
+var endPMS = document.createElement('button');
+endPMS.id = 'endPMS';
+endPMS.innerHTML = 'Finish Timer';
+endPMS.classList.add('btn-endPMS', 'btn', 'mx-2', 'btn-primary'); // Ensure mx-2 class is added
+endPMS.style.float = 'left';
+endPMS.addEventListener('click', function (e) {
     e.preventDefault();
     e.stopPropagation();
-    resetTimer();
-  });
+});
+
+// Inject CSS for idle and hover states
+var style = document.createElement('style');
+style.type = 'text/css';
+style.innerHTML = `
+    .btn-endPMS {
+        background-color: #980000 !important;
+        color: white !important;
+        margin: 0 8px; /* Adjust margin as needed */
+        transition: background-color 0.3s, color 0.3s; /* Add transition for smooth color change */
+    }
+\
+`;
+document.getElementsByTagName('head')[0].appendChild(style);
+
 
   // Create Start button
   var startBtn = document.createElement('button');
@@ -60,9 +86,12 @@ function injectButtons() {
   });
 
   // Append buttons to the parent div
-  parentDiv.appendChild(timerButton);
   parentDiv.appendChild(startBtn);
   parentDiv.appendChild(pauseBtn);
+  parentDiv.appendChild(endPMS);
+  parentDiv.appendChild(timerButton);
+
+
 }
 
 // Call the function to inject buttons
