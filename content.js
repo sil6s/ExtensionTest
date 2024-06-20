@@ -290,12 +290,7 @@ function getTotalIssueDuration() {
     return totalDuration;
 }
 
-// Example usage:
-// Assuming sessionDurations array is populated or loaded from localStorage
-// Call updateTotalIssueDuration() whenever you need to update and log the total issue duration
-updateTotalIssueDuration();
-
-
+// Function to reset the timer and clear session durations array
 function resetTimer() {
     clearInterval(timer); // Clear the interval
     sec = 0;
@@ -304,6 +299,14 @@ function resetTimer() {
     isTimerActive = 0;
     isTimerPaused = 0;
     lastDate = null;
+
+    console.log('Before reset, sessionDurations:', sessionDurations);
+    sessionDurations = []; // Clear session durations array
+    console.log('After reset, sessionDurations:', sessionDurations);
+
+
+    sessionDurations = []; // Clear session durations array
+
     SaveData();
 
     // Show start button and hide pause button
@@ -324,6 +327,11 @@ function SaveData() {
     };
     localStorage.setItem(username + window.location.href, JSON.stringify(state));
 }
+
+// Example usage:
+// Assuming sessionDurations array is populated or loaded from localStorage
+// Call updateTotalIssueDuration() whenever you need to update and log the total issue duration
+updateTotalIssueDuration();
 
 // Function to load the timer state from local storage
 function LoadData() {
@@ -432,7 +440,6 @@ function calculateDuration(log) {
 }
 
 
-
 // Function to click the dropdown button, then edit, and submit
 function handleIssueAction(action) {
     // Find the dropdown button
@@ -502,7 +509,26 @@ function handleIssueAction(action) {
                         sessionDurationMessage = '';
                     } else if (action === 'update') {
                         message = `${username} updated comment`;
-                    } else if (action === 'finish') {
+                    } 
+                    // Inside the handleIssueAction() function
+                    if (action === 'finish') {
+                        // Log "user paused issue at" with a line break before it
+                        textarea.value += `\n${username} finished working on ${new Date().toLocaleString()}\n`;
+
+                        // Update total issue duration before appending session duration message
+                        updateTotalIssueDuration();
+
+                        // Get the updated total issue duration
+                        var totalIssueDuration = getTotalIssueDuration();
+
+                        // Append session duration message and divider
+                        textarea.value += `Total Issue Duration: ${ConvertTimeToFormat(totalIssueDuration)}\n${divider}`;
+
+                        // Clear session duration message after appending if needed
+                        sessionDurationMessage = '';
+                    }
+                    
+                    else if (action === 'finish') {
                         // Construct finish message
                         var issueName = "Your Issue Name"; // Replace with actual logic to get issue name
                         var finishMessage = `${username} finished working on ${issueName} at ${currentTime}, ${currentDate}.<br>${sessionDurationMessage}\n`;
@@ -536,6 +562,9 @@ function handleIssueAction(action) {
         console.log('Dropdown button not found');
     }
 }
+
+
+
 
 // Event listener for the buttons with IDs start, pause, reset
 document.getElementById('start').addEventListener('click', function () {
