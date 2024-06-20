@@ -251,7 +251,7 @@ function pauseTimer() {
     // Call sendTimeToDatabase with type 'pause' and pauseTime
     sendTimeToDatabase('pause', new Date());
 
-    var sessionDurationMessage = `${username}'s session duration: ${sessionDuration}`;
+    var sessionDurationMessage = `${username}'s session duration: ${sessionDuration} seconds`;
     console.log('Session duration message:', sessionDurationMessage); // Check formatted message
 
     // Example log data (you need to replace this with your actual log)
@@ -271,7 +271,13 @@ function pauseTimer() {
 
     // Update total issue duration after pausing the timer
     updateTotalIssueDuration();
+
+    // Call handleIssueAction with sessionDurationMessage
+    handleIssueAction('pause', sessionDurationMessage);
+
+    console.log('After handleIssueAction session duration:', sessionDuration); // Check sessionDuration after passing to handleIssueAction
 }
+
 
 // Function to update total issue duration based on session durations array
 function updateTotalIssueDuration() {
@@ -439,9 +445,8 @@ function calculateDuration(log) {
     return totalTimeSpent;
 }
 
-
 // Function to click the dropdown button, then edit, and submit
-function handleIssueAction(action) {
+function handleIssueAction(action, sessionDurationMessage) {
     // Find the dropdown button
     var dropdownButton = document.querySelector('summary.timeline-comment-action.Link--secondary.Button--link.Button--medium.Button');
 
@@ -487,7 +492,6 @@ function handleIssueAction(action) {
 
                     // Initialize variables
                     var message = '';
-                    var sessionDurationMessage = `${username}'s session duration: ${ConvertTimeToFormat(sessionDuration)}`;
                     var divider = '........................................';
 
                     // Determine the action and update textarea accordingly
@@ -499,20 +503,12 @@ function handleIssueAction(action) {
 
                         // Append session duration message and divider
                         textarea.value += `${sessionDurationMessage}\n${divider}`;
-
-                        // Clear session duration message after appending if needed
-                        sessionDurationMessage = '';
                     } else if (action === 'reset') {
                         message = `${username} reset issue`;
-
-                        // Reset session duration message when reset is clicked
-                        sessionDurationMessage = '';
                     } else if (action === 'update') {
                         message = `${username} updated comment`;
-                    } 
-                    // Inside the handleIssueAction() function
-                    if (action === 'finish') {
-                        // Log "user paused issue at" with a line break before it
+                    } else if (action === 'finish') {
+                        // Log "user finished issue at" with a line break before it
                         textarea.value += `\n${username} finished working on ${new Date().toLocaleString()}\n`;
 
                         // Update total issue duration before appending session duration message
@@ -523,18 +519,6 @@ function handleIssueAction(action) {
 
                         // Append session duration message and divider
                         textarea.value += `Total Issue Duration: ${ConvertTimeToFormat(totalIssueDuration)}\n${divider}`;
-
-                        // Clear session duration message after appending if needed
-                        sessionDurationMessage = '';
-                    }
-                    
-                    else if (action === 'finish') {
-                        // Construct finish message
-                        var issueName = "Your Issue Name"; // Replace with actual logic to get issue name
-                        var finishMessage = `${username} finished working on ${issueName} at ${currentTime}, ${currentDate}.<br>${sessionDurationMessage}\n`;
-
-                        // Append the finish message
-                        textarea.value += `\n${finishMessage}`;
                     }
 
                     // Append the action message to textarea only when not pausing or finishing
@@ -562,7 +546,6 @@ function handleIssueAction(action) {
         console.log('Dropdown button not found');
     }
 }
-
 
 
 
