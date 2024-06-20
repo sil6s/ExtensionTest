@@ -235,11 +235,17 @@ function ConvertTimeToFormat(seconds) {
     return daysString + ":" + hoursString + ':' + minutesString + ':' + secondsString;
 }
 
+// Array to store session durations
+var sessionDurations = [];
+
+// Function to pause the timer and calculate session duration
 function pauseTimer() {
     isTimerActive = 0;
     clearInterval(timer);
-    sessionDuration = Math.round((new Date() - sessionStartTime) / 1000); // Calculate session duration in seconds
+    var sessionDuration = Math.round((new Date() - sessionStartTime) / 1000); // Calculate session duration in seconds
     console.log('Session duration:', sessionDuration); // Check sessionDuration in console
+    sessionDurations.push(sessionDuration); // Store session duration in the array
+
     SaveData();
 
     // Call sendTimeToDatabase with type 'pause' and pauseTime
@@ -259,7 +265,35 @@ function pauseTimer() {
     startTime = null; // Reset startTime after logging
     startBtn.style.display = 'inline-block'; // Show start button
     pauseBtn.style.display = 'none'; // Hide pause button
+
+    // Log the updated session durations array
+    console.log('Session Durations:', sessionDurations);
+
+    // Update total issue duration after pausing the timer
+    updateTotalIssueDuration();
 }
+
+// Function to update total issue duration based on session durations array
+function updateTotalIssueDuration() {
+    var totalIssueDuration = getTotalIssueDuration();
+    console.log('Total Issue Duration:', totalIssueDuration, 'seconds');
+}
+
+// Function to get total issue duration from sum of session durations
+function getTotalIssueDuration() {
+    // Sum up all session durations in the array
+    var totalDuration = sessionDurations.reduce(function (a, b) {
+        return a + b;
+    }, 0);
+
+    // Return the total duration in seconds
+    return totalDuration;
+}
+
+// Example usage:
+// Assuming sessionDurations array is populated or loaded from localStorage
+// Call updateTotalIssueDuration() whenever you need to update and log the total issue duration
+updateTotalIssueDuration();
 
 
 function resetTimer() {
@@ -394,7 +428,6 @@ function calculateDuration(log) {
         totalTimeSpent += difference;
     }
 
-    console.log(`Total Duration: ${totalTimeSpent} seconds`);
     return totalTimeSpent;
 }
 
@@ -402,105 +435,106 @@ function calculateDuration(log) {
 
 // Function to click the dropdown button, then edit, and submit
 function handleIssueAction(action) {
-  // Find the dropdown button
-  var dropdownButton = document.querySelector('summary.timeline-comment-action.Link--secondary.Button--link.Button--medium.Button');
+    // Find the dropdown button
+    var dropdownButton = document.querySelector('summary.timeline-comment-action.Link--secondary.Button--link.Button--medium.Button');
 
-  if (dropdownButton) {
-      // Click the dropdown button
-      dropdownButton.click();
-      console.log('Dropdown button clicked');
+    if (dropdownButton) {
+        // Click the dropdown button
+        dropdownButton.click();
+        console.log('Dropdown button clicked');
 
-      // Wait for the edit button to become visible
-      setTimeout(function () {
-          // Find the edit button
-          var editButton = document.querySelector('.dropdown-item.btn-link.js-comment-edit-button');
-          if (editButton) {
-              // Click the edit button
-              editButton.click();
-              console.log('Edit button clicked');
+        // Wait for the edit button to become visible
+        setTimeout(function () {
+            // Find the edit button
+            var editButton = document.querySelector('.dropdown-item.btn-link.js-comment-edit-button');
+            if (editButton) {
+                // Click the edit button
+                editButton.click();
+                console.log('Edit button clicked');
 
-              // Target the textarea by its name attribute
-              var textarea = document.querySelector('textarea[name="issue[body]"]');
-              if (textarea) {
-                  // Get the current time and date
-                  var currentTime = new Date().toLocaleTimeString();
-                  var currentDate = new Date().toLocaleDateString();
+                // Target the textarea by its name attribute
+                var textarea = document.querySelector('textarea[name="issue[body]"]');
+                if (textarea) {
+                    // Get the current time and date
+                    var currentTime = new Date().toLocaleTimeString();
+                    var currentDate = new Date().toLocaleDateString();
 
-                  // Get the element containing the username
-                  var usernameElement = document.querySelector('.lh-condensed.overflow-hidden.d-flex.flex-column.flex-justify-center.ml-2.f5.mr-auto.width-full');
+                    // Get the element containing the username
+                    var usernameElement = document.querySelector('.lh-condensed.overflow-hidden.d-flex.flex-column.flex-justify-center.ml-2.f5.mr-auto.width-full');
 
-                  // Extract the username from the element
-                  var username = '';
-                  if (usernameElement) {
-                      var lines = usernameElement.innerText.trim().split('\n');
-                      if (lines.length > 0) {
-                          username = lines[0];
-                      }
-                  }
-        
-                  
+                    // Extract the username from the element
+                    var username = '';
+                    if (usernameElement) {
+                        var lines = usernameElement.innerText.trim().split('\n');
+                        if (lines.length > 0) {
+                            username = lines[0];
+                        }
+                    }
 
-                  console.log(username);
+                    // Check if the title "## ITSC Project Management:" exists
+                    var title = "## ITSC Project Management:";
+                    if (!textarea.value.includes(title)) {
+                        textarea.value = `${title}\n### ${username} initiated issue at ${currentTime}, ${currentDate}:\n` + textarea.value;
+                        console.log('Title added');
+                    }
 
-                  // Check if the title "##ITSC Project Management:" exists
-                  var title = "## ITSC Project Management:";
-                  if (!textarea.value.includes(title)) {
-                      textarea.value = `${title}\n### ${username} initiated issue at ${currentTime}, ${currentDate}:\n` + textarea.value;
-                      console.log('Title added');
-                  }
-                // Initialize variables
-                var message = '';
-                var sessionDurationMessage = `${username}'s session duration: ${ConvertTimeToFormat(sessionDuration)}`;
-                var divider = '........................................';
+                    // Initialize variables
+                    var message = '';
+                    var sessionDurationMessage = `${username}'s session duration: ${ConvertTimeToFormat(sessionDuration)}`;
+                    var divider = '........................................';
 
-                // Determine the action and update textarea accordingly
-                if (action === 'start') {
-                    message = `${username} started issue`;
-                } else if (action === 'pause') {
-                    // Log "user paused issue at" with a line break before it
-                    textarea.value += `\n${username} paused issue at ${new Date().toLocaleString()}\n`;
+                    // Determine the action and update textarea accordingly
+                    if (action === 'start') {
+                        message = `${username} started issue`;
+                    } else if (action === 'pause') {
+                        // Log "user paused issue at" with a line break before it
+                        textarea.value += `\n${username} paused issue at ${new Date().toLocaleString()}\n`;
 
-                    // Append session duration message and divider
-                    textarea.value += `${sessionDurationMessage}\n${divider}`;
-                    
-                    // Clear session duration message after appending if needed
-                    sessionDurationMessage = '';
-                } else if (action === 'reset') {
-                    message = `${username} reset issue`;
+                        // Append session duration message and divider
+                        textarea.value += `${sessionDurationMessage}\n${divider}`;
 
-                    // Reset session duration message when reset is clicked
-                    sessionDurationMessage = '';
-                } else if (action === 'update') {
-                    message = `${username} updated comment`;
+                        // Clear session duration message after appending if needed
+                        sessionDurationMessage = '';
+                    } else if (action === 'reset') {
+                        message = `${username} reset issue`;
+
+                        // Reset session duration message when reset is clicked
+                        sessionDurationMessage = '';
+                    } else if (action === 'update') {
+                        message = `${username} updated comment`;
+                    } else if (action === 'finish') {
+                        // Construct finish message
+                        var issueName = "Your Issue Name"; // Replace with actual logic to get issue name
+                        var finishMessage = `${username} finished working on ${issueName} at ${currentTime}, ${currentDate}.<br>${sessionDurationMessage}\n`;
+
+                        // Append the finish message
+                        textarea.value += `\n${finishMessage}`;
+                    }
+
+                    // Append the action message to textarea only when not pausing or finishing
+                    if (action !== 'pause' && action !== 'finish') {
+                        textarea.value += `\n${message} at ${new Date().toLocaleString()}`;
+                    }
+
+                    // Find the submit edit button
+                    var submitEditButton = document.querySelector('.js-comment-update .Button--primary.Button--medium');
+                    if (submitEditButton) {
+                        // Click the submit edit button
+                        submitEditButton.click();
+                        console.log('Submit edit button clicked');
+                    } else {
+                        console.log('Submit edit button not found');
+                    }
+                } else {
+                    console.log('Textarea element not found');
                 }
-
-                // Append the action message to textarea only when not pausing
-                if (action !== 'pause') {
-                    textarea.value += `\n${message} at ${new Date().toLocaleString()}`;
-                }
-
-console.log(`Added message: ${message}`);
-
-
-                  // Find the submit edit button
-                  var submitEditButton = document.querySelector('.js-comment-update .Button--primary.Button--medium');
-                  if (submitEditButton) {
-                      // Click the submit edit button
-                      submitEditButton.click();
-                      console.log('Submit edit button clicked');
-                  } else {
-                      console.log('Submit edit button not found');
-                  }
-              } else {
-                  console.log('Textarea element not found');
-              }
-          } else {
-              console.log('Edit button not found');
-          }
-      }, 500); // Adjust timeout as necessary
-  } else {
-      console.log('Dropdown button not found');
-  }
+            } else {
+                console.log('Edit button not found');
+            }
+        }, 500); // Adjust timeout as necessary
+    } else {
+        console.log('Dropdown button not found');
+    }
 }
 
 // Event listener for the buttons with IDs start, pause, reset
@@ -515,6 +549,10 @@ document.getElementById('pause').addEventListener('click', function () {
 document.getElementById('reset').addEventListener('click', function () {
   handleIssueAction('reset');
 });
+
+document.getElementById('endPMS').addEventListener('click', function () {
+    handleIssueAction('finish');
+  });
 
 
 function sendTimeToDatabase(type, time) {
