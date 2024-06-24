@@ -22,9 +22,9 @@
     "default_popup": "hello.html",
     "default_title": "ITSC Project Management",
     "default_icon": {
-      "16": "ITSC16.jpg",
-      "48": "ITSC48.jpg",
-      "128": "ITSC128.jpg"
+      "16": "icons/ITSC16.jpg",
+      "48": "icons/ITSC48.jpg",
+      "128": "icons/ITSC128.jpg"
     }
   },
   "background": {
