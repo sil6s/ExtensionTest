@@ -568,9 +568,10 @@ document.getElementById('endPMS').addEventListener('click', function () {
 
 
   function sendTimeToDatabase(type, time, sessionDuration = null) {
-    // Extract the username from the element
-    const usernameElement = document.querySelector('.lh-condensed.overflow-hidden.d-flex.flex-column.flex-justify-center.ml-2.f5.mr-auto.width-full');
-    const username = usernameElement?.innerText.trim().split('\n')[0] ?? '';
+
+    var username = document.querySelector('meta[name="octolytics-actor-login"]').getAttribute('content');
+    console.log('Sending Database User' + username);
+
     console.log('Database User: ' + username)
   
     // Grab the issue title
