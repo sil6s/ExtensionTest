@@ -567,10 +567,11 @@ document.getElementById('endPMS').addEventListener('click', function () {
   });
 
 
-function sendTimeToDatabase(type, time) {
+  function sendTimeToDatabase(type, time, sessionDuration = null) {
     // Extract the username from the element
     const usernameElement = document.querySelector('.lh-condensed.overflow-hidden.d-flex.flex-column.flex-justify-center.ml-2.f5.mr-auto.width-full');
     const username = usernameElement?.innerText.trim().split('\n')[0] ?? '';
+    console.log('Database User: ' + username)
   
     // Grab the issue title
     const issueTitleElement = document.querySelector('.js-issue-title.markdown-title');
@@ -580,8 +581,9 @@ function sendTimeToDatabase(type, time) {
     const data = {
       username,
       issueName,
-      type, // 'start' or 'stop'
+      type, // 'start' or 'pause'
       time, // Date object or string representing time
+      sessionDuration, // Duration of the session in seconds
     };
   
     // Send data to backend
@@ -601,5 +603,69 @@ function sendTimeToDatabase(type, time) {
     .catch(error => {
       console.error(`There was a problem recording the ${type} time:`, error);
     });
+  }
+  
+  // Updated startTimer function
+  function startTimer() {
+    isTimerActive = 1;
+    isTimerPaused = 0;
+    startTime = new Date(); // Capture the start time
+    sessionStartTime = new Date(); // Record session start time
+  
+    // Call sendTimeToDatabase with type 'start' and startTime
+    sendTimeToDatabase('start', startTime);
+  
+    timer = setInterval(function () {
+      sec = Number(sec) + 1;
+      totalSeconds += parseInt(1);
+      lastDate = Date();
+      SaveData();
+      totalTimeString = ConvertTimeToFormat(Number(sec));
+      timerDisplay.textContent = totalTimeString;
+  
+      // Show pause button and hide start button
+      startBtn.style.display = 'none';
+      pauseBtn.style.display = 'inline-block';
+    }, 1000);
+  }
+  
+  // Updated pauseTimer function
+  function pauseTimer() {
+    isTimerActive = 0;
+    clearInterval(timer);
+    var sessionDuration = Math.round((new Date() - sessionStartTime) / 1000); // Calculate session duration in seconds
+    console.log('Session duration:', sessionDuration); // Check sessionDuration in console
+    sessionDurations.push(sessionDuration); // Store session duration in the array
+  
+    SaveData();
+  
+    // Call sendTimeToDatabase with type 'pause', pauseTime and sessionDuration
+    sendTimeToDatabase('pause', new Date(), sessionDuration);
+  
+    var sessionDurationMessage = `${username}'s session duration: ${sessionDuration} seconds`;
+    console.log('Session duration message:', sessionDurationMessage); // Check formatted message
+  
+    // Example log data (you need to replace this with your actual log)
+    const log = `
+      start date: ${startTime}
+      stop date: ${new Date().toISOString()}
+    `;
+    calculateDuration(log);
+  
+    timerCount = 0;
+    startTime = null; // Reset startTime after logging
+    startBtn.style.display = 'inline-block'; // Show start button
+    pauseBtn.style.display = 'none'; // Hide pause button
+  
+    // Log the updated session durations array
+    console.log('Session Durations:', sessionDurations);
+  
+    // Update total issue duration after pausing the timer
+    updateTotalIssueDuration();
+  
+    // Call handleIssueAction with sessionDurationMessage
+    handleIssueAction('pause', sessionDurationMessage);
+  
+    console.log('After handleIssueAction session duration:', sessionDuration); // Check sessionDuration after passing to handleIssueAction
   }
   

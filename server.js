@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { PrismaClient } = require('@prisma/client');
-const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 app.use(bodyParser.json());
@@ -10,10 +9,12 @@ app.use(cors());
 
 const prisma = new PrismaClient();
 
+// Endpoint to greet
 app.get('/', (req, res) => {
   res.send('Hello');
 });
 
+// Endpoint to record start and pause times
 app.post('/record-time', async (req, res) => {
   try {
     const { username, issueName, type, time } = req.body;
@@ -39,7 +40,7 @@ app.post('/record-time', async (req, res) => {
     let session = await prisma.session.upsert({
       where: { sessionName },
       update: {},
-      create: { sessionName },
+      create: { sessionName, userId: user.id, issueId: issue.id, durations: [] },
     });
 
     if (type === 'start') {
@@ -70,12 +71,26 @@ app.post('/record-time', async (req, res) => {
 
       if (lastSession) {
         // Update TimerData for stop time in the last session
+        const stopTime = new Date(time);
         await prisma.timerData.update({
           where: {
             id: lastSession.id,
           },
           data: {
-            stopTime: new Date(time),
+            stopTime,
+          },
+        });
+
+        // Calculate session duration
+        const sessionDuration = Math.round((stopTime - new Date(lastSession.startTime)) / 1000); // Duration in seconds
+
+        // Update Session durations array
+        await prisma.session.update({
+          where: { id: session.id },
+          data: {
+            durations: {
+              push: sessionDuration,
+            },
           },
         });
 
@@ -92,6 +107,75 @@ app.post('/record-time', async (req, res) => {
   }
 });
 
+// Endpoint to fetch issues and related data
+app.get('/issues', async (req, res) => {
+  try {
+    const issues = await prisma.issue.findMany({
+      include: {
+        sessions: {
+          include: {
+            user: true,
+            timerData: true
+          }
+        }
+      }
+    });
+
+    // Format the response data
+    const formattedIssues = issues.map(issue => ({
+      issueName: issue.issueName,
+      sessions: issue.sessions.map(session => ({
+        username: session.user.username,
+        totalDuration: session.timerData.reduce((total, timer) => {
+          if (timer.stopTime) {
+            return total + (new Date(timer.stopTime) - new Date(timer.startTime));
+          }
+          return total;
+        }, 0)
+      }))
+    }));
+
+    res.status(200).json(formattedIssues);
+  } catch (error) {
+    console.error('Error fetching issues:', error);
+    res.status(500).json({ error: 'Failed to fetch issues' });
+  }
+});
+
+// Endpoint to fetch users and related data
+app.get('/users', async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      include: {
+        sessions: {
+          include: {
+            issue: true,
+            timerData: true
+          }
+        }
+      }
+    });
+
+    // Format the response data
+    const formattedUsers = users.map(user => ({
+      username: user.username,
+      issues: user.sessions.map(session => ({
+        issueName: session.issue.issueName,
+        totalDuration: session.timerData.reduce((total, timer) => {
+          if (timer.stopTime) {
+            return total + (new Date(timer.stopTime) - new Date(timer.startTime));
+          }
+          return total;
+        }, 0)
+      }))
+    }));
+
+    res.status(200).json(formattedUsers);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
 
 // Start the server
 const PORT = 3100;
