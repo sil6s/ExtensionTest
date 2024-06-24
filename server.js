@@ -14,6 +14,28 @@ app.get('/', (req, res) => {
   res.send('Hello');
 });
 
+// Utility function to update UserIssueJoin
+async function updateUserIssueJoin(username, issueName, duration) {
+  await prisma.userIssueJoin.upsert({
+    where: {
+      username_issueName: {
+        username,
+        issueName,
+      },
+    },
+    update: {
+      totalDuration: {
+        increment: duration,
+      },
+    },
+    create: {
+      username,
+      issueName,
+      totalDuration: duration,
+    },
+  });
+}
+
 // Endpoint to record start and pause times
 app.post('/record-time', async (req, res) => {
   try {
@@ -93,6 +115,9 @@ app.post('/record-time', async (req, res) => {
             },
           },
         });
+
+        // Update or create UserIssueJoin
+        await updateUserIssueJoin(user.username, issue.issueName, sessionDuration);
 
         res.status(200).json({ message: 'Pause time recorded successfully' });
       } else {
@@ -177,6 +202,17 @@ app.get('/users', async (req, res) => {
   }
 });
 
+// Endpoint to fetch user-issue joins
+app.get('/user-issue-join', async (req, res) => {
+  try {
+    const userIssueJoins = await prisma.userIssueJoin.findMany();
+
+    res.status(200).json(userIssueJoins);
+  } catch (error) {
+    console.error('Error fetching user-issue joins:', error);
+    res.status(500).json({ error: 'Failed to fetch user-issue joins' });
+  }
+});
 
 // Start the server
 const PORT = 3100;

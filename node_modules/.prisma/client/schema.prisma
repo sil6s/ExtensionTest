@@ -12,6 +12,8 @@ model User {
   username  String      @unique
   sessions  Session[]
   timerData TimerData[]
+  userIssueJoins UserIssueJoin[]
+
 }
 
 model Issue {
@@ -19,6 +21,8 @@ model Issue {
   issueName String      @unique
   sessions  Session[]
   timerData TimerData[]
+  userIssueJoins UserIssueJoin[]
+
 }
 
 model Session {
@@ -42,4 +46,15 @@ model TimerData {
   user      User     @relation(fields: [userId], references: [id])
   issue     Issue    @relation(fields: [issueId], references: [id])
   session   Session  @relation(fields: [sessionId], references: [id])
+}
+
+model UserIssueJoin {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String
+  issueName String
+  totalDuration Int
+  user      User     @relation(fields: [username], references: [username])
+  issue     Issue    @relation(fields: [issueName], references: [issueName])
+
+  @@unique([username, issueName])
 }
