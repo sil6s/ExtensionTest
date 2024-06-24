@@ -177,6 +177,41 @@ app.get('/users', async (req, res) => {
   }
 });
 
+// Endpoint to fetch issues joined on users
+app.get('/issues-joined-on-users', async (req, res) => {
+  try {
+    const issues = await prisma.issue.findMany({
+      include: {
+        sessions: {
+          include: {
+            user: true,
+            timerData: true
+          }
+        }
+      }
+    });
+
+    // Format the response data
+    const formattedData = issues.flatMap(issue =>
+      issue.sessions.map(session => ({
+        issueName: issue.issueName,
+        username: session.user.username,
+        totalDuration: session.timerData.reduce((total, timer) => {
+          if (timer.stopTime) {
+            return total + (new Date(timer.stopTime) - new Date(timer.startTime));
+          }
+          return total;
+        }, 0)
+      }))
+    );
+
+    res.status(200).json(formattedData);
+  } catch (error) {
+    console.error('Error fetching issues joined on users:', error);
+    res.status(500).json({ error: 'Failed to fetch issues joined on users' });
+  }
+});
+
 // Start the server
 const PORT = 3100;
 app.listen(PORT, async () => {

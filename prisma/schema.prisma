@@ -1,6 +1,8 @@
+// schema.prisma
+
 datasource db {
   provider = "mongodb"
-  url      = env("DATABASE_URL")
+  url = env("DATABASE_URL")
 }
 
 generator client {
@@ -19,28 +21,43 @@ model Issue {
   issueName String      @unique
   sessions  Session[]
   timerData TimerData[]
+  // Add reverse relation to IssueJoinedOnUsers
+  issuesJoinedOnUsers IssueJoinedOnUsers[]
 }
 
+
 model Session {
-  id          String      @id @default(auto()) @map("_id") @db.ObjectId
-  sessionName String      @unique
-  userId      String      @db.ObjectId
-  issueId     String      @db.ObjectId
-  durations   Int[]       // Array to store session durations
-  user        User        @relation(fields: [userId], references: [id])
-  issue       Issue       @relation(fields: [issueId], references: [id])
-  timerData   TimerData[]
+  id                String              @id @default(auto()) @map("_id") @db.ObjectId
+  sessionName       String              @unique
+  userId            String              @db.ObjectId
+  issueId           String              @db.ObjectId
+  durations         Int[]               // Array to store session durations
+  user              User                @relation(fields: [userId], references: [id])
+  issue             Issue               @relation(fields: [issueId], references: [id])
+  timerData         TimerData[]
+  // Explicitly define the relation to IssueJoinedOnUsers
+  issuesJoinedOnUsers IssueJoinedOnUsers[] 
 }
 
 model TimerData {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String     @db.ObjectId
-  issueId   String     @db.ObjectId
-  sessionId String     @db.ObjectId
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  issueId   String   @db.ObjectId
+  sessionId String   @db.ObjectId
   startTime DateTime
   stopTime  DateTime?
-  user      User       @relation(fields: [userId], references: [id])
-  issue     Issue      @relation(fields: [issueId], references: [id])
-  session   Session    @relation(fields: [sessionId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  issue     Issue    @relation(fields: [issueId], references: [id])
+  session   Session  @relation(fields: [sessionId], references: [id])
 }
 
+// Adjusted model for explicit many-to-many relationship
+model IssueJoinedOnUsers {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  issueId   String    @db.ObjectId
+  sessionId String    @db.ObjectId
+  issue     Issue     @relation(fields: [issueId], references: [id])
+  session   Session   @relation(fields: [sessionId], references: [id])
+
+  @@unique([issueId, sessionId])
+}
