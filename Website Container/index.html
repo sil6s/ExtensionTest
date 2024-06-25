@@ -4,117 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;1,463&display=swap" rel="stylesheet">
-    <title>UC ITSC Project Management System (ITSC PMS)</title>
-    <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #E5E7E9;
-        color: #333;
-    }
-
-    header {
-        background-color: #191919;
-        color: white;
-        padding: 20px;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        margin: 0 10px 0 20px;
-    }
-
-    .svg-logo {
-        max-height: 60px; /* Maximum height set to 40px */
-        margin-right: auto; /* Pushes logo to the left */
-        margin-left: 15px
-    }
-
-    .content {
-        margin-left:15px;
-        font-size: 20px;
-        font-family: Montserrat;
-        flex: 1 1 auto; /* Adjust flex properties as needed */
-    }
-
-    .content p {
-        margin: 0; /* Remove margin */
-    }
-
-    .container {
-    padding: 20px;
-    display: flex;
-    justify-content: flex-start; /* Align items to the start (left) */
-    align-items: flex-start; /* Align items to the start (top) */
-    height: calc(100vh - 80px); /* 80px is the header height */
-    }
-
-    .issue-container {
-    padding: 10px 20px 20px 20px;
-    display: flex;
-    justify-content: flex-start; /* Align items to the start (left) */
-    align-items: flex-start; /* Align items to the start (top) */
-    height: calc(100vh - 80px); /* 80px is the header height */
-    }
-
-    
-
-    iframe {
-        background: #F1F5F4;
-        border: none;
-        border-radius: 2px;
-        box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);
-        width: 100%;
-        height: 100%;
-    }
-    .vl {
-        margin-left: 15px;
-        border-left: 3px solid #e00122;
-        height: 50px;
-    }
-
-    .topnav {
-            overflow: hidden;
-            position: fixed;
-            top: 20;
-            left: 28px;
-            width: 100%;
-            z-index: 1; 
-        }
-
-
-/* Hide the links inside the navigation menu (except for logo/home) */
-.topnav #myLinks {
-  display: none;
-  color: white;
-  background-color: #b9001b;
-  width: 20%;
-  padding: 10px 0 0 10px;
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;1,463&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="website.css">
 
 
 
-  
-}
+    <title>UC | ITSC PMS</title>
 
-/* Style navigation menu links */
-.topnav a {
-    
-  width: 20%;
-  color: white;
-  padding: 10px 0 0 10px;
-  margin: 0px;
-  text-decoration: none;
-  font-size: 17px;
-  display: block;
-}
-
-.topnav a:hover {
-    opacity: 0.8;
-}
-
-
-
-    </style>
 </head>
 <body>
     <header>
@@ -174,11 +72,14 @@
   
   </div>
 
-    <div class="container">
+    <div class="pie-container">
         <iframe style="background: #FFFFFF;border: none;border-radius: 2px;box-shadow: 0 0 2px 10px 0 rgba(70, 76, 79, .2);margin-right: 15px;" width="640" height="480" src="https://charts.mongodb.com/charts-itsc-pms-jdvklnb/embed/charts?id=667ac428-6ac6-449e-880d-27a2ab780931&maxDataAge=60&theme=light&autoRefresh=true"></iframe>
-        <iframe style="background: #FFFFFF;border: none;border-radius: 2px;box-shadow: 0 0 2px 10px 0 rgba(70, 76, 79, .2);" width="640" height="480" src="https://charts.mongodb.com/charts-itsc-pms-jdvklnb/embed/charts?id=6679b944-7a86-4746-89ea-e53d8c0c2f72&maxDataAge=60&theme=light&autoRefresh=true"></iframe>
     </div>
-    
+
+    <div class="bar-container">
+    <iframe style="background: #FFFFFF;border: none;border-radius: 2px;box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);" width="640" height="480" src="https://charts.mongodb.com/charts-itsc-pms-jdvklnb/embed/charts?id=6679b944-7a86-4746-89ea-e53d8c0c2f72&maxDataAge=3600&theme=light&autoRefresh=true"></iframe>
+    </div>
+
     <div class="issue-container">
         <iframe style="background: #FFFFFF;border: none;border-radius: 2px;box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);" width="640" height="480" src="https://charts.mongodb.com/charts-itsc-pms-jdvklnb/embed/charts?id=667ac2c6-dde3-4a81-8c9d-cbfff3f7e2e2&maxDataAge=3600&theme=light&autoRefresh=true"></iframe>
     </div>
