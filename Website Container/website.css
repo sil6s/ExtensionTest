@@ -111,29 +111,8 @@ opacity: 0.8;
 /* Default styles */
 
 /* For mobile phones */
-@media only screen and (max-width: 599px) {
-
-    .container {
-        display: block;
-    }
-  }
-  
-  /* For tablets */
-  @media only screen and (min-width: 600px) and (max-width: 767px) {
-
-    .pie-container, .bar-container, .issue-container 
-    {
-        
-        display: block;
-        margin: 20px 20px 20px 20px;
-        padding: 0;
-
-    }
-
-  }
-  
-  /* For desktop screens */
-  @media only screen and (min-width: 768px) {
+@media only screen and (max-width: 599px) 
+{
     .pie-container 
     {
         float:right;
@@ -150,7 +129,42 @@ opacity: 0.8;
     }
     .issue-container
     {
-clear:both;    }
-    /* Empty media query */
-  }
+    clear:both;   
+    }
+
+}
+  
+/* For tablets */
+@media only screen and (min-width: 600px) and (max-width: 1329px) 
+{
+    .pie-container, .bar-container, .issue-container 
+    {
+        display: block;
+        margin: 20px 20px 20px 20px;
+        padding: 0;
+    }
+}
+  
+/* For desktop screens */
+@media only screen and (min-width: 1329px)
+{
+    .pie-container 
+    {
+        float:right;
+        width: 48.5%;
+        display: block;
+    }
+    .bar-container
+    {
+        float:left;
+        width: 48%;
+        display: block;
+
+
+    }
+    .issue-container
+    {
+    clear:both;   
+    }
+}
   
