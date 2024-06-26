@@ -214,6 +214,31 @@ app.get('/user-issue-join', async (req, res) => {
   }
 });
 
+app.get('/chart-data', async (req, res) => {
+  try {
+    const userIssueJoins = await prisma.userIssueJoin.findMany();
+
+    const users = [...new Set(userIssueJoins.map(join => join.username))];
+    const issues = [...new Set(userIssueJoins.map(join => join.issueName))];
+
+    const datasets = issues.map(issue => ({
+      label: issue,
+      data: users.map(user => {
+        const join = userIssueJoins.find(j => j.username === user && j.issueName === issue);
+        return join ? join.totalDuration : 0;
+      })
+    }));
+
+    res.json({
+      labels: users,
+      datasets: datasets
+    });
+  } catch (error) {
+    console.error('Error fetching chart data:', error);
+    res.status(500).json({ error: 'Failed to fetch chart data' });
+  }
+});
+
 // Start the server
 const PORT = 3100;
 app.listen(PORT, async () => {
@@ -225,3 +250,4 @@ app.listen(PORT, async () => {
   }
   console.log(`Server is listening on port ${PORT}`);
 });
+
