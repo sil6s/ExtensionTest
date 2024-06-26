@@ -1,6 +1,11 @@
 fetch('http://localhost:3100/chart-data')
   .then(response => response.json())
   .then(data => {
+    // Convert time from seconds to hours
+    data.datasets.forEach(dataset => {
+      dataset.data = dataset.data.map(seconds => seconds / 3600); // Convert seconds to hours
+    });
+
     // Customize colors
     const colors = {
       backgroundColor: ['#FF0000', '#000000', '#008080', '#FFD700', '#4B0082'], // Red, Black, Teal, Gold, Indigo
@@ -9,8 +14,9 @@ fetch('http://localhost:3100/chart-data')
 
     // Apply colors to each dataset
     data.datasets.forEach((dataset, index) => {
-      dataset.backgroundColor = colors.backgroundColor[index % colors.backgroundColor.length];
-      dataset.borderColor = colors.borderColor[index % colors.borderColor.length];
+      const colorIndex = index % colors.backgroundColor.length;
+      dataset.backgroundColor = colors.backgroundColor[colorIndex];
+      dataset.borderColor = colors.borderColor[colorIndex];
     });
 
     const ctx = document.getElementById('myChart').getContext('2d');
@@ -40,6 +46,9 @@ fetch('http://localhost:3100/chart-data')
             ticks: {
               font: {
                 size: 16 // Increase font size for y-axis labels
+              },
+              callback: function(value) {
+                return value.toFixed(1) + 'h'; // Display hours with one decimal place and 'h' suffix
               }
             }
           }
@@ -47,7 +56,7 @@ fetch('http://localhost:3100/chart-data')
         plugins: {
           title: {
             display: true,
-            text: 'Your Chart Title', // Add your chart title here
+            text: 'Issue Time Allocation By User', // Add your chart title here
             font: {
               size: 24 // Font size for the title
             }
