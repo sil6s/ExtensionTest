@@ -57,3 +57,5 @@ fetch('http://localhost:3100/chart-data')
     });
   })
   .catch(error => console.error('Error:', error));
+
+  x

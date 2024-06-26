@@ -221,23 +221,61 @@ app.get('/chart-data', async (req, res) => {
     const users = [...new Set(userIssueJoins.map(join => join.username))];
     const issues = [...new Set(userIssueJoins.map(join => join.issueName))];
 
-    const datasets = issues.map(issue => ({
-      label: issue,
-      data: users.map(user => {
-        const join = userIssueJoins.find(j => j.username === user && j.issueName === issue);
-        return join ? join.totalDuration : 0;
-      })
-    }));
+    // Calculate total durations per user
+    const userTotalDurations = users.reduce((acc, user) => {
+      acc[user] = userIssueJoins
+        .filter(join => join.username === user)
+        .reduce((total, join) => total + join.totalDuration, 0);
+      return acc;
+    }, {});
+
+    // Data for the bar chart
+    const barChartData = {
+      labels: users,
+      datasets: issues.map(issue => ({
+        label: issue,
+        data: users.map(user => {
+          const join = userIssueJoins.find(j => j.username === user && j.issueName === issue);
+          const totalDuration = join ? join.totalDuration : 0;
+          const userTotalDuration = userTotalDurations[user];
+          return userTotalDuration ? (totalDuration / userTotalDuration) * 100 : 0;
+        }),
+        backgroundColor: '#' + Math.floor(Math.random() * 16777215).toString(16), // Random color for each issue
+        borderColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
+        borderWidth: 1
+      }))
+    };
+
+    // Data for the pie charts
+    const pieChartData = issues.map(issue => {
+      const issueData = userIssueJoins.filter(join => join.issueName === issue);
+      const sortedIssueData = issueData.sort((a, b) => b.totalDuration - a.totalDuration).slice(0, 10);
+
+      return {
+        issue: issue,
+        data: {
+          labels: sortedIssueData.map(join => join.username),
+          datasets: [{
+            label: `Time Allocation for ${issue}`,
+            data: sortedIssueData.map(join => join.totalDuration),
+            backgroundColor: sortedIssueData.map(() => '#' + Math.floor(Math.random() * 16777215).toString(16)), // Random colors for each user
+            borderColor: sortedIssueData.map(() => '#' + Math.floor(Math.random() * 16777215).toString(16)),
+            borderWidth: 1
+          }]
+        }
+      };
+    });
 
     res.json({
-      labels: users,
-      datasets: datasets
+      barChartData,
+      pieChartData
     });
   } catch (error) {
     console.error('Error fetching chart data:', error);
     res.status(500).json({ error: 'Failed to fetch chart data' });
   }
 });
+
 
 // Start the server
 const PORT = 3100;
