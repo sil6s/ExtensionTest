@@ -1,9 +1,14 @@
 fetch('http://localhost:3100/chart-data')
   .then(response => response.json())
   .then(data => {
-    // Convert time from seconds to hours
+    // Function to convert seconds to hours
+    const secondsToHours = (seconds) => {
+      return (seconds / 3600).toFixed(2); // Convert seconds to hours with two decimal places
+    };
+
+    // Convert seconds to hours for relevant data
     data.datasets.forEach(dataset => {
-      dataset.data = dataset.data.map(seconds => seconds / 3600); // Convert seconds to hours
+      dataset.data = dataset.data.map(secondsToHours); // Assuming 'data' property contains seconds
     });
 
     // Customize colors
@@ -14,9 +19,8 @@ fetch('http://localhost:3100/chart-data')
 
     // Apply colors to each dataset
     data.datasets.forEach((dataset, index) => {
-      const colorIndex = index % colors.backgroundColor.length;
-      dataset.backgroundColor = colors.backgroundColor[colorIndex];
-      dataset.borderColor = colors.borderColor[colorIndex];
+      dataset.backgroundColor = colors.backgroundColor[index % colors.backgroundColor.length];
+      dataset.borderColor = colors.borderColor[index % colors.borderColor.length];
     });
 
     const ctx = document.getElementById('myChart').getContext('2d');
@@ -47,10 +51,20 @@ fetch('http://localhost:3100/chart-data')
               font: {
                 size: 16 // Increase font size for y-axis labels
               },
-              callback: function(value) {
-                return value.toFixed(1) + 'h'; // Display hours with one decimal place and 'h' suffix
+              // Callback function to append 'hr' to y-axis labels
+              callback: function(value, index, values) {
+                return value + ' hrs'; // Append 'hr' to each value
               }
-            }
+            },
+            // Assuming y-axis represents hours, you can customize further if needed
+            // Example:
+            // title: {
+            //   display: true,
+            //   text: 'Time (hours)',
+            //   font: {
+            //     size: 20 // Font size for the y-axis label
+            //   }
+            // }
           }
         },
         plugins: {
