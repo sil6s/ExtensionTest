@@ -11,16 +11,35 @@ fetch('http://localhost:3100/chart-data')
       dataset.data = dataset.data.map(secondsToHours); // Assuming 'data' property contains seconds
     });
 
+    // Function to calculate total time spent for a dataset
+    const calculateTotalTime = (dataset) => {
+      return dataset.data.reduce((acc, curr) => acc + parseFloat(curr), 0);
+    };
+
+    // Remove datasets where total time spent is 0
+    data.datasets = data.datasets.filter(dataset => calculateTotalTime(dataset) > 0);
+
+    // Sort datasets by total time spent (descending order)
+    data.datasets.sort((a, b) => {
+      return calculateTotalTime(b) - calculateTotalTime(a);
+    });
+
+    // Select top ten datasets (users) by time spent
+    const topTenDatasets = data.datasets.slice(0, 10);
+
+    // Update data with top ten datasets
+    data.datasets = topTenDatasets;
+
     // Customize colors
     const colors = {
-      backgroundColor: ['#FF0000', '#000000', '#008080', '#FFD700', '#4B0082'], // Red, Black, Teal, Gold, Indigo
-      borderColor: ['#FF0000', '#000000', '#008080', '#FFD700', '#4B0082']
+      backgroundColor: ['#FF0000', '#000000', '#008080', '#FFD700', '#4B0082', '#00FF00', '#0000FF', '#800080', '#FFA500', '#808080'], // Colors for top 10 users
+      borderColor: ['#FF0000', '#000000', '#008080', '#FFD700', '#4B0082', '#00FF00', '#0000FF', '#800080', '#FFA500', '#808080']
     };
 
     // Apply colors to each dataset
     data.datasets.forEach((dataset, index) => {
-      dataset.backgroundColor = colors.backgroundColor[index % colors.backgroundColor.length];
-      dataset.borderColor = colors.borderColor[index % colors.borderColor.length];
+      dataset.backgroundColor = colors.backgroundColor[index];
+      dataset.borderColor = colors.borderColor[index];
     });
 
     const ctx = document.getElementById('myChart').getContext('2d');
@@ -55,22 +74,13 @@ fetch('http://localhost:3100/chart-data')
               callback: function(value, index, values) {
                 return value + ' hrs'; // Append 'hr' to each value
               }
-            },
-            // Assuming y-axis represents hours, you can customize further if needed
-            // Example:
-            // title: {
-            //   display: true,
-            //   text: 'Time (hours)',
-            //   font: {
-            //     size: 20 // Font size for the y-axis label
-            //   }
-            // }
+            }
           }
         },
         plugins: {
           title: {
             display: true,
-            text: 'Issue Time Allocation By User', // Add your chart title here
+            text: 'Top Ten Users by Time Spent', // Chart title
             font: {
               size: 24 // Font size for the title
             }
@@ -84,7 +94,7 @@ fetch('http://localhost:3100/chart-data')
             },
             title: {
               display: true,
-              text: 'Github Issue:',
+              text: 'Github Issue:', // Legend title
               font: {
                 size: 18 // Font size for the legend title
               }
