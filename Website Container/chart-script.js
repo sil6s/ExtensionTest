@@ -26,6 +26,13 @@ fetch('http://localhost:3100/chart-data')
               font: {
                 size: 16 // Increase font size for x-axis labels
               }
+            },
+            title: {
+              display: true,
+              text: 'Usernames:',
+              font: {
+                size: 20 // Font size for the x-axis label
+              }
             }
           },
           y: {
@@ -40,15 +47,23 @@ fetch('http://localhost:3100/chart-data')
         plugins: {
           title: {
             display: true,
-            text: 'User Time Allocation Across Issues', 
+            text: 'Your Chart Title', // Add your chart title here
             font: {
               size: 24 // Font size for the title
             }
           },
           legend: {
+            display: true,
             labels: {
               font: {
                 size: 16 // Increase font size for legend labels
+              }
+            },
+            title: {
+              display: true,
+              text: 'Github Issue:',
+              font: {
+                size: 18 // Font size for the legend title
               }
             }
           }
@@ -57,5 +72,3 @@ fetch('http://localhost:3100/chart-data')
     });
   })
   .catch(error => console.error('Error:', error));
-
-  x
