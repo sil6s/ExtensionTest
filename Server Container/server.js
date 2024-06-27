@@ -213,68 +213,51 @@ app.get('/user-issue-join', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch user-issue joins' });
   }
 });
-
 app.get('/chart-data', async (req, res) => {
   try {
     const userIssueJoins = await prisma.userIssueJoin.findMany();
 
-    const users = [...new Set(userIssueJoins.map(join => join.username))];
+    // Calculate total durations per user in hours
+    const userTotalDurations = userIssueJoins.reduce((acc, join) => {
+      acc[join.username] = (acc[join.username] || 0) + join.totalDuration / 3600;
+      return acc;
+    }, {});
+
+    // Sort users by total duration and select the top 10
+    const topUsers = Object.entries(userTotalDurations)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 10)
+      .map(([username]) => username);
+
     const issues = [...new Set(userIssueJoins.map(join => join.issueName))];
 
-    // Calculate total durations per user in hours
-    const userTotalDurations = {};
-    users.forEach(user => {
-      const totalSeconds = userIssueJoins
-        .filter(join => join.username === user)
-        .reduce((total, join) => total + join.totalDuration, 0);
+    // Data for the bar chart
+    const barChartData = {
+      labels: topUsers,
+      datasets: issues.map(issue => ({
+        label: issue,
+        data: topUsers.map(user => {
+          const relevantJoins = userIssueJoins.filter(j => j.username === user && j.issueName === issue);
+          const issueDuration = relevantJoins.reduce((total, join) => total + join.totalDuration, 0) / 3600;
+          const userTotalDuration = userTotalDurations[user];
+          return userTotalDuration ? (issueDuration / userTotalDuration) * 100 : 0;
+        }),
+        backgroundColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
+        borderColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
+        borderWidth: 1,
+        hidden: false
+      }))
+    };
 
-      userTotalDurations[user] = totalSeconds / 3600; // Convert seconds to hours
+    res.json({
+      barChartData,
+      issues
     });
-    app.get('/chart-data', async (req, res) => {
-      try {
-        const userIssueJoins = await prisma.userIssueJoin.findMany();
-    
-        const users = [...new Set(userIssueJoins.map(join => join.username))];
-        const issues = [...new Set(userIssueJoins.map(join => join.issueName))];
-    
-        // Calculate total durations per user in hours
-        const userTotalDurations = {};
-        users.forEach(user => {
-          const totalSeconds = userIssueJoins
-            .filter(join => join.username === user)
-            .reduce((total, join) => total + join.totalDuration, 0);
-    
-          userTotalDurations[user] = totalSeconds / 3600; // Convert seconds to hours
-        });
-    
-        // Data for the bar chart
-        const barChartData = {
-          labels: users,
-          datasets: issues.map(issue => ({
-            label: issue,
-            data: users.map(user => {
-              const join = userIssueJoins.find(j => j.username === user && j.issueName === issue);
-              const totalDuration = join ? join.totalDuration / 3600 : 0; // Convert seconds to hours
-              const userTotalDuration = userTotalDurations[user];
-              return userTotalDuration ? (totalDuration / userTotalDuration) * 100 : 0;
-            }),
-            backgroundColor: '#' + Math.floor(Math.random() * 16777215).toString(16), // Random color for each issue
-            borderColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
-            borderWidth: 1,
-            hidden: false // Initially show all datasets
-          }))
-        };
-    
-        res.json({
-          barChartData,
-          issues // Send issues array separately for use in client-side chart
-        });
-      } catch (error) {
-        console.error('Error fetching chart data:', error);
-        res.status(500).json({ error: 'Failed to fetch chart data' });
-      }
-    });
-    
+  } catch (error) {
+    console.error('Error fetching chart data:', error);
+    res.status(500).json({ error: 'Failed to fetch chart data' });
+  }
+});
 // Start the server
 const PORT = 3100;
 app.listen(PORT, async () => {
