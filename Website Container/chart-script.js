@@ -1,34 +1,7 @@
 fetch('http://localhost:3100/chart-data')
   .then(response => response.json())
   .then(data => {
-    // Function to convert seconds to hours
-    const secondsToHours = (seconds) => {
-      return (seconds / 3600).toFixed(2); // Convert seconds to hours with two decimal places
-    };
-
-    // Convert seconds to hours for relevant data
-    data.datasets.forEach(dataset => {
-      dataset.data = dataset.data.map(secondsToHours); // Assuming 'data' property contains seconds
-    });
-
-    // Function to calculate total time spent for a dataset
-    const calculateTotalTime = (dataset) => {
-      return dataset.data.reduce((acc, curr) => acc + parseFloat(curr), 0);
-    };
-
-    // Remove datasets where total time spent is 0
-    data.datasets = data.datasets.filter(dataset => calculateTotalTime(dataset) > 0);
-
-    // Sort datasets by total time spent (descending order)
-    data.datasets.sort((a, b) => {
-      return calculateTotalTime(b) - calculateTotalTime(a);
-    });
-
-    // Select top ten datasets (users) by time spent
-    const topTenDatasets = data.datasets.slice(0, 10);
-
-    // Update data with top ten datasets
-    data.datasets = topTenDatasets;
+    const barChartData = data.barChartData;
 
     // Customize colors
     const colors = {
@@ -37,15 +10,15 @@ fetch('http://localhost:3100/chart-data')
     };
 
     // Apply colors to each dataset
-    data.datasets.forEach((dataset, index) => {
-      dataset.backgroundColor = colors.backgroundColor[index];
-      dataset.borderColor = colors.borderColor[index];
+    barChartData.datasets.forEach((dataset, index) => {
+      dataset.backgroundColor = colors.backgroundColor[index % colors.backgroundColor.length];
+      dataset.borderColor = colors.borderColor[index % colors.borderColor.length];
     });
 
     const ctx = document.getElementById('myChart').getContext('2d');
     new Chart(ctx, {
       type: 'bar',
-      data: data,
+      data: barChartData,
       options: {
         responsive: true,
         scales: {
@@ -70,11 +43,18 @@ fetch('http://localhost:3100/chart-data')
               font: {
                 size: 16 // Increase font size for y-axis labels
               },
-              // Callback function to append 'hr' to y-axis labels
-              callback: function(value, index, values) {
-                return value + ' hrs'; // Append 'hr' to each value
+              callback: function(value) {
+                return value + ' hrs'; // Append 'hrs' to each value
               }
-            }
+            },
+            title: {
+              display: true,
+              text: 'Time (hours)',
+              font: {
+                size: 20 // Font size for the y-axis label
+              }
+            },
+            beginAtZero: true // Start the y-axis at zero
           }
         },
         plugins: {
