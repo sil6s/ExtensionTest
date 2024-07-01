@@ -12,8 +12,6 @@ header {
     font-weight: bold;
     display: flex;
     align-items: center;
-    margin: 0 20px 0 20px;
-    position: relative;
 }
 
 .svg-logo {
@@ -38,7 +36,6 @@ header {
     border-radius: 2px;
     box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);
     padding: 20px;
-    margin: 20px;
 }
 
 
@@ -159,23 +156,27 @@ opacity: 0.8;
     border: none !important;
     width:auto !important;
     box-shadow: none !important;
-    margin: 0 20px 0 20px !important;
+    border-radius: 0px !important;
 }
 .gridjs-head
 {
     width:auto !important;
     border: none !important;
     box-shadow: none !important;
-    margin: 0 20px 0 20px !important;
+    
 }
 
 .gridjs-search
 {
+    border-radius: 0px !important;
+
     width:100% !important;
 }
 
 .gridjs-search-input
 {
+    border-radius: 0px !important;
+
     width: 100% !important;
 }
 
@@ -185,7 +186,6 @@ opacity: 0.8;
     border: none !important;
     width:auto !important;
     box-shadow: none !important;
-    margin: 0 20px 0 20px !important;
     border-top: 4px #3b3b3b solid !important;
 }
 .gridjs-table
