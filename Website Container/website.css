@@ -152,4 +152,12 @@ opacity: 0.8;
     clear:both;   
     }
 }
+
+.gridjs-wrapper 
+{
+box-shadow: none !important;
+margin: 20px !important;
+
+
+}
   
