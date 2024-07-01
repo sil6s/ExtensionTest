@@ -54,39 +54,33 @@ iframe {
     border-left: 3px solid #e00122;
     height: 50px;
 }
-
 .topnav {
-        overflow: hidden;
-        position: fixed;
-        width: 100%;
-        z-index: 1; 
-    }
-
-
-/* Hide the links inside the navigation menu (except for logo/home) */
-.topnav #myLinks {
-display: none;
-color: white;
-background-color: #b9001b;
-width: 20%;
-padding: 10px 0 0 10px;
-
+    overflow: hidden;
+    position: fixed;
+    width: 15%; /* Adjust width as needed */
+    height: 100%; /* Ensure it covers the entire height of the viewport */
+    z-index: 1; 
+    background-color: #b9001b; /* Set background color */
 }
 
-/* Style navigation menu links */
-.topnav a {
+.topnav #myLinks {
+    display: block; /* Ensure links are visible */
+    color: white;
+    padding: 10px;
+    margin-top: auto; /* Push links to the bottom */
+}
 
-width: 20%;
-color: white;
-padding: 10px 0 0 10px;
-margin: 0px;
-text-decoration: none;
-font-size: 17px;
-display: block;
+.topnav a {
+    color: white;
+    padding: 10px;
+    margin: 0;
+    text-decoration: none;
+    font-size: 27px;
+    display: block;
 }
 
 .topnav a:hover {
-opacity: 0.8;
+    opacity: 0.8;
 }
 
 /* Default styles */

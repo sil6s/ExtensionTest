@@ -57,9 +57,6 @@
         <br>
     </header>  
 
-    <img src="code-banner.jpg" alt="Code Banner Decor" style="width: 100%; overflow: hidden;">
-
-
     <!-- Top Navigation Menu -->
 <div class="topnav">
   
@@ -72,7 +69,8 @@
     </div>
   
   </div>
-  
+  <img src="code-banner.jpg" alt="Code Banner Decor" style="width: 100%; overflow: hidden;">
+
 
 
   <div id="chart-container">
@@ -87,12 +85,17 @@
 <script>
 function myFunction() {
     var x = document.getElementById("myLinks");
+    var topnav = document.querySelector(".topnav");
+
     if (x.style.display === "block") {
         x.style.display = "none";
+        topnav.style.display = "none"; // Hide the entire topnav when myLinks is hidden
     } else {
         x.style.display = "block";
+        topnav.style.display = "block"; // Ensure topnav is visible when myLinks is shown
     }
 }
+
 
 
 </script>
