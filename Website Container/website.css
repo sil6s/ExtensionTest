@@ -58,8 +58,6 @@ iframe {
 .topnav {
         overflow: hidden;
         position: fixed;
-        top: 20;
-        left: 28px;
         width: 100%;
         z-index: 1; 
     }
