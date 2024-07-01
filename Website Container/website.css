@@ -155,6 +155,7 @@ opacity: 0.8;
 
 .gridjs-wrapper 
 {
+    width:auto !important;
 box-shadow: none !important;
 margin: 20px !important;
 
