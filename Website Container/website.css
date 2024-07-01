@@ -153,11 +153,11 @@ opacity: 0.8;
     }
 }
 
-.gridjs-wrapper 
+.gridjs-wrapper, .gridjs-footer, .gridjs-head
 {
     width:auto !important;
 box-shadow: none !important;
-margin: 20px !important;
+margin: 0 20px 0 20px !important;
 
 
 }
