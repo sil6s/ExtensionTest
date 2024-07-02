@@ -76,12 +76,12 @@
     <h1> Track GitHub issues with intuitive built-in tools.</h1>
 </div>
 
-<div class="container">
+<div class="container-1">
     <div class="features">
         <div id="feature1">
             <h2 style="font-size: 36px;">Seamless built-in timer integration.</h2>
             <p>Seamlessly integrated with GitHub, our extension introduces a powerful built-in timer UI that allows you to effortlessly track your time spent on issues and tasks.</p>
-        </div>
+        </div>   
     </div>
 
     <div class="video-container">
@@ -90,7 +90,76 @@
             Your browser does not support the video tag.
         </video>
     </div>
+
 </div>
+
+
+
+<div class="container-2">
+    <div class="features">
+        <div id="feature1">
+            <h2 style="font-size: 36px;">Seamless built-in timer integration.</h2>
+            <p>Seamlessly integrated with GitHub, our extension introduces a powerful built-in timer UI that allows you to effortlessly track your time spent on issues and tasks.</p>
+        </div>   
+    </div>
+
+    <div id="chart-container">
+        <canvas id="myBarChart"></canvas>
+    </div> 
+
+</div>
+
+
+
+    <script>
+        // JavaScript for creating the bar chart
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx = document.getElementById('myBarChart').getContext('2d');
+            var barChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Alice', 'Bob', 'Charlie', 'David'],
+                    datasets: [{
+                        label: 'Time Spent on Issues (hours)',
+                        data: [30, 40, 25, 35], // Adjust data in hours as needed
+                        backgroundColor: [
+                            '#FF5733', // Red
+                            '#333333', // Black
+                            '#9A9A9A', // Gray
+                            '#F2F2F2'  // Light Gray
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    indexAxis: 'y',
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Time Spent on Issues by User',
+                            font: {
+                                size: 18
+                            }
+                        },
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return 'Time: ' + tooltipItem.raw + ' hours';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+
+
 
 
 

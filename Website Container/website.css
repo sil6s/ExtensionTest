@@ -61,7 +61,7 @@ header {
     margin-left: 15px
 }
 
-.container {
+.container-1,.container-2 {
     display: flex; /* Use flexbox for layout */
     align-items: stretch; /* Align items to stretch to match height */
     margin: 20px 0;
@@ -72,6 +72,7 @@ header {
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     background-color: #fff;
+    width: auto;
 }
 
 .features h2 {
@@ -107,12 +108,15 @@ header {
 }
 
 #chart-container {
-    background-color: white !important;
-    border-radius: 2px;
-    box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);
-    padding: 20px;
-}
+    background-color: white;
 
+    width: 50%;
+    flex: 1;
+    margin-left: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+}
 
 
 
@@ -234,3 +238,4 @@ iframe {
         margin-top: 20px; /* Add top margin for spacing */
     }
 }
+
