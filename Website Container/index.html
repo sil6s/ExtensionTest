@@ -87,11 +87,15 @@
     const nav = document.querySelector('.topnav');
 
     function myFunction() {
-        nav.classList.toggle('open');
         if (nav.classList.contains('open')) {
-            startNavTimeout();
+            nav.classList.remove('open');
+            nav.classList.add('closing');
+            setTimeout(() => {
+                nav.classList.remove('closing');
+            }, 500); // Matches the CSS transition duration
         } else {
-            clearTimeout(navTimeout);
+            nav.classList.add('open');
+            startNavTimeout();
         }
     }
 
@@ -105,7 +109,7 @@
                     nav.classList.remove('closing');
                 }, 500); // Matches the CSS transition duration
             }
-        }, 1500); 
+        }, 2000); // 2 seconds
     }
 
     nav.addEventListener('mouseenter', () => {
@@ -113,10 +117,14 @@
     });
 
     nav.addEventListener('mouseleave', startNavTimeout);
-</script>
 
-
-
+    nav.addEventListener('transitionend', () => {
+        if (!nav.classList.contains('open')) {
+            nav.style.visibility = 'hidden';
+        } else {
+            nav.style.visibility = 'visible';
+        }
+    });
 </script>
 
 <script>

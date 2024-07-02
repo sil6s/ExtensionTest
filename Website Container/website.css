@@ -55,7 +55,6 @@ iframe {
     height: 50px;
 }
 
-
 .topnav {
     position: fixed;
     width: 15%; /* Adjust width as needed */
@@ -63,7 +62,7 @@ iframe {
     z-index: 1;
     background-color: #b9001b; /* Set background color */
     transform: translateX(-100%);
-    transition: transform 0.5s ease, opacity 0.5s ease;
+    transition: transform 0.5s ease, opacity 0.5s ease, visibility 0.5s;
     opacity: 0;
     visibility: hidden;
     overflow: hidden; /* Hide overflow */
@@ -78,8 +77,8 @@ iframe {
 .topnav.closing {
     transform: translateX(-100%);
     opacity: 0;
-    visibility: hidden;
 }
+
 
 .topnav #myLinks {
     display: block; /* Ensure links are visible */
