@@ -138,6 +138,46 @@ header {
 }
 
 /* Content */
+
+.staff {
+    background-color: white;
+    padding: 30px;
+    border-radius: 16px;
+    width: 42%;
+    margin: 0px;
+    line-height: 1;
+    overflow: hidden; /* Added to clear floats */
+    margin-left: 40px;
+}
+
+.staff h1 {
+    line-height: 0.5;
+}
+
+.staff h2 {
+    line-height: 0.9;
+}
+
+.staff a:link {
+    color: #b9001b;
+    background-color: transparent;
+    line-height: 1.2;
+    font-size: 20px;
+}
+
+.staff img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    float: left;
+    margin-right: 10px;
+}
+
+.staff-entry {
+    float: right;
+    width: calc(100% - 200px); /* Adjust width to fit beside the image */
+}
+
 .content {
     margin-left: 15px;
     font-size: 20px;
