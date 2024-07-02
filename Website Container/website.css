@@ -127,11 +127,12 @@ header {
     margin-left: 20px; /* Add spacing between features and video */
     position: relative;
     overflow: hidden;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    background-color: white;
 }
 
 .video-container video {
-    width: 100%;
+    width: 99%;
     height: 100%; /* Ensure the video fills its container */
     object-fit: cover;
 }
