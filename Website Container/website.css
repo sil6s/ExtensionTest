@@ -159,7 +159,7 @@ header {
 }
 
 #install-button {
-    width: 100%;
+    width: 20%;
     border-radius: 5px;
     display: flex;
     align-items: center; /* Center items vertically */
@@ -169,7 +169,7 @@ header {
     color: white;
     border: none;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 26px;
 }
 
 #install-button svg {
