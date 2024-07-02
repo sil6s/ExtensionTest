@@ -83,18 +83,37 @@
 </header>
 
 <script>
-function myFunction() {
-    var x = document.getElementById("myLinks");
-    var topnav = document.querySelector(".topnav");
+    let navTimeout;
+    const nav = document.querySelector('.topnav');
 
-    if (x.style.display === "block") {
-        x.style.display = "none";
-        topnav.style.display = "none"; // Hide the entire topnav when myLinks is hidden
-    } else {
-        x.style.display = "block";
-        topnav.style.display = "block"; // Ensure topnav is visible when myLinks is shown
+    function myFunction() {
+        nav.classList.toggle('open');
+        if (nav.classList.contains('open')) {
+            startNavTimeout();
+        } else {
+            clearTimeout(navTimeout);
+        }
     }
-}
+
+    function startNavTimeout() {
+        clearTimeout(navTimeout);
+        navTimeout = setTimeout(() => {
+            if (!nav.matches(':hover')) {
+                nav.classList.remove('open');
+                nav.classList.add('closing');
+                setTimeout(() => {
+                    nav.classList.remove('closing');
+                }, 500); // Matches the CSS transition duration
+            }
+        }, 1500); 
+    }
+
+    nav.addEventListener('mouseenter', () => {
+        clearTimeout(navTimeout);
+    });
+
+    nav.addEventListener('mouseleave', startNavTimeout);
+</script>
 
 
 

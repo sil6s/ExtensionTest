@@ -54,14 +54,31 @@ iframe {
     border-left: 3px solid #e00122;
     height: 50px;
 }
+
+
 .topnav {
-    overflow: hidden;
     position: fixed;
     width: 15%; /* Adjust width as needed */
     height: 100%; /* Ensure it covers the entire height of the viewport */
-    z-index: 1; 
+    z-index: 1;
     background-color: #b9001b; /* Set background color */
-    display:none;
+    transform: translateX(-100%);
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    opacity: 0;
+    visibility: hidden;
+    overflow: hidden; /* Hide overflow */
+}
+
+.topnav.open {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+.topnav.closing {
+    transform: translateX(-100%);
+    opacity: 0;
+    visibility: hidden;
 }
 
 .topnav #myLinks {
@@ -83,6 +100,7 @@ iframe {
 .topnav a:hover {
     opacity: 0.8;
 }
+
 
 /* Default styles */
 
