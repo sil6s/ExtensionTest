@@ -6,6 +6,8 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;1,463&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
         <link rel="icon" type="image/x-icon" href="favicon.ico">
         <link rel="stylesheet" href="website.css">
         <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
@@ -90,26 +92,26 @@
             Your browser does not support the video tag.
         </video>
     </div>
-
 </div>
-
-
 
 <div class="container-2">
-        <div id="chart-container">
-            <canvas id="myBarChart"></canvas>
-        </div> 
-        <div class="features">
+    <div id="chart-container">
+        <canvas id="myBarChart"></canvas>
+    </div> 
+    <div class="features">
+        <div id="feature2">
+            <h2 style="font-size: 36px;">Powerful data visualization: </h2>
+            <p> Intuitive graphs and charts that empower users to analyze and interpret project metrics effortlessly. Whether tracking time spent on issues or estimating future workloads, our visualization features offer clarity and insights that drive informed decision-making.</p>
 
-        <div id="feature1">
-            <h2 style="font-size: 36px;">Seamless built-in timer integration.</h2>
-            <p>Seamlessly integrated with GitHub, our extension introduces a powerful built-in timer UI that allows you to effortlessly track your time spent on issues and tasks.</p>
         </div>   
     </div>
-
-
-
 </div>
+
+
+
+
+
+
 
 
 
@@ -120,10 +122,10 @@
             var barChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Alice', 'Bob', 'Charlie', 'David'],
+                    labels: ['Alice', 'Bob', 'Charlie'],
                     datasets: [{
                         label: 'Time Spent on Issues (hours)',
-                        data: [30, 40, 25, 35], // Adjust data in hours as needed
+                        data: [30, 40, 25], // Adjust data in hours as needed
                         backgroundColor: [
                             '#FF5733', // Red
                             '#333333', // Black

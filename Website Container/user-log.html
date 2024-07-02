@@ -6,6 +6,8 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;1,463&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
         <link rel="icon" type="image/x-icon" href="favicon.ico">
         <link rel="stylesheet" href="website.css">
         <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
@@ -57,13 +59,9 @@
         <br>
     </header>  
 
-    <img src="code-banner.jpg" alt="Code Banner Decor" style="width: 100%; overflow: hidden;">
-
-
     <!-- Top Navigation Menu -->
 <div class="topnav">
   
-      <a class="active"></a>    <!-- Navigation links (hidden by default) -->
     <div id="myLinks">
       <a href="index.html">Home</a>
       <a href="user-log.html">Users</a>
@@ -73,27 +71,55 @@
     </div>
   
   </div>
-  
-
-
-
-
-  <div id="wrapper"></div>
-
+  <img src="code-banner.jpg" alt="Code Banner Decor" style="width: 100%; overflow: hidden;">
 </header>
 
 <script>
-function myFunction() {
-    var x = document.getElementById("myLinks");
-    if (x.style.display === "block") {
-        x.style.display = "none";
-    } else {
-        x.style.display = "block";
+    let navTimeout;
+    const nav = document.querySelector('.topnav');
+
+    function myFunction() {
+        if (nav.classList.contains('open')) {
+            nav.classList.remove('open');
+            nav.classList.add('closing');
+            setTimeout(() => {
+                nav.classList.remove('closing');
+            }, 500); // Matches the CSS transition duration
+        } else {
+            nav.classList.add('open');
+            startNavTimeout();
+        }
     }
-}
 
+    function startNavTimeout() {
+        clearTimeout(navTimeout);
+        navTimeout = setTimeout(() => {
+            if (!nav.matches(':hover')) {
+                nav.classList.remove('open');
+                nav.classList.add('closing');
+                setTimeout(() => {
+                    nav.classList.remove('closing');
+                }, 500); // Matches the CSS transition duration
+            }
+        }, 2000); // 2 seconds
+    }
 
+    nav.addEventListener('mouseenter', () => {
+        clearTimeout(navTimeout);
+    });
+
+    nav.addEventListener('mouseleave', startNavTimeout);
+
+    nav.addEventListener('transitionend', () => {
+        if (!nav.classList.contains('open')) {
+            nav.style.visibility = 'hidden';
+        } else {
+            nav.style.visibility = 'visible';
+        }
+    });
 </script>
+
+<div id="wrapper"></div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -156,6 +182,8 @@ function myFunction() {
     </script>
 
 
+
 </body>
 </html>
+
 
