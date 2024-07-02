@@ -139,15 +139,23 @@ header {
 
 /* Content */
 
+.staff-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap; /* Ensures items wrap if necessary */
+}
+
 .staff {
     background-color: white;
-    padding: 30px;
+    padding: 20px;
     border-radius: 16px;
     width: 42%;
     margin: 0px;
     line-height: 1;
     overflow: hidden; /* Added to clear floats */
-    margin-left: 40px;
+    margin: 0 20px 0 20px;
+    flex: 1 1 45%; /* Flex-grow, flex-shrink, flex-basis */
+    box-sizing: border-box;
 }
 
 .staff h1 {
@@ -299,6 +307,8 @@ iframe {
     border: none !important;
 }
 
+
+
 /* Responsive layout */
 @media only screen and (max-width: 768px) {
     .container {
@@ -314,6 +324,14 @@ iframe {
         margin-top: 20px; /* Add top margin for spacing */
     }
 }
+
+@media (max-width: 900px) {
+    .staff {
+        flex: 1 1 80%;
+        margin: 10px auto;
+    }
+}
+
 
 
   
