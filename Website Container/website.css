@@ -61,6 +61,7 @@ iframe {
     height: 100%; /* Ensure it covers the entire height of the viewport */
     z-index: 1; 
     background-color: #b9001b; /* Set background color */
+    display:none;
 }
 
 .topnav #myLinks {
