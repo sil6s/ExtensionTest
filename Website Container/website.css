@@ -149,6 +149,32 @@ header {
     margin: 0; /* Remove margin */
 }
 
+#install {
+    background-color: #b9001b;
+}
+#chromestore {
+    background-color: white;
+    padding: 20px;
+    font-size: 25px;
+}
+
+#install-button {
+    width: 100%;
+    border-radius: 5px;
+    display: flex;
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center items horizontally */
+    padding: 10px 20px; /* Adjust padding as needed */
+    background-color: #0073e6; /* Example background color */
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#install-button svg {
+    margin-right: 8px; /* Adjust spacing between icon and text */
+}
 /* Chart container */
 #chart-container {
     background-color: white;
