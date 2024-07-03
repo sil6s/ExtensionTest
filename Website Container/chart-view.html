@@ -73,67 +73,11 @@
   </div>
   <img src="code-banner.jpg" alt="Code Banner Decor" style="width: 100%; overflow: hidden;">
 </header>
-
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var inputElement = document.querySelector('.gridjs-search-input');
-        if (inputElement) {
-            inputElement.placeholder = 'Search time logs by users or Github issue names: ';
-        } else {
-            console.error('Input element not found');
-        }
-    });
-  </script>
-  
-
-
-
-
 </body>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us</title>
-    <script>
-        function submitForm() {
-            var name = document.getElementById('name').value;
-            var email = document.getElementById('email').value;
-            var message = document.getElementById('message').value;
-            var subject = document.getElementById('subject').value;
-
-            var body = "Name: " + name + "\n";
-            body += "Email: " + email + "\n";
-            body += "Message: " + message + "\n";
-
-            var mailtoLink = "mailto:currysc@mail.uc.edu" +
-                             "?subject=" + encodeURIComponent(subject) +
-                             "&body=" + encodeURIComponent(body);
-
-            window.location.href = mailtoLink;
-        }
-    </script>
-</head>
+<canvas id="myChart" width="400" height="200"></canvas>
+<script src="chart-script.js"></script>
 <body>
 
-    <form>
-        <h1>Contact Us</h1>
-
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-
-        <label for="subject">Subject:</label><br>
-        <input type="text" id="subject" name="subject" required>
-
-        <label for="message">Message:</label><br>
-        <textarea id="message" name="message" rows="4" required></textarea>
-
-        <button type="button" style = "margin-bottom: 200px;" onclick="submitForm()">Submit</button>
-    </form>
 </body>
 
 
