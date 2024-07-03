@@ -99,7 +99,7 @@ header {
 }
 
 /* Flex containers */
-.container-1, .container-2 {
+.container-1, .container-2, .container-3{
     display: flex; /* Use flexbox for layout */
     align-items: stretch; /* Align items to stretch to match height */
     margin: 20px 0;
