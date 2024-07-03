@@ -2,7 +2,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #E5E7E9;
+    background-color: ;
     color: #333;
 }
 
@@ -14,6 +14,7 @@ header {
     display: flex;
     align-items: center;
 }
+
 
 .svg-logo {
     max-height: 60px; /* Maximum height set to 40px */
@@ -95,7 +96,6 @@ header {
 .about, .features, .team, .contact {
     background: #fff;
     padding: 30px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 /* Flex containers */
@@ -109,7 +109,6 @@ header {
 .features {
     flex: 1; /* Take up remaining space */
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     background-color: #fff;
 }
 
@@ -120,6 +119,7 @@ header {
 .features p {
     font-size: 32px;
 }
+
 
 /* Video container */
 .video-container {
@@ -134,8 +134,9 @@ header {
 .video-container video {
     width: 99%;
     height: 100%; /* Ensure the video fills its container */
-    object-fit: cover;
+    transition: transform .2s ease-in-out; /* Smooth transition */
 }
+
 
 /* Content */
 
@@ -143,10 +144,11 @@ header {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap; /* Ensures items wrap if necessary */
+    margin-bottom: 100px;
 }
 
 .staff {
-    background-color: white;
+    background-color:#f3f3f3;
     padding: 20px;
     border-radius: 16px;
     width: 42%;
@@ -231,7 +233,6 @@ header {
     margin-right: 20px;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
 }
 
 /* Iframes */
@@ -239,7 +240,6 @@ iframe {
     background: #F1F5F4;
     border: none;
     border-radius: 2px;
-    box-shadow: 0 2px 10px 0 rgba(70, 76, 79, .2);
     width: 100%;
     height: 100%;
 }
@@ -309,6 +309,8 @@ iframe {
 
 
 
+
+
 /* Responsive layout */
 @media only screen and (max-width: 768px) {
     .container {
@@ -322,7 +324,14 @@ iframe {
     .video-container {
         margin-left: 0; /* Remove left margin for full width on smaller screens */
         margin-top: 20px; /* Add top margin for spacing */
+
     }
+
+    .video:hover {
+        -ms-transform: scale(1.5); /* IE 9 */
+        -webkit-transform: scale(1.5); /* Safari 3-8 */
+        transform: scale(1.5); 
+      }
 }
 
 @media (max-width: 900px) {
