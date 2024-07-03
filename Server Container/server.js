@@ -212,114 +212,66 @@ app.get('/user-issue-join', async (req, res) => {
     }
 });
 
-
-
 app.get('/chart-data', async (req, res) => {
-  try {
+    try {
       const userIssueJoins = await prisma.userIssueJoin.findMany();
       const users = [...new Set(userIssueJoins.map(join => join.username))];
       const issues = [...new Set(userIssueJoins.map(join => join.issueName))];
-
+  
       // Calculate total durations per user in hours
       const userTotalDurations = {};
       users.forEach(user => {
-          const totalSeconds = userIssueJoins
-              .filter(join => join.username === user)
-              .reduce((total, join) => total + join.totalDuration, 0);
-          userTotalDurations[user] = Math.max(totalSeconds / 3600, 0.01); // Ensure a minimum value
+        const totalSeconds = userIssueJoins
+          .filter(join => join.username === user)
+          .reduce((total, join) => total + join.totalDuration, 0);
+        userTotalDurations[user] = Math.max(totalSeconds / 3600, 0.01); // Ensure a minimum value
       });
-
+  
+      // Get the top ten users by total duration
+      const topTenUsers = Object.entries(userTotalDurations)
+        .sort(([, a], [, b]) => b - a) // Sort by total duration in descending order
+        .slice(0, 10) // Take the top ten
+        .map(([user]) => user); // Extract the usernames
+  
       // Data for the bar chart
       const barChartData = {
-          labels: users,
-          datasets: issues.map(issue => ({
-              label: issue,
-              data: users.map(user => {
-                  const join = userIssueJoins.find(j => j.username === user && j.issueName === issue);
-                  const totalDuration = join ? join.totalDuration / 3600 : 0; // Convert seconds to hours
-                  return Math.round(totalDuration * 100) / 100; // Round to 2 decimal places
-              }),
-              backgroundColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
-              borderColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
-              borderWidth: 1,
-              hidden: false
-          }))
+        labels: topTenUsers,
+        datasets: issues.map(issue => ({
+          label: issue,
+          data: topTenUsers.map(user => {
+            const join = userIssueJoins.find(j => j.username === user && j.issueName === issue);
+            const totalDuration = join ? join.totalDuration / 3600 : 0; // Convert seconds to hours
+            return Math.round(totalDuration * 100) / 100; // Round to 2 decimal places
+          }),
+          backgroundColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
+          borderColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
+          borderWidth: 1,
+          hidden: false
+        }))
       };
-
+  
       res.json({
-          barChartData,
-          issues,
-          userTotalHours: Object.fromEntries(
-              Object.entries(userTotalDurations).map(([user, hours]) => [user, Math.round(hours * 100) / 100])
-          )
+        barChartData,
+        issues,
+        userTotalHours: Object.fromEntries(
+          Object.entries(userTotalDurations).map(([user, hours]) => [user, Math.round(hours * 100) / 100])
+        )
       });
-  } catch (error) {
+    } catch (error) {
       console.error('Error fetching chart data:', error);
       res.status(500).json({ error: 'Failed to fetch chart data' });
-  }
-});
-
-// Start the server
-const PORT = 3100;
-app.listen(PORT, async () => {
-    try {
-        await prisma.$connect();
-        console.log('Connected to Prisma Client');
-    } catch (error) {
-        console.error('Error connecting to Prisma Client:', error);
     }
-    console.log(`Server is listening on port ${PORT}`);
-});
-
-app.get('/chart-data', async (req, res) => {
-  try {
-    const userIssueJoins = await prisma.userIssueJoin.findMany();
-    const users = [...new Set(userIssueJoins.map(join => join.username))];
-    const issues = [...new Set(userIssueJoins.map(join => join.issueName))];
-
-    // Calculate total durations per user in hours
-    const userTotalDurations = {};
-    users.forEach(user => {
-      const totalSeconds = userIssueJoins
-        .filter(join => join.username === user)
-        .reduce((total, join) => total + join.totalDuration, 0);
-      userTotalDurations[user] = Math.max(totalSeconds / 3600, 0.01); // Ensure a minimum value
-    });
-
-    // Calculate total durations per issue-user combination in hours
-    const issueDurations = {};
-    userIssueJoins.forEach(join => {
-      if (!issueDurations[join.issueName]) {
-        issueDurations[join.issueName] = {};
+  });
+  
+  // Start the server
+  const PORT = 3100;
+  app.listen(PORT, async () => {
+      try {
+          await prisma.$connect();
+          console.log('Connected to Prisma Client');
+      } catch (error) {
+          console.error('Error connecting to Prisma Client:', error);
       }
-      issueDurations[join.issueName][join.username] = join.totalDuration / 3600; // Convert seconds to hours
-    });
-
-    // Data for the bar chart
-    const barChartData = {
-      labels: users,
-      datasets: issues.map(issue => ({
-        label: issue,
-        data: users.map(user => {
-          const duration = issueDurations[issue][user] || 0;
-          return Math.round(duration * 100) / 100; // Round to 2 decimal places
-        }),
-        backgroundColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
-        borderColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
-        borderWidth: 1,
-        hidden: false
-      }))
-    };
-
-    res.json({
-      barChartData,
-      issues,
-      userTotalHours: Object.fromEntries(
-        Object.entries(userTotalDurations).map(([user, hours]) => [user, Math.round(hours * 100) / 100])
-      )
-    });
-  } catch (error) {
-    console.error('Error fetching chart data:', error);
-    res.status(500).json({ error: 'Failed to fetch chart data' });
-  }
-});
+      console.log(`Server is listening on port ${PORT}`);
+  });
+  
