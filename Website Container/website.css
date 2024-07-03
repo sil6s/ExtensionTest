@@ -401,6 +401,12 @@ button:hover {
         font-size: 20px;
     }
 
+    .staff {
+        margin-bottom: 20px;
+    }
+
+
+
     .video-container {
         margin-left: 0; /* Remove left margin for full width on smaller screens */
         margin-top: 20px; /* Add top margin for spacing */
@@ -414,12 +420,7 @@ button:hover {
       }
 }
 
-@media (max-width: 900px) {
-    .staff {
-        flex: 1 1 80%;
-        margin: 10px auto;
-    }
-}
+
 
 
 
