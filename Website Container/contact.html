@@ -64,7 +64,7 @@
   
     <div id="myLinks">
       <a href="index.html">Home</a>
-      <a href="user-log.html">Users</a>
+      <a href="user-log.html">Table View</a>
       <a href="contact.html">Contact</a>
       <a href="#about">About</a>
       <a></a>
@@ -132,7 +132,52 @@
         <label for="message">Message:</label><br>
         <textarea id="message" name="message" rows="4" required></textarea>
 
-        <button type="button" onclick="submitForm()">Submit</button>
+        <button type="button" style = "margin-bottom: 200px;" onclick="submitForm()">Submit</button>
     </form>
 </body>
 
+
+<script>
+    let navTimeout;
+    const nav = document.querySelector('.topnav');
+
+    function myFunction() {
+        if (nav.classList.contains('open')) {
+            nav.classList.remove('open');
+            nav.classList.add('closing');
+            setTimeout(() => {
+                nav.classList.remove('closing');
+            }, 500); // Matches the CSS transition duration
+        } else {
+            nav.classList.add('open');
+            startNavTimeout();
+        }
+    }
+
+    function startNavTimeout() {
+        clearTimeout(navTimeout);
+        navTimeout = setTimeout(() => {
+            if (!nav.matches(':hover')) {
+                nav.classList.remove('open');
+                nav.classList.add('closing');
+                setTimeout(() => {
+                    nav.classList.remove('closing');
+                }, 500); // Matches the CSS transition duration
+            }
+        }, 2000); // 2 seconds
+    }
+
+    nav.addEventListener('mouseenter', () => {
+        clearTimeout(navTimeout);
+    });
+
+    nav.addEventListener('mouseleave', startNavTimeout);
+
+    nav.addEventListener('transitionend', () => {
+        if (!nav.classList.contains('open')) {
+            nav.style.visibility = 'hidden';
+        } else {
+            nav.style.visibility = 'visible';
+        }
+    });
+</script>
