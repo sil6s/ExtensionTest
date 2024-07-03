@@ -17,7 +17,6 @@ header {
 footer {
 
     background-color: #191919;
-    padding: 80px 0 0 0;
     margin-top:100px;
     width: 100%;
     border-top: 6px solid #b9001b;
@@ -167,7 +166,7 @@ text-align: center;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap; /* Ensures items wrap if necessary */
-    margin-bottom: 100px;
+    margin-bottom: 50px;
 }
 
 .staff {
