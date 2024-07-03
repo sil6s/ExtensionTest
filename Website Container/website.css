@@ -249,6 +249,7 @@ text-align: center;
 }
 /* Chart container */
 #chart-container {
+
     background-color: white;
     width: 40%;
     flex: 2;
@@ -386,6 +387,9 @@ button {
 button:hover {
     background-color: #a93226; /* Darker red on hover */
 }
+#issueDemoImage {
+    width: 60% ;
+}
 
 
 
@@ -404,7 +408,18 @@ button:hover {
     .staff {
         margin-bottom: 20px;
     }
+    .container-1, .container-2, .container-3 {
+        flex-direction: column; /* Stack items vertically on smaller screens */
+ 
+    }
 
+    #issueDemoImage {
+        width: 100% ;
+    }
+
+    #chart-container {
+        display: none !important;
+    }
 
 
     .video-container {
