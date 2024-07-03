@@ -401,6 +401,12 @@ button:hover {
         flex-direction: column; /* Stack items vertically on smaller screens */
     }
 
+    .topnav {
+        width: 100%;
+        height: 40%;
+        margin-right: 8px;
+    }
+
     .features p {
         font-size: 20px;
     }
