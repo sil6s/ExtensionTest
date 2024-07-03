@@ -307,6 +307,64 @@ iframe {
     border: none !important;
 }
 
+/* styles.css */
+
+
+.container {
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f0f0f0; /* Light gray background for container */
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}
+
+
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin: auto;
+}
+
+label {
+    color: #333; /* Dark text color for labels */
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc; /* Light gray border for inputs */
+    border-radius: 5px;
+    background-color: #fff; /* White background for inputs */
+    color: #333; /* Dark text color for inputs */
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+button {
+    background-color: #c0392b; /* Red button background */
+    color: #fff; /* White button text */
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #a93226; /* Darker red on hover */
+}
+
 
 
 

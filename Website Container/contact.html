@@ -74,52 +74,7 @@
   <img src="code-banner.jpg" alt="Code Banner Decor" style="width: 100%; overflow: hidden;">
 </header>
 
-<script>
-    let navTimeout;
-    const nav = document.querySelector('.topnav');
 
-    function myFunction() {
-        if (nav.classList.contains('open')) {
-            nav.classList.remove('open');
-            nav.classList.add('closing');
-            setTimeout(() => {
-                nav.classList.remove('closing');
-            }, 500); // Matches the CSS transition duration
-        } else {
-            nav.classList.add('open');
-            startNavTimeout();
-        }
-    }
-
-    function startNavTimeout() {
-        clearTimeout(navTimeout);
-        navTimeout = setTimeout(() => {
-            if (!nav.matches(':hover')) {
-                nav.classList.remove('open');
-                nav.classList.add('closing');
-                setTimeout(() => {
-                    nav.classList.remove('closing');
-                }, 500); // Matches the CSS transition duration
-            }
-        }, 2000); // 2 seconds
-    }
-
-    nav.addEventListener('mouseenter', () => {
-        clearTimeout(navTimeout);
-    });
-
-    nav.addEventListener('mouseleave', startNavTimeout);
-
-    nav.addEventListener('transitionend', () => {
-        if (!nav.classList.contains('open')) {
-            nav.style.visibility = 'hidden';
-        } else {
-            nav.style.visibility = 'visible';
-        }
-    });
-</script>
-
-<div id="wrapper"></div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -133,57 +88,51 @@
   </script>
   
 
-<script>
-    new gridjs.Grid({
-        columns: [
-            { id: 'username', name: 'Username' },
-            { id: 'issueName', name: 'Issue' },
-            { 
-                id: 'totalDuration', 
-                name: 'Total Duration',
-                formatter: (cell) => {
-                    const hours = Math.floor(cell / 3600);
-                    const minutes = Math.floor((cell % 3600) / 60);
-                    const seconds = cell % 60;
-                    return `${hours}h ${minutes}m ${seconds}s`;
-                }
-            }
-        ],
-        server: {
-            url: 'http://localhost:3100/user-issue-join',
-            then: data => data.map(item => [item.username, item.issueName, item.totalDuration])
-        },
-        search: true,
-        sort: true,
-        pagination: {
-            limit: 10
-        },
-        style: {
-            container: {
-                'box-shadow': 'none !important'  // Remove box shadow with !important
-
-       
-            },
-            table: {
-                border: '3px solid #ccc',
-
-            },
-            th: {
-                'background-color': 'rgba(0,0,0)',
-                 color: '#FFF',
-                'border-bottom': '3px solid #ccc',
-                'text-align': 'center'
-            },
-            td: {
-                'text-align': 'center'
-            }
-        }
-    }).render(document.getElementById("wrapper"));
-    </script>
 
 
 
 </body>
-</html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <script>
+        function submitForm() {
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var message = document.getElementById('message').value;
+            var subject = document.getElementById('subject').value;
 
+            var body = "Name: " + name + "\n";
+            body += "Email: " + email + "\n";
+            body += "Message: " + message + "\n";
+
+            var mailtoLink = "mailto:currysc@mail.uc.edu" +
+                             "?subject=" + encodeURIComponent(subject) +
+                             "&body=" + encodeURIComponent(body);
+
+            window.location.href = mailtoLink;
+        }
+    </script>
+</head>
+<body>
+
+    <form>
+        <h1>Contact Us</h1>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="subject">Subject:</label><br>
+        <input type="text" id="subject" name="subject" required>
+
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" rows="4" required></textarea>
+
+        <button type="button" onclick="submitForm()">Submit</button>
+    </form>
+</body>
 
