@@ -7,7 +7,6 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;1,463&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
-
         <link rel="icon" type="image/x-icon" href="favicon.ico">
         <link rel="stylesheet" href="website.css">
         <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
@@ -60,68 +59,66 @@
     </header>  
 
     <!-- Top Navigation Menu -->
-<div class="topnav">
-  
-    <div id="myLinks">
-        <a href="index.html">Home</a>
-        <a href="user-log.html"> Table View </a>
-        <a href="chart-view.html">Chart View</a>
-        <a href="contact.html">Contact</a>
-  
+    <div class="topnav">
+        <div id="myLinks">
+            <a href="index.html">Home</a>
+            <a href="user-log.html"> Table View </a>
+            <a href="chart-view.html">Chart View</a>
+            <a href="contact.html">Contact</a>
+        </div>
     </div>
-  
-  </div>
-  <img src="code-banner.jpg" alt="Code Banner Decor" style="width: 100%; overflow: hidden;">
-</header>
-</body>
-<canvas id="myChart" width="400" height="200"></canvas>
-<script src="chart-script.js"></script>
-<body>
+    <img src="code-banner.jpg" alt="Code Banner Decor" style="width: 100%; overflow: hidden;">
+    <div id="errorDiv" style="display: none; color: red; text-align: center; margin-top: 20px;">
+        Error: Chart.js failed to load. Please ensure the server is running.
+    </div>
+    <canvas id="myChart" width="400" height="200"></canvas>
 
-</body>
+    <script src="chart-script.js"></script>
 
+    <script>
+        let navTimeout;
+        const nav = document.querySelector('.topnav');
 
-<script>
-    let navTimeout;
-    const nav = document.querySelector('.topnav');
-
-    function myFunction() {
-        if (nav.classList.contains('open')) {
-            nav.classList.remove('open');
-            nav.classList.add('closing');
-            setTimeout(() => {
-                nav.classList.remove('closing');
-            }, 500); // Matches the CSS transition duration
-        } else {
-            nav.classList.add('open');
-            startNavTimeout();
-        }
-    }
-
-    function startNavTimeout() {
-        clearTimeout(navTimeout);
-        navTimeout = setTimeout(() => {
-            if (!nav.matches(':hover')) {
+        function myFunction() {
+            if (nav.classList.contains('open')) {
                 nav.classList.remove('open');
                 nav.classList.add('closing');
                 setTimeout(() => {
                     nav.classList.remove('closing');
                 }, 500); // Matches the CSS transition duration
+            } else {
+                nav.classList.add('open');
+                startNavTimeout();
             }
-        }, 2000); // 2 seconds
-    }
-
-    nav.addEventListener('mouseenter', () => {
-        clearTimeout(navTimeout);
-    });
-
-    nav.addEventListener('mouseleave', startNavTimeout);
-
-    nav.addEventListener('transitionend', () => {
-        if (!nav.classList.contains('open')) {
-            nav.style.visibility = 'hidden';
-        } else {
-            nav.style.visibility = 'visible';
         }
-    });
-</script>
+
+        function startNavTimeout() {
+            clearTimeout(navTimeout);
+            navTimeout = setTimeout(() => {
+                if (!nav.matches(':hover')) {
+                    nav.classList.remove('open');
+                    nav.classList.add('closing');
+                    setTimeout(() => {
+                        nav.classList.remove('closing');
+                    }, 500); // Matches the CSS transition duration
+                }
+            }, 2000); // 2 seconds
+        }
+
+        nav.addEventListener('mouseenter', () => {
+            clearTimeout(navTimeout);
+        });
+
+        nav.addEventListener('mouseleave', startNavTimeout);
+
+        nav.addEventListener('transitionend', () => {
+            if (!nav.classList.contains('open')) {
+                nav.style.visibility = 'hidden';
+            } else {
+                nav.style.visibility = 'visible';
+            }
+        });
+    </script>
+</body>
+</html>
+
