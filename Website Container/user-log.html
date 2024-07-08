@@ -74,6 +74,26 @@
   <img src="code-banner.jpg" alt="Code Banner Decor" style="width: 100%; overflow: hidden;">
 </header>
 
+<div id="errorDiv" style="display: none;">
+    <h1>Error 503: Unable to load the chart. Please try again.</h1>
+
+    <div class="component callout-card background-gray">
+        <div>
+            <div class="component-text">
+                <h2>Troubleshooting Steps</h2>
+                <ul>
+                    <li><strong>Check</strong> Your Internet Connection: Ensure your device is connected to the internet.</li>
+                    <li><strong>Refresh</strong> the Page: Sometimes a simple refresh (press <kbd>Ctrl + R</kbd> or <kbd>Cmd + R</kbd>) can resolve temporary issues.</li>
+                    <li><strong>Clear</strong> Browser Cache: Clear your browser's cache and cookies to ensure you have the latest version of the webpage.</li>
+                    <li><strong>Check</strong> Firewall and Security Settings: Ensure that your firewall or security software isn't blocking the connection to the server.</li>
+                    <li><strong>Restart</strong> Your Device: Sometimes restarting your computer or device can resolve network-related issues.</li>
+                    <li><strong>Contact</strong> Support: If the issue persists, contact your IT support team or the website administrator for further assistance.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     let navTimeout;
     const nav = document.querySelector('.topnav');
@@ -133,7 +153,12 @@
   </script>
   
 
+
 <script>
+
+// Run the function
+
+
     new gridjs.Grid({
         columns: [
             { id: 'username', name: 'Username' },
@@ -180,6 +205,33 @@
         }
     }).render(document.getElementById("wrapper"));
     </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Function to check for chart failure message
+        function checkChartFailure() {
+            const errorCells = document.querySelectorAll('.gridjs-td.gridjs-message.gridjs-error');
+            
+            errorCells.forEach(cell => {
+                if (cell.textContent.includes('An error happened while fetching the data')) {
+                    console.log('Failed to fetch Grid.Js Data');
+                    document.getElementById("wrapper").style.display = "none";
+                    document.getElementById("errorDiv").style.display = "block";
+
+                    document.title = "503: Server Error"; // Change the page title
+                }
+            });
+        }
+    
+        // Run the function
+        checkChartFailure();
+    
+        // Set up a MutationObserver to watch for changes in the DOM
+        const observer = new MutationObserver(checkChartFailure);
+        observer.observe(document.body, { childList: true, subtree: true });
+    });
+    </script>
+
 
 
 <footer>
