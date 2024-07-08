@@ -38,6 +38,11 @@ text-align: center;
 
 }
 
+#myChart {
+    display: none;
+}
+
+
 #errorDiv {
     h1 
     {
