@@ -9,10 +9,12 @@ window.onload = function() {
 
   // Check if Chart.js is loaded
   if (typeof Chart === 'undefined') {
+      // Chart.js not loaded scenario
       errorDiv.style.display = 'block';
+      document.title = "503: Server Error";
       console.error('Chart.js not loaded');
   } else {
-      // Fetch the chart data
+      // Chart.js is loaded, proceed with fetching chart data
       fetch('http://localhost:3100/chart-data')
           .then(response => {
               if (!response.ok) {
@@ -110,8 +112,10 @@ window.onload = function() {
               });
           })
           .catch(error => {
+              // Error handling for fetch operation
               console.error('Error fetching chart data:', error);
               errorDiv.style.display = 'block';
+              document.title = "503: Server Error";
           });
   }
 };
