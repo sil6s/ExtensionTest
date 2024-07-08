@@ -38,6 +38,42 @@ text-align: center;
 
 }
 
+#errorDiv {
+    h1 
+    {
+        width: 90%;
+        font-size: 2.48em;
+        font-weight: 700;
+        letter-spacing: 0.25px;
+
+
+
+    }
+    padding: 30px;
+    margin-top: 20px;
+    text-align: center;
+    font-family: 'Jost', sans-serif;
+    color: #333;
+}
+
+.component-text {
+        display: inline-block;
+        font-family: "Open Sans", sans-serif;
+        width: 90%;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 7px 15px 4px rgba(0, 0, 0, 0.2);
+        margin: 30px 0;
+        border-radius: 16px;
+        padding: 30px;
+        background: #f3f3f3;
+        font-size: 18px;
+        font-stretch: 100%;
+        text-align: left;
+
+
+}
+
 .svg-logo {
     max-height: 60px; /* Maximum height set to 40px */
     margin-right: auto; /* Pushes logo to the left */

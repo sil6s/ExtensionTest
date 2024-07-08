@@ -5,7 +5,6 @@ window.onload = function() {
   // Check if Chart.js is loaded
   if (typeof Chart === 'undefined') {
     errorDiv.style.display = 'block';
-    errorDiv.innerText = 'Error: Chart.js failed to load. Please ensure the server is running.';
     return;
   }
 
@@ -98,6 +97,5 @@ window.onload = function() {
     .catch(error => {
       console.error('Error:', error);
       errorDiv.style.display = 'block';
-      errorDiv.innerText = 'Error: Failed to fetch chart data. Please ensure the server is running.';
     });
 };
