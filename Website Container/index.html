@@ -27,7 +27,6 @@
             </svg>
         </a>
 
-
         <svg xmlns="http://www.w3.org/2000/svg" class="svg svg-logo" viewBox="0 0 779.13 135.83">
             <title>University of Cincinnati</title>
             <g class="logo-name" data-name="Layer 1" fill="white">
@@ -47,8 +46,7 @@
                 <path id="_Path_2" data-name="<Path>" d="M55.78,73.58c0-20.66,12.08-37.37,29.93-46.74V16.68c-25.65,8.4-44,30.08-44,56.9,0,13.26,3.46,23.62,9.48,32.9-15.86-2.79-22.69-13.85-22.69-32.9V0H0V7.57H13.6v66c0,26.44,17.24,40.18,43.47,40.61a66.94,66.94,0,0,0,40.36,21.24c1.27.19,2.49.32,3.49.41v-7.52c-1.3-.22-2.2-.44-2.2-.44C74,121.59,55.78,100.55,55.78,73.58Z"></path>
                 <path id="_Path_3" data-name="<Path>" d="M115.78,73.58V20.33c17.55,0,28.08,10.44,28.65,22.4L151,44l4.57-26.64-7.77-1.51-.95,5.68c-14-7.05-25.78-8.33-37.47-8.33a71.19,71.19,0,0,0-8.46.5l.06,59.85c0,11.64-1.68,18.51-7.64,25.84C86.74,92.18,85.7,84,85.7,73.58c0-5.53,0-31.87,0-31.87C77,50.12,71.57,60.57,71.57,73.58c0,27.2,21,48.45,46.64,48.45,8.8,0,18.95-2.15,26.35-7.19L142.7,112c-10,5.1-30.28,6.29-42.68-5.31C110.5,99,115.78,89.1,115.78,73.58Z"></path>
             </g>
-            
-        </svg>
+            </svg>
         <div class="vl"></div>
 
         <div class="content">
@@ -137,17 +135,19 @@
             <li>Customizable settings for project needs.</li>
         </ul>
         <p style="padding-left: 80px;">Elevate your project management experience with our extension, designed to optimize productivity and streamline workflows.</p>
-
-        <button id="install-button">
-            <svg class="feather feather-chrome" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="10"/>
-                <circle cx="12" cy="12" r="4"/>
-                <line x1="21.17" x2="12" y1="8" y2="8"/>
-                <line x1="3.95" x2="8.54" y1="6.06" y2="14"/>
-                <line x1="10.88" x2="15.46" y1="21.94" y2="14"/>
-            </svg>
-            Add To Chrome
-        </button>
+            <div id="install-button-container">
+                <button id="install-button" onclick="installerror()">
+                    <svg class="feather feather-chrome" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10"/>
+                        <circle cx="12" cy="12" r="4"/>
+                        <line x1="21.17" x2="12" y1="8" y2="8"/>
+                        <line x1="3.95" x2="8.54" y1="6.06" y2="14"/>
+                        <line x1="10.88" x2="15.46" y1="21.94" y2="14"/>
+                    </svg>
+                    Add To Chrome
+                </button>
+                <p id = "install-error">&#9888 ITSC PMS is currently not available in the chrome webstore. &#9888</p>
+            </div>
     </div>
 </div>
 <footer>
@@ -196,6 +196,8 @@
 
 </footer>
 </body>
+
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // JavaScript for creating the bar chart
@@ -354,6 +356,26 @@
         }
     }).render(document.getElementById("wrapper"));
     </script>
+
+<script>
+    function installerror() {
+        var x = document.getElementById("install-error");
+        var button = document.getElementById("install-button");
+
+        if (x.style.display === "none" || x.style.display === "") {
+            x.style.display = "block";
+            button.style.borderBottomLeftRadius = "0px";
+            button.style.borderBottomRightRadius = "0px";
+        } else {
+            x.style.display = "none";
+            button.style.borderBottomLeftRadius = "5px";
+            button.style.borderBottomRightRadius = "5px";
+        }
+    }
+</script>
+
+
+    
 
  
 

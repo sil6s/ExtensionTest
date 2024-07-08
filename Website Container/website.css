@@ -269,21 +269,55 @@ text-align: center;
     width: 96%;
     margin:auto;
     padding-bottom: 80px;
+    p {
+        margin: 0 !important;
+    }
+}
+
+#install-button-container {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 30px 80px 10px 80px;
+    overflow: hidden;
+
+
 }
 
 #install-button {
-    width: 60%;
-    border-radius: 5px;
+    width: 100%;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
     display: flex;
-    margin-left: 80px;
     align-items: center; /* Center items vertically */
     justify-content: center; /* Center items horizontally */
-    padding: 10px 20px; /* Adjust padding as needed */
-    background-color: #0073e6; /* Example background color */
+    background-color: #0073e6; 
     color: white;
     border: none;
     cursor: pointer;
     font-size: 26px;
+}
+
+#install-error {
+    display: none;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 5px !important;
+    border-bottom-right-radius: 5px !important;
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center items horizontally */
+    text-align: center;
+    background-color: white; /* Example background color */
+    color: orangered;
+    padding: 15px 0 15px 0;
+
+    cursor: pointer;
+    font-size: 24px;
+    width: 100%;
 }
 
 #install-button svg {
