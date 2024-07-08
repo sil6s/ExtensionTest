@@ -40,6 +40,8 @@ text-align: center;
 
 #myChart {
     display: none;
+    width: 95% !important;
+    margin: auto !important;
 }
 
 
