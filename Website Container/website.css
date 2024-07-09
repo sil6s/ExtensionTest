@@ -372,9 +372,16 @@ iframe {
     width:auto !important;
     box-shadow: none !important;
     border-radius: 0px !important;
+    background-color: #b9001b !important;
 }
 
+.gridjs-thead {
+    background-color: darkred !important; 
+}
+
+
 /* Header */
+
 .gridjs-head {
     width:auto !important;
     border: none !important;
@@ -404,6 +411,20 @@ iframe {
 /* Table */
 .gridjs-table {
     border: none !important;
+}
+
+.gridjs-pages button {
+    color: black;
+}
+
+.gridjs-pages button[disabled] {
+    color: red; /* Example: change text color to red */
+    border: 2px solid black; /* Example: increase border */
+}
+
+
+.grisjs-page.active {
+    background-color: red;
 }
 
 /* styles.css */
