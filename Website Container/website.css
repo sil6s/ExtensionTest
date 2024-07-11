@@ -3,6 +3,7 @@
 body {
     font-family: Arial, sans-serif;
     color: #333;
+    min-width: 600px;
 }
 
 header {
@@ -488,10 +489,6 @@ button:hover {
     width: 60% ;
     height: 30%;
 }
-
-
-
-
 
 /* Responsive layout */
 @media only screen and (max-width: 768px) {
